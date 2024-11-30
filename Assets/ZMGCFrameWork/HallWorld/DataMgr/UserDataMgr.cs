@@ -8,18 +8,21 @@
 ----------------------------------------------------------------------------------------*/
 namespace ZMGC.Hall
 {
-	public  class UserDataMgr : IDataBehaviour
-	{
-	
-		 public  void OnCreate()
-		 {
-		
-		 }
-		
-		 public  void OnDestroy()
-		 {
-		
-		 }
-	
-	}
+    public class UserDataMgr : IDataBehaviour
+    {
+
+        public string userName;
+
+
+        public void OnCreate()
+        {
+
+        }
+
+        public void OnDestroy()
+        {
+
+        }
+
+    }
 }

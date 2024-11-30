@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: WindowConfig
   m_EditorClassIdentifier: 
   windowDataList:
-  - name: SettingWindow
-    path: Assets/Resources/UI/Window/SettingWindow
+  - name: CreateRoleWindow
+    path: Assets/GameData/Hall/Prefabs/Window/CreateRoleWindow
+  - name: LoadingWindow
+    path: Assets/GameData/Hall/Prefabs/Window/LoadingWindow

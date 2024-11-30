@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using ZMGC.Battle;
 using ZMGC.Hall;
+using ZM.AssetFrameWork;
 
 public class Main : MonoBehaviour
 {
@@ -14,62 +16,26 @@ public class Main : MonoBehaviour
     void Start()
     {
         Instance = this;
-
+        //åˆå§‹åŒ–èµ„æºç®¡ç†æ¡†æ¶
+        ZMAssetsFrame.Instance.InitFrameWork();
+        //åˆå§‹åŒ–UIæ¨¡å—
         UIModule.Instance.Initialize();
 
+        //åˆ›å»ºå¤§å…ä¸–ç•Œ
         WorldManager.CreateWorld<HallWorld>();
 
        
         DontDestroyOnLoad(gameObject);
     }
 
-
-    public void LoadSceneAsync()
+    /// <summary>
+    /// èµ„æºè§£å‹å®Œæˆåè°ƒç”¨
+    /// </summary>
+    public void StartGame()
     {
-        UIModule.Instance.PopUpWindow<LoadingWindow>();
-        StartCoroutine(AsyncLoadScene());
-    }
 
-    IEnumerator AsyncLoadScene()
-    {
-        //Òì²½¼ÓÔØ³¡¾°
-        AsyncOperation operation = SceneManager.LoadSceneAsync("Battle");
-        //Ä¬ÈÏ²»¼¤»î
-        operation.allowSceneActivation = false;
-
-        float curProgress = 0;
-        float maxProgress = 100;
-        
-        //Unity³¡¾°¼ÓÔØ½ø¶ÈÎª0¡ª¡ª0.9
-        while (curProgress<90)
-        {
-            curProgress = operation.progress * 100f;
-            //Í¨¹ıÊÂ¼ş°Ñµ±Ç°½ø¶ÈÅ×³ö
-            UIEventControl.DispensEvent(UIEventEnum.ScencProgressUpdate,curProgress);
-            yield return null;
-        }
-
-        while (curProgress<maxProgress)
-        {
-            curProgress ++;
-            //µÈ¿ÕÖ¡ÎªÁËÈÃUIäÖÈ¾ÓĞ¸üĞÂ
-            UIEventControl.DispensEvent(UIEventEnum.ScencProgressUpdate, curProgress);
-            yield return null;
-        }
-        //¼¤»î³¡¾°
-        operation.allowSceneActivation = true;
-        yield return null;
-
-        //´´½¨½ÇÉ«
-        UIModule.Instance.DestroyAllWindow();
     }
 
 
-
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+  
 }

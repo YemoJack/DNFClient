@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using ZMUIFrameWork;
 using DG.Tweening;
+using ZMGC.Hall;
 
 public class CreateRoleWindow : WindowBase
 {
@@ -50,7 +51,7 @@ public class CreateRoleWindow : WindowBase
     }
     public void OnEnterGameButtonClick()
     {
-        Main.Instance.LoadSceneAsync();
+        HallWorld.EnterBattleWorld();
     }
     public void OnNameInputChange(string text)
     {
@@ -58,7 +59,7 @@ public class CreateRoleWindow : WindowBase
     }
     public void OnNameInputEnd(string text)
     {
-
+        HallWorld.GetExitsDataMgr<UserDataMgr>().userName = text;
     }
     #endregion
 }

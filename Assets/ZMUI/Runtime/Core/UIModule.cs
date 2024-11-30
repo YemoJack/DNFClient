@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using ZM.AssetFrameWork;
 
 
 public class UIModule
@@ -408,9 +409,9 @@ public class UIModule
     /// <param name="windowObj"></param>
     public void GameObjectDestoryWindow(GameObject windowObj)
     {
-        GameObject.Destroy(windowObj);
+        //GameObject.Destroy(windowObj);
         //可在这里中替换自己的资源框架的释放接口
-        //ZMAsset.Release(windowObj,true);
+        ZMAssetsFrame.Release(windowObj,true);
     }
     //*** Resouces 加载接口，可在下面接口中修改为自己的资源框架加载和释放接口  ***
     public GameObject ResourcesLoadObj(string path, Transform parent)
@@ -418,21 +419,18 @@ public class UIModule
         //return GameObject.Instantiate<GameObject>(Resources.Load<GameObject>(path), parent);
         //在这里替换成自己的资源加载框架 例:
 
-        string result = path;
-        int index = path.IndexOf("/Resources/");
-        if (index != -1)
-        {
-            result = path.Substring(index + "/Resources/".Length);
-        }
-
+        //string result = path;
+        //int index = path.IndexOf("/Resources/");
+        //if (index != -1)
+        //{
+        //    result = path.Substring(index + "/Resources/".Length);
+        //}
 
         //GameObject obj = ResMgr.Instance.Load<GameObject>(result);
+        //return GameObject.Instantiate<GameObject>(Resources.Load<GameObject>(result), parent);
 
-        //if (obj == null)
-        //    return null;
-
-        //return GameObject.Instantiate<GameObject>(obj, parent);//ZMAsset.Instantiate(mWindowConfig.GetWindowData(path).path, mUIRoot);
-        return GameObject.Instantiate<GameObject>(Resources.Load<GameObject>(result), parent);
+        return ZMAssetsFrame.Instantiate(path, mUIRoot);
+       
     }
     #endregion
 
