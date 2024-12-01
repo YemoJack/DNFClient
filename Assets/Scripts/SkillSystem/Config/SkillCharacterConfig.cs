@@ -1,5 +1,6 @@
 using Sirenix.OdinInspector;
 using Sirenix.Reflection.Editor;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -22,13 +23,16 @@ public class SkillCharacterConfig
 
     [BoxGroup("动画数据")]
     [ProgressBar(0,100,r:0,g:255,b:0,Height = 30)]
+    [OnValueChanged("OnAnimProgressValueChange")]
     [HideLabel]
     public short animProgress = 0;
 
     [BoxGroup("动画数据")]
     [LabelText("是否循环动画")]
     public bool isLoopAnim = false;
+    [BoxGroup("动画数据")]
     [LabelText("动画循环次数")]
+    [ShowIf("isLoopAnim")]
     public int animLoopCount;
     [BoxGroup("动画数据")]
     [LabelText("逻辑帧数")]
@@ -75,7 +79,11 @@ public class SkillCharacterConfig
             skillDurationMS = isLoopAnim ?(SkillAnim.length*animLoopCount)*1000: SkillAnim.length*1000;
 
             mLastRunTime = 0;
+            //开始播放动画
             mIsPlayAnim = true;
+            SkillComplierWindow window = SkillComplierWindow.GetWindow();
+            window?.StartPlaySkill();
+
         }
 
 
@@ -88,7 +96,9 @@ public class SkillCharacterConfig
     [Button("暂停", ButtonSizes.Large)]
     public void Pause()
     {
-
+        mIsPlayAnim=false;
+        SkillComplierWindow window = SkillComplierWindow.GetWindow();
+        window?.SkillPause();
     }
 
     [GUIColor(0f, 1f, 0)]
@@ -100,7 +110,7 @@ public class SkillCharacterConfig
     }
 
 
-    public void OnUpdate()
+    public void OnUpdate(Action updateCallback)
     {
         if(mIsPlayAnim)
         {
@@ -123,13 +133,39 @@ public class SkillCharacterConfig
                 //播放结束
                 PlaySkillEnd();
             }
-
+            updateCallback?.Invoke();
         }
     }
+
+    /// <summary>
+    /// 动画进度值改变监听
+    /// </summary>
+    /// <param name="value"></param>
+    public void OnAnimProgressValueChange(float value)
+    {
+        //先从场景上查找技能对象，如果查找不到，就克隆一个
+        string charactorName = skillCharacter.name;
+        mTempCharacter = GameObject.Find(charactorName);
+        if (mTempCharacter == null)
+        {
+            mTempCharacter = GameObject.Instantiate(skillCharacter);
+        }
+        //判断模型上是否有该动画，如果没有则进行添加
+        mAnimation = mTempCharacter.GetComponent<Animation>();
+        float progressValue = (value / 100f) * SkillAnim.length;
+        logicFrame = (int)(progressValue / LogicFrameConfig.LogicFrameInterval);
+
+        mAnimation.clip.SampleAnimation(mTempCharacter, progressValue);
+    }
+
+
 
     public void PlaySkillEnd()
     {
         mIsPlayAnim = false;
+
+        SkillComplierWindow window = SkillComplierWindow.GetWindow();
+        window?.PlaySkillEnd();
     }
 
 
