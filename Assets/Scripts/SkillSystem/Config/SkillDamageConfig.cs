@@ -21,13 +21,13 @@ public class SkillDamageConfig
     public int damageRate; //伤害倍率
     [LabelText("伤害检测模式"),OnValueChanged("OnDetectionModeValueChange")]
     public DamageDetectionMode detectionMode; //伤害检测模式
-    [LabelText("Box碰撞体的大小"),ShowIf("isShowBox3D")]
+    [LabelText("Box碰撞体的大小"),ShowIf("isShowBox3D"),OnValueChanged("OnBoxValueChange")]
     public Vector3 boxSize = new Vector3(1, 1, 1); //Box碰撞体的大小
-    [LabelText("Box碰撞体偏移"), ShowIf("isShowBox3D")]
+    [LabelText("Box碰撞体偏移"), ShowIf("isShowBox3D"),OnValueChanged("OnColliderOffsetChange")]
     public Vector3 boxOffset = new Vector3(0, 0, 0); //Box碰撞体偏移
-    [LabelText("球型碰撞体偏移"), ShowIf("isShowSphere3D")]
+    [LabelText("球型碰撞体偏移"), ShowIf("isShowSphere3D"), OnValueChanged("OnColliderOffsetChange")]
     public Vector3 sphereOffset = new Vector3(0, 0.9f, 0); //球型碰撞体偏移
-    [LabelText("圆球伤害检测半径"), ShowIf("isShowSphere3D")]
+    [LabelText("圆球伤害检测半径"), ShowIf("isShowSphere3D"), OnValueChanged("OnRadiusValueChange")]
     public float radius = 1; //圆球伤害检测半径
     [LabelText("圆球伤害检测半径高度"), ShowIf("isShowSphere3D")]
     public float raduisHeight = 0f; //圆球伤害检测半径高度
@@ -40,17 +40,69 @@ public class SkillDamageConfig
     [TitleGroup("触发后续技能id","造成伤害后且技能释放完毕后触发的技能")]
     public int triggerSkillid; //触发技能id
 
+
+#if UNITY_EDITOR
     private bool isShowBox3D = false;
     private bool isShowSphere3D = false;
     private FixIntBoxCollider boxCollider;
     private FixIntSphereCollider sphereCollider;
+    private int mCurLogicFrame = 0; //当前逻辑帧
 
+
+    /// <summary>
+    /// 碰撞检查类型发生改变
+    /// </summary>
+    /// <param name="mode"></param>
     public void OnDetectionModeValueChange(DamageDetectionMode mode)
     {
         isShowBox3D = mode == DamageDetectionMode.BOX3D;
         isShowSphere3D = mode == DamageDetectionMode.Sphere3D;
         CreateCollider();
     }
+
+    /// <summary>
+    /// Box碰撞体大小发生改变
+    /// </summary>
+    public void OnBoxValueChange(Vector3 size)
+    {
+        if (boxCollider != null)
+            boxCollider.SetBoxData(GetColliderOffsetPos(), size, colliderPosType == ColliderPosType.FollowPos);
+        else
+            Debug.LogError("boxCollider is null !");
+    }
+
+    /// <summary>
+    /// 碰撞体偏移发生改变
+    /// </summary>
+    /// <param name="offset"></param>
+    public void OnColliderOffsetChange(Vector3 offset)
+    {
+        if (detectionMode == DamageDetectionMode.BOX3D && boxCollider != null)
+        {
+            boxCollider.SetBoxData(GetColliderOffsetPos(),boxSize,colliderPosType == ColliderPosType.FollowPos);
+        }
+        else if (detectionMode == DamageDetectionMode.Sphere3D &&sphereCollider != null)
+        {
+            sphereCollider.SetBoxData(radius, GetColliderOffsetPos(), colliderPosType == ColliderPosType.FollowPos);
+        }
+    }
+
+    /// <summary>
+    /// 圆球伤害检测半径发生改变
+    /// </summary>
+    /// <param name="value"></param>
+    public void OnRadiusValueChange(float value)
+    {
+        if (sphereCollider != null)
+            sphereCollider.SetBoxData(radius, GetColliderOffsetPos(), colliderPosType == ColliderPosType.FollowPos);
+        else
+            Debug.LogError("sphereCollider is null !");
+    }
+
+
+
+
+
 
     /// <summary>
     /// 获取碰撞体偏移后的位置
@@ -103,6 +155,54 @@ public class SkillDamageConfig
         }
     }
 
+
+    /// <summary>
+    /// 当前窗口初始化
+    /// </summary>
+    public void Init()
+    {
+        CreateCollider();
+    }
+
+    /// <summary>
+    /// 当前窗口关闭
+    /// </summary>
+    public void OnRelease()
+    {
+        DestroyCollider();
+    }
+
+
+    public void PlaySkillStart()
+    {
+        mCurLogicFrame = 0;
+        DestroyCollider();
+    }
+
+    public void PlaySkillEnd()
+    {
+        DestroyCollider();
+    }
+
+
+    public void OnLogicFrameUpdate()
+    {
+        if (mCurLogicFrame == triggerFrame)
+        {
+            CreateCollider();
+        }
+        else if (mCurLogicFrame == endFrame)
+        {
+            DestroyCollider() ;
+        }
+
+
+        mCurLogicFrame++;
+    }
+
+
+
+#endif
 
 }
 

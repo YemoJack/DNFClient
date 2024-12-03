@@ -71,6 +71,11 @@ public class SkillComplierWindow : OdinEditorWindow
         {
             item.StartPlaySkill();
         }
+
+        foreach(var item in damageList)
+        {
+            item.PlaySkillStart();
+        }
         mAccLogicRunTime = 0;
         mNextLogicFrameTime = 0;
         mLastUpdateTime = 0;
@@ -96,6 +101,10 @@ public class SkillComplierWindow : OdinEditorWindow
     public void PlaySkillEnd()
     {
         foreach (var item in effectList)
+        {
+            item.PlaySkillEnd();
+        }
+        foreach (var item in damageList)
         {
             item.PlaySkillEnd();
         }
@@ -162,6 +171,11 @@ public class SkillComplierWindow : OdinEditorWindow
         foreach(var effect in effectList)
         {
             effect.OnLogicFrameUpdate();
+        }
+
+        foreach(var damage in damageList)
+        {
+            damage.OnLogicFrameUpdate();
         }
     }
 
