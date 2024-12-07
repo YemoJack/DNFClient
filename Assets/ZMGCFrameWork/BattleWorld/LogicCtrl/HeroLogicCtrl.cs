@@ -9,6 +9,7 @@
 
 
 using UnityEngine;
+using ZM.AssetFrameWork;
 
 namespace ZMGC.Battle
 {
@@ -19,6 +20,16 @@ namespace ZMGC.Battle
         {
             Debug.Log("HeroLogicCtrl  OnCreate>>>");
         }
+
+        /// <summary>
+        /// 初始化场景中的英雄
+        /// </summary>
+        public void InitHero()
+        {
+            ZMAssetsFrame.Instantiate(AssetPathConfig.GAME_PREFABS_HERO + "1000", null);
+        }
+
+
 
         public void OnDestroy()
         {

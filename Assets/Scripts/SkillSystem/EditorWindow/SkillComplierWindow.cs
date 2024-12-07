@@ -29,6 +29,28 @@ public class SkillComplierWindow : OdinEditorWindow
         return GetWindowWithRect<SkillComplierWindow>( new Rect(0, 0, 1000, 600));
     }
 
+
+
+    /// <summary>
+    /// 保存技能数据
+    /// </summary>
+    public void SaveSkillData()
+    {
+        SkillDataConfig.SaveSkillData(character, skill, damageList, effectList);
+        Close();
+    }
+    /// <summary>
+    /// 加载技能数据
+    /// </summary>
+    /// <param name="skilldata"></param>
+    public void LoadSkillData(SkillDataConfig skilldata)
+    {
+        this.character = skilldata.character;
+        this.skill = skilldata.skillCfg;
+        this.damageList = skilldata.damageCfgList;
+        this.effectList = skilldata.effectCfgList;
+    }
+
     /// <summary>
     /// 获取Editor模式下的角色位置
     /// </summary>
@@ -135,7 +157,7 @@ public class SkillComplierWindow : OdinEditorWindow
         }
         catch(System.Exception e)
         {
-
+            Debug.Log(e);
         }
     }
 

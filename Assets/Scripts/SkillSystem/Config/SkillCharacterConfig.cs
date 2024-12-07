@@ -106,7 +106,7 @@ public class SkillCharacterConfig
     [Button("保存配置", ButtonSizes.Large)]
     public void SaveAsset()
     {
-
+        SkillComplierWindow.GetWindow().SaveSkillData();
     }
 
 

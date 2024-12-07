@@ -21,6 +21,10 @@ public class AssetPathConfig
     /// </summary>
     public const string GAME_PREFABS_HERO = GAME_PREFABS + "Hero/";
     /// <summary>
+    /// 游戏怪物预制体资源路径
+    /// </summary>
+    public const string GAME_PREFABS_MONSTER = GAME_PREFABS + "Monster/";
+    /// <summary>
     /// 大厅资源路径
     /// </summary>
     public const string HALL = GAMEDATA + "Hall/";
