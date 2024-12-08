@@ -68,3 +68,4 @@ MonoBehaviour:
     effectPosType: 0
     isSetTransParent: 0
     transParent: 0
+    GameEffectobj: {fileID: 0}

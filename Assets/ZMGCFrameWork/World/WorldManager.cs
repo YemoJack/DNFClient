@@ -75,6 +75,20 @@ public class WorldManager
     }
 
     /// <summary>
+    /// 更新世界
+    /// </summary>
+    public static void OnUpdate()
+    {
+        foreach (var world in mWorldList)
+        {
+            world.OnUpdate();
+        }
+    }
+
+
+
+
+    /// <summary>
     /// 销毁指定游戏世界
     /// </summary>
     /// <typeparam name="T"></typeparam>

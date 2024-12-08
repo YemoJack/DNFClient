@@ -10,10 +10,13 @@ public class RenderObject : MonoBehaviour
 
     public LogicObject logicObject;
 
+    protected Vector2 mRenderDir;
+
+
     /// <summary>
     /// 位置插值速度
     /// </summary>
-    protected float mSmoothPosSpeed;
+    protected float mSmoothPosSpeed = 10;
 
 
     public void SetLogicObject(LogicObject logicObject)
@@ -23,12 +26,28 @@ public class RenderObject : MonoBehaviour
         transform.position = logicObject.LogicPos.ToVector3();
     }
 
+    /// <summary>
+    /// 渲染层脚本创建
+    /// </summary>
+    public virtual void OnCreate()
+    {
+        
+    }
+
+    /// <summary>
+    /// 渲染层脚本释放
+    /// </summary>
+    public virtual void OnRelease()
+    {
+        
+    }
+
 
 
     /// <summary>
     /// Unity渲染帧 根据程序配置，渲染帧一般为30，60，120
     /// </summary>
-    void Update()
+    protected virtual void Update()
     {
         UpdatePosition();
         UpdateDir();
@@ -47,6 +66,21 @@ public class RenderObject : MonoBehaviour
     /// </summary>
     private void UpdateDir()
     {
-        transform.rotation = Quaternion.Euler(logicObject.LogicDir.ToVector3());
+        //transform.rotation = Quaternion.Euler(logicObject.LogicDir.ToVector3());
+
+        //mRenderDir.x = logicObject.LogicXAxis >= 0 ? 0 : -20;
+        //mRenderDir.y = logicObject.LogicXAxis >= 0 ? 0 : 180;
+        //transform.localEulerAngles = mRenderDir;
+
+        
+        transform.localScale = new Vector3(logicObject.LogicXAxis >= 0 ? 1 : -1,1,1);
+
     }
+
+    public virtual void PlayAnim(AnimationClip clip)
+    {
+
+    }
+
+
 }

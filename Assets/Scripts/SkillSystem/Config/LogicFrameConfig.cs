@@ -9,5 +9,5 @@ public class LogicFrameConfig : MonoBehaviour
     //实际逻辑帧间隔
     public static float LogicFrameInterval = 0.066f; //一秒十五帧
     //毫秒级逻辑帧间隔 用来计算当前逻辑帧累加时间
-    public static float LogicFrameIntervalMS = 66f;
+    public static int LogicFrameIntervalMS = 66;
 }

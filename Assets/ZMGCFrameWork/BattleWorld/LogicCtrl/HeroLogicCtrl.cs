@@ -16,6 +16,8 @@ namespace ZMGC.Battle
     public class HeroLogicCtrl : ILogicBehaviour
     {
 
+        public HeroLogic HeroLogic {  get; private set; }
+
         public void OnCreate()
         {
             Debug.Log("HeroLogicCtrl  OnCreate>>>");
@@ -26,10 +28,22 @@ namespace ZMGC.Battle
         /// </summary>
         public void InitHero()
         {
-            ZMAssetsFrame.Instantiate(AssetPathConfig.GAME_PREFABS_HERO + "1000", null);
+            GameObject heroObj = ZMAssetsFrame.Instantiate(AssetPathConfig.GAME_PREFABS_HERO + "1000", null);
+            //获取渲染层对象
+            HeroRender renderObj = heroObj.GetComponent<HeroRender>();
+            HeroLogic heroLogic = new HeroLogic(1000, renderObj);
+            HeroLogic = heroLogic;
+            renderObj.SetLogicObject(heroLogic);
+            //初始化逻辑层和渲染层
+            heroLogic.OnCreate();
+            renderObj.OnCreate();
+            
         }
 
-
+        public void OnLogicFrameUpdate()
+        {
+            HeroLogic.OnLogicFrameUpdate();
+        }
 
         public void OnDestroy()
         {

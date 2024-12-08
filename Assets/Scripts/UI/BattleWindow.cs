@@ -1,27 +1,28 @@
 /*---------------------------------
  *Title:UI表现层脚本自动化生成工具
  *Author:ZM 铸梦
- *Date:2024/11/29 15:48:16
+ *Date:2024/12/8 19:23:31
  *Description:UI 表现层，该层只负责界面的交互、表现相关的更新，不允许编写任何业务逻辑代码
  *注意:以下文件是自动生成的，再次生成不会覆盖原有的代码，会在原有的代码上进行新增，可放心使用
 ---------------------------------*/
 using UnityEngine.UI;
 using UnityEngine;
 using ZMUIFrameWork;
-using DG.Tweening;
-using ZMGC.Hall;
+using ZMGC.Battle;
 
-public class CreateRoleWindow : WindowBase
+public class BattleWindow : WindowBase
 {
 
-    public CreateRoleWindowDataComponent dataCompt;
+    public BattleWindowDataComponent dataCompt;
+
+    private HeroLogic mHeroLogic;
+
 
     #region 声明周期函数
     //调用机制与Mono Awake一致
     public override void OnAwake()
     {
-        mDisableAnim = true;
-        dataCompt = gameObject.GetComponent<CreateRoleWindowDataComponent>();
+        dataCompt = gameObject.GetComponent<BattleWindowDataComponent>();
         dataCompt.InitComponent(this);
         base.OnAwake();
     }
@@ -29,6 +30,7 @@ public class CreateRoleWindow : WindowBase
     public override void OnShow()
     {
         base.OnShow();
+        mHeroLogic = BattleWorld.GetExitsLogicCtrl<HeroLogicCtrl>().HeroLogic;
     }
     //物体隐藏时执行
     public override void OnHide()
@@ -45,22 +47,9 @@ public class CreateRoleWindow : WindowBase
 
     #endregion
     #region UI组件事件
-    public void OnCloseButtonClick()
+    public void OnNormalAttackButtonClick()
     {
-
-        HideWindow();
-    }
-    public void OnEnterGameButtonClick()
-    {
-        HallWorld.EnterBattleWorld();
-    }
-    public void OnNameInputChange(string text)
-    {
-
-    }
-    public void OnNameInputEnd(string text)
-    {
-        HallWorld.GetExitsDataMgr<UserDataMgr>().userName = text;
+        mHeroLogic.ReleaseSkill(1001);
     }
     #endregion
 }

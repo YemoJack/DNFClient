@@ -23,6 +23,8 @@ public class SkillEffectConfig
     [ToggleGroup("isSetTransParent", "父节点类型")]
     public TransParentType transParent;//父节点类型
 
+    [HideInInspector]
+    public GameObject GameEffectobj; //游戏特效缓存对象
 
 #if UNITY_EDITOR
 

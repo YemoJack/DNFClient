@@ -11,6 +11,7 @@ public partial class LogicActor : LogicObject
     public override void OnCreate()
     {
         base.OnCreate();
+        InitActorSkill();
     }
 
 
@@ -27,6 +28,12 @@ public partial class LogicActor : LogicObject
         OnLogicFrameUpdateGravity();
 
     }
+
+    public void PlayAnim(AnimationClip clip)
+    {
+        RenderObj.PlayAnim(clip);
+    }
+
 
 
     public override void OnDestroy()

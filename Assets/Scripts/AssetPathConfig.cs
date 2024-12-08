@@ -28,4 +28,9 @@ public class AssetPathConfig
     /// 大厅资源路径
     /// </summary>
     public const string HALL = GAMEDATA + "Hall/";
+
+    /// <summary>
+    /// 技能数据配置资源路径
+    /// </summary>
+    public const string SKILL_DATA_PATH = GAME + "SkillSystem/SkillData/";
 }
