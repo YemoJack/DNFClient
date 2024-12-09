@@ -10,7 +10,7 @@ public partial class Skill
     /// <summary>
     /// 特效字典 key为特效配置的HashCode Value为特效对象
     /// </summary>
-    private Dictionary<int,GameObject> mEffectDic = new Dictionary<int,GameObject>();
+    private Dictionary<int,SkillEffectLogic> mEffectDic = new Dictionary<int, SkillEffectLogic>();
 
 
 
@@ -31,11 +31,21 @@ public partial class Skill
                     effectObj.transform.position = Vector3.zero;
                     effectObj.transform.rotation = Quaternion.identity;
                     effectObj.transform.localScale = Vector3.one;
-                    mEffectDic.Add(item.GetHashCode(),effectObj);
+                    //创建技能特效渲染层
+                    SkillEffectRender effectRender = effectObj.GetComponent<SkillEffectRender>();
+                    if (effectRender == null)
+                    {
+                        effectRender = effectObj.AddComponent<SkillEffectRender>();
+                    }
+                    //创建技能特效逻辑层
+                    SkillEffectLogic effectLogic = new SkillEffectLogic(LogicObjectType.Effect,item, effectRender, mSkillCreater);
+                    effectRender.SetLogicObject(effectLogic);
+                    mEffectDic.Add(item.GetHashCode(),effectLogic);
                 }
 
                 if(mCurLogicFrame == item.endFrame)
                 {
+                    //技能特效结束，开始销毁
                     DestroyEffect(item);
                 }
 
@@ -52,14 +62,14 @@ public partial class Skill
     /// <param name="item"></param>
     public void DestroyEffect(SkillEffectConfig item)
     {
-        GameObject effect = null;
+        SkillEffectLogic effect = null;
         int hashCode = item.GetHashCode();
         mEffectDic.TryGetValue(hashCode, out effect);
         if(effect != null)
         {
             
             mEffectDic.Remove(hashCode);
-            GameObject.Destroy(effect);
+            effect.OnDestroy();
         }
     }
 

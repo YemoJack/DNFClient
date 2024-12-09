@@ -24,6 +24,14 @@ namespace FixIntPhysics
             this.ColliderType = ColliderType.Shpere;
             this.Conter = new FixIntVector3(conter);
         }
+
+        public FixIntSphereCollider(FixInt radius, FixIntVector3 conter)
+        {
+            this.Radius = radius;
+            this.ColliderType = ColliderType.Shpere;
+            this.Conter = conter;
+        }
+
         /// <summary>
         /// 更新碰撞体信息
         /// </summary>
@@ -60,6 +68,11 @@ namespace FixIntPhysics
         /// <param name="isFloowTarget">是否跟随目标</param>
         public override void SetBoxData(float raduis, Vector3 conter, bool isFloowTarget = false)
         {
+            SetBoxData(new FixInt(raduis), new FixIntVector3(conter), isFloowTarget);
+        }
+
+        public override void SetBoxData(FixInt raduis, FixIntVector3 conter, bool isFloowTarget = false)
+        {
 #if UNITY_EDITOR
             if (mSphereGizomObj == null)
             {
@@ -68,12 +81,14 @@ namespace FixIntPhysics
             }
 #endif
             mIsFloowTarget = isFloowTarget;
-            this.Conter = new FixIntVector3(conter);
+            this.Conter = conter;
             this.Radius = raduis;
 #if UNITY_EDITOR
-            mSphereGizomObj.SetBoxData(raduis, conter, mIsFloowTarget);
+            mSphereGizomObj.SetBoxData(raduis.RawFloat, conter.ToVector3(), mIsFloowTarget);
 #endif
         }
+
+
         public override void OnRelease()
         {
 #if UNITY_EDITOR
