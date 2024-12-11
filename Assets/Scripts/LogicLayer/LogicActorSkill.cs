@@ -1,3 +1,4 @@
+using FixMath;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -63,6 +64,36 @@ public partial class LogicActor
     }
 
 
+    /// <summary>
+    /// 技能伤害(受击伤害)
+    /// </summary>
+    /// <param name="hp"></param>
+    /// <param name="damageConfig"></param>
+    public virtual void SkillDamage(FixInt hp, SkillDamageConfig damageConfig)
+    {
+        Debug.Log($" SkillDamage  {hp}");
+        CacluDamage(hp, DamageSource.Skill);
+    }
+
+    /// <summary>
+    /// 计算伤害
+    /// </summary>
+    /// <param name="hp"></param>
+    /// <param name="damageSource"></param>
+    public virtual void CacluDamage(FixInt hp, DamageSource damageSource)
+    {
+        if(ObjectState == LogicObjectState.Survival)
+        {
+            //1. 对象逻辑层血量减少
+
+            //2. 判断对象是否死亡， 如果死亡就处理死亡逻辑
+
+            //3. 进行伤害飘字渲染
+            RenderObj.Damage(hp.RawInt, damageSource);
+        }
+
+
+    }
 
 
     /// <summary>

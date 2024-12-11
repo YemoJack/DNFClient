@@ -5,68 +5,78 @@ using System.Collections.Generic;
 using UnityEngine;
 using ZMGC.Battle;
 
+public enum DamageSource
+{
+    None,
+    Skill,//æŠ€èƒ½ä¼¤å®³
+    Buff,//Buffä¼¤å®³
+    Bullet,//å­å¼¹ä¼¤å®³
+}
 
-// ÉËº¦Âß¼­
+
+// ä¼¤å®³é€»è¾‘
 public partial class Skill
 {
     
     /// <summary>
-    /// Åö×²Ìå×Öµä
+    /// ç¢°æ’ä½“å­—å…¸
     /// </summary>
     private Dictionary<int,ColliderBehaviour> mColliderDic = new Dictionary<int,ColliderBehaviour>();
     /// <summary>
-    /// µ±Ç°ÒÑÀÛ¼ÆµÄÉËº¦Ê±¼ä
+    /// å½“å‰å·²ç´¯è®¡çš„ä¼¤å®³æ—¶é—´
     /// </summary>
     private int mCurDamageAccTime;
 
     /// <summary>
-    /// Âß¼­Ö¡¸üĞÂÉËº¦
+    /// é€»è¾‘å¸§æ›´æ–°ä¼¤å®³
     /// </summary>
     public void OnLogicFrameUpdateDamage()
     {
-        //ÅĞ¶Ïµ±Ç°ÉËº¦ÅäÖÃÁĞ±íÊÇ·ñÎª¿Õ£¬ÒÔ¼°³¤¶ÈÊÇ·ñ´óÓÚ0
+        //åˆ¤æ–­å½“å‰ä¼¤å®³é…ç½®åˆ—è¡¨æ˜¯å¦ä¸ºç©ºï¼Œä»¥åŠé•¿åº¦æ˜¯å¦å¤§äº0
         if(mSkillData.damageCfgList != null && mSkillData.damageCfgList.Count > 0)
         {
             foreach(var item in mSkillData.damageCfgList)
             {
 
                 int hashCode = item.GetHashCode();
-                //´´½¨Åö×²Ìå
+                //åˆ›å»ºç¢°æ’ä½“
                 if(mCurLogicFrame == item.triggerFrame)
                 {
                     DestroyCollider(item);
                     ColliderBehaviour collider = CreateCollider(item);
-                    //´´½¨×Öµä»º´æµ±Ç°Åö×²Ìå
+                    //åˆ›å»ºå­—å…¸ç¼“å­˜å½“å‰ç¢°æ’ä½“
                     mColliderDic.Add(hashCode, collider);
-                }
 
-                //´¦ÀíÅö×²ÌåÉËº¦¼ì²â
-                if(item.triggerIntervalMs == 0)
-                {
-                    //´¥·¢Ò»´ÎÉËº¦ //TODO
-                    if (mColliderDic.ContainsKey(hashCode))
+                    //å¤„ç†ç¢°æ’ä½“ä¼¤å®³æ£€æµ‹
+                    if (item.triggerIntervalMs == 0)
                     {
-                        TriggerColliderDamage(mColliderDic[hashCode]);
-                    }
-                }
-                else
-                {
-                    //´¥·¢¶à´ÎÉËº¦
-                    mCurDamageAccTime += item.triggerIntervalMs;
-                    //Èç¹ûµ±Ç°ÀÛ¼ÆÊ±¼ä´óÓÚ´¥·¢ÉËº¦¼ä¸ô Ôò½øĞĞÉËº¦¼ì²â
-                    if(mCurDamageAccTime>= item.triggerIntervalMs)
-                    {
-                        //´¥·¢Ò»´ÎÉËº¦//TODO
-                        mCurDamageAccTime = 0;
+                        //è§¦å‘ä¸€æ¬¡ä¼¤å®³ //TODO
                         if (mColliderDic.ContainsKey(hashCode))
                         {
-                            TriggerColliderDamage(mColliderDic[hashCode]);
+                            TriggerColliderDamage(mColliderDic[hashCode], item);
                         }
                     }
                 }
 
 
-                //Ïú»ÙÅö×²Ìå
+                if (item.triggerIntervalMs != 0)
+                {
+                    //è§¦å‘å¤šæ¬¡ä¼¤å®³
+                    mCurDamageAccTime += item.triggerIntervalMs;
+                    //å¦‚æœå½“å‰ç´¯è®¡æ—¶é—´å¤§äºè§¦å‘ä¼¤å®³é—´éš” åˆ™è¿›è¡Œä¼¤å®³æ£€æµ‹
+                    if(mCurDamageAccTime>= item.triggerIntervalMs)
+                    {
+                        //è§¦å‘ä¸€æ¬¡ä¼¤å®³//TODO
+                        mCurDamageAccTime = 0;
+                        if (mColliderDic.ContainsKey(hashCode))
+                        {
+                            TriggerColliderDamage(mColliderDic[hashCode], item);
+                        }
+                    }
+                }
+
+
+                //é”€æ¯ç¢°æ’ä½“
                 if(item.endFrame == mCurLogicFrame)
                 {
                     DestroyCollider(item);
@@ -79,19 +89,19 @@ public partial class Skill
 
 
     /// <summary>
-    /// ´¥·¢Åö×²ÌåÉËº¦
+    /// è§¦å‘ç¢°æ’ä½“ä¼¤å®³
     /// </summary>
-    public void TriggerColliderDamage(ColliderBehaviour collider)
+    public void TriggerColliderDamage(ColliderBehaviour collider,SkillDamageConfig damageConfig)
     {
-        //1. »ñÈ¡µĞÈËÄ¿±êÁĞ±í µĞÈË Ó¢ĞÛ
+        //1. è·å–æ•Œäººç›®æ ‡åˆ—è¡¨ æ•Œäºº è‹±é›„
         List<LogicActor> enemyList = BattleWorld.GetExitsLogicCtrl<BattleLogicCtrl>().GetEnemyList(mSkillCreater.ObjectType);
-        //2. Í¨¹ıÅö×²¼ì²âÂß¼­£¬È¥¼ì²âÅö×²µ½µÄµĞÈË
+        //2. é€šè¿‡ç¢°æ’æ£€æµ‹é€»è¾‘ï¼Œå»æ£€æµ‹ç¢°æ’åˆ°çš„æ•Œäºº
         List<LogicActor> damageTargetList = new List<LogicActor>();
         foreach(var enemy in enemyList)
         {
             if(collider.ColliderType == ColliderType.Box)
             {
-                //Èç¹û·µ»ØÖµÎªtrue£¬Ôò±íÊ¾ÓĞÅö×²µ½µĞÈË£¬·ñÔòÃ»ÓĞÅö×²µ½µĞÈË
+                //å¦‚æœè¿”å›å€¼ä¸ºtrueï¼Œåˆ™è¡¨ç¤ºæœ‰ç¢°æ’åˆ°æ•Œäººï¼Œå¦åˆ™æ²¡æœ‰ç¢°æ’åˆ°æ•Œäºº
                 if(PhysicsManager.IsCollision(collider as FixIntBoxCollider, enemy.Collider))
                 {
                     damageTargetList.Add(enemy);
@@ -105,24 +115,38 @@ public partial class Skill
                 }
             }
         }
-        //3. »ñÈ¡µ½¹¥»÷Ä¿±êºó£¬¶ÔÕâĞ©µĞÈËÔì³ÉÉËº¦
+        //é‡Šæ”¾åˆ—è¡¨
+        enemyList.Clear();
+
+        //3. è·å–åˆ°æ”»å‡»ç›®æ ‡åï¼Œå¯¹è¿™äº›æ•Œäººé€ æˆä¼¤å®³
+        foreach(var target in damageTargetList)
+        {
+            //å¯¹æ•Œäººé€ æˆä¼¤å®³
+            target.SkillDamage(9999, damageConfig);
+
+            //æ·»åŠ Buff TODO...
+
+            //æ·»åŠ å‡»ä¸­ç‰¹æ•ˆ
+
+            //æ·»åŠ å‡»ä¸­éŸ³æ•ˆ
+        }
     }
 
 
 
     /// <summary>
-    /// ´´½¨Åö×²Ìå
+    /// åˆ›å»ºç¢°æ’ä½“
     /// </summary>
     public ColliderBehaviour CreateCollider(SkillDamageConfig item)
     {
         ColliderBehaviour collider = null;
 
-        //´´½¨¶ÔÓ¦µÄ¶¨µãÊıÅö×²Ìå
+        //åˆ›å»ºå¯¹åº”çš„å®šç‚¹æ•°ç¢°æ’ä½“
         if(item.detectionMode == DamageDetectionMode.BOX3D)
         {
             FixIntVector3 boxSize = new FixIntVector3(item.boxSize);
             FixIntVector3 offset = new FixIntVector3(item.boxOffset) * mSkillCreater.LogicXAxis;
-            //ÏŞÖÆyÖáµÄÆ«ÒÆÖ»ÄÜÍùÉÏ½øĞĞÆ«ÒÆ
+            //é™åˆ¶yè½´çš„åç§»åªèƒ½å¾€ä¸Šè¿›è¡Œåç§»
             offset.y = FixIntMath.Abs(boxSize.y);
             collider = new FixIntBoxCollider(boxSize,offset);
             collider.SetBoxData(offset, boxSize);
@@ -132,7 +156,7 @@ public partial class Skill
         else if(item.detectionMode == DamageDetectionMode.Sphere3D)
         {
             FixIntVector3 offset = new FixIntVector3(item.sphereOffset) * mSkillCreater.LogicXAxis;
-            //ÏŞÖÆyÖáµÄÆ«ÒÆÖ»ÄÜÍùÉÏ½øĞĞÆ«ÒÆ
+            //é™åˆ¶yè½´çš„åç§»åªèƒ½å¾€ä¸Šè¿›è¡Œåç§»
             offset.y = FixIntMath.Abs(offset.y);
 
             collider = new FixIntSphereCollider(item.radius, offset);

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ZM.AssetFrameWork;
 
 /// <summary>
 /// 渲染对象
@@ -81,6 +82,20 @@ public class RenderObject : MonoBehaviour
     {
 
     }
+
+
+    /// <summary>
+    /// 伤害
+    /// </summary>
+    /// <param name="damageValue"></param>
+    /// <param name="damageSource">伤害来源</param>
+    public virtual void Damage(int damageValue , DamageSource damageSource)
+    {
+        GameObject damageItemObj = ZMAssetsFrame.Instantiate(AssetPathConfig.GAME_PREFABS + "DamageItem/DamageText", null);
+        DamageTextItem item = damageItemObj.GetComponent<DamageTextItem>();
+        item.ShowDamageText(damageValue,this);
+    }
+
 
 
 }

@@ -64,7 +64,7 @@ public class WorldManager
         if (world.GetType().Name == "BattleWorld")
         {
             CurWorld = WorldEnum.BattleWorld;
-            return new HallWorldScriptExecutionOrder();
+            return new BattleWorldScriptExecutionOrder();
         }
         if (world.GetType().Name == "SKWorld")
         {
