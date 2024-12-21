@@ -1,3 +1,4 @@
+using FixIntPhysics;
 using FixMath;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +9,10 @@ public class SkillEffectLogic : LogicObject
 
     private LogicActor mSkillCreater;
     private SkillEffectConfig mEffectCfg;
+
+    private ColliderBehaviour mCollider;
+    private float mAccRunTime; //累计运行时间
+
 
     public SkillEffectLogic(LogicObjectType objType,SkillEffectConfig effectCfg,RenderObject renderObj,LogicActor skillCreater)
     {
@@ -27,6 +32,68 @@ public class SkillEffectLogic : LogicObject
         {
             LogicPos = FixIntVector3.zero;
         }
+    }
+
+
+
+    public void OnLogicFrameEffectUpdate(Skill skill,int curFrame)
+    {
+        
+        if(mEffectCfg.effectPosType == EffectPosType.FollowPosDir)
+        {
+            FixIntVector3 offsetPos = new FixIntVector3(mEffectCfg.effectOffsetPos) * LogicXAxis;
+            offsetPos.y = FixIntMath.Abs(offsetPos.y);
+            LogicPos = mSkillCreater.LogicPos + offsetPos;
+        }
+
+        //1. 处理特效行动配置，让特效能够跟随配置移动
+        if(mEffectCfg.isAttachAction && mEffectCfg.actionConfig.triggerFrame ==  curFrame)
+        {
+            skill.AddMoveAction(mEffectCfg.actionConfig, this, () =>{
+                if(mCollider.ColliderType == ColliderType.Box)
+                {
+                    (mCollider as FixIntBoxCollider).OnRelease();
+                }
+                else if(mCollider.ColliderType == ColliderType.Shpere)
+                {
+                    (mCollider as FixIntSphereCollider).OnRelease();
+                }
+                mCollider = null;
+            });
+        }
+        //2. 处理伤害配置，让伤害碰撞体能够跟随动效进行移动
+        if (mEffectCfg.isAttachDamage)
+        {
+            //创建伤害碰撞体
+            if(mEffectCfg.damageConfig.triggerFrame == curFrame)
+            {
+                mCollider = skill.CreateOrUpdateCollider(mEffectCfg.damageConfig, null,this);
+                if(mEffectCfg.damageConfig.triggerIntervalMs == 0)
+                {
+                    skill.TriggerColliderDamage(mCollider,mEffectCfg.damageConfig);
+                }
+            }
+            //处理间隔性伤害
+            if(mEffectCfg.damageConfig.triggerIntervalMs != 0 && mCollider != null)
+            {
+                mAccRunTime += LogicFrameConfig.LogicFrameIntervalMS;
+                if(mAccRunTime >= mEffectCfg.damageConfig.triggerIntervalMs)
+                {
+                    skill.TriggerColliderDamage(mCollider, mEffectCfg.damageConfig);
+                    mAccRunTime -= mEffectCfg.damageConfig.triggerIntervalMs;
+                }
+            }
+
+            //更新碰撞体位置
+            if (mEffectCfg.damageConfig.isFollowEffect) 
+            {
+                skill.CreateOrUpdateCollider(mEffectCfg.damageConfig, mCollider, this);
+            }
+
+
+        }
+
+
     }
 
 

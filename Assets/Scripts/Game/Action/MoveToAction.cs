@@ -94,7 +94,7 @@ public class MoveToAction : ActionBehavior
             addDistance.z = mMoveDistance.z * mTimeScale;
         }
 
-        mActionObj.LogicPos += addDistance;
+        mActionObj.LogicPos = mStartPos + addDistance;
 
     }
 

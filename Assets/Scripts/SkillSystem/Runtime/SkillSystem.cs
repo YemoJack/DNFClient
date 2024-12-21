@@ -33,6 +33,11 @@ public class SkillSystem
         {
             Skill skill = new Skill(skillid, mSkillCreater);
             mSkillArr.Add(skill);
+            if(skill.SkillConfig.ComobinationSkillid!= 0)
+            {
+                //使用递归方式调用技能组合技所有技能的初始化
+                InitSkills(new int[] { skill.SkillConfig.ComobinationSkillid });
+            }
         }
 
         Debug.Log($"技能初始化完成 技能个数：{skillIdArr.Length}");

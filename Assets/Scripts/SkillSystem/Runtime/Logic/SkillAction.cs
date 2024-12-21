@@ -1,4 +1,5 @@
 using FixMath;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -32,22 +33,22 @@ public partial class Skill
     /// </summary>
     /// <param name="item">行动配置</param>
     /// <param name="logicMoveObj">逻辑移动对象</param>
-    public void AddMoveAction(SkillActionConfig item,LogicObject logicMoveObj)
+    public void AddMoveAction(SkillActionConfig item,LogicObject logicMoveObj,Action moveFinish = null)
     {
         FixIntVector3 movePos = new FixIntVector3(item.movePos);
         FixIntVector3 targetPos;
         targetPos = logicMoveObj.LogicPos + movePos * logicMoveObj.LogicXAxis;
 
         MoveType moveType = MoveType.Target;
-        if(movePos.x == FixInt.Zero && movePos.y !=  FixInt.Zero && movePos.z != FixInt.Zero)
+        if(movePos.x != FixInt.Zero && movePos.y ==  FixInt.Zero && movePos.z == FixInt.Zero)
         {
             moveType = MoveType.X;
         }
-        else if(movePos.x != FixInt.Zero && movePos.y == FixInt.Zero && movePos.z  != FixInt.Zero)
+        else if(movePos.x == FixInt.Zero && movePos.y != FixInt.Zero && movePos.z  == FixInt.Zero)
         {
             moveType = MoveType.Y;
         }
-        else if(movePos.x != FixInt.Zero && movePos.y != FixInt.Zero && movePos.z == FixInt.Zero)
+        else if(movePos.x == FixInt.Zero && movePos.y == FixInt.Zero && movePos.z != FixInt.Zero)
         {
             moveType = MoveType.Z;
         }
@@ -55,6 +56,7 @@ public partial class Skill
         //构建行动类
         MoveToAction action = new MoveToAction(logicMoveObj, logicMoveObj.LogicPos, targetPos, item.durationMs, () =>
         {
+            moveFinish?.Invoke();
             if(item.actionFinishOpation != MoveActionFinishOpation.None)
             {
                 switch(item.actionFinishOpation)

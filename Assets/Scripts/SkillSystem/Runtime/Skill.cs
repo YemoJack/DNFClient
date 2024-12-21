@@ -126,6 +126,10 @@ public partial class Skill
     {
         skillState = SkillState.End;
         OnReleaseSkillEnd?.Invoke(this, false); //TODO:是否为组合技能，以后再处理
+        if(mSkillData.skillCfg.ComobinationSkillid != 0)
+        {
+            mSkillCreater.ReleaseSkill(mSkillData.skillCfg.ComobinationSkillid);
+        }
     }
 
 

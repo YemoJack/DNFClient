@@ -14,7 +14,7 @@ public enum DamageSource
 }
 
 
-// 伤害逻辑
+// SkillDamage
 public partial class Skill
 {
     
@@ -39,11 +39,21 @@ public partial class Skill
             {
 
                 int hashCode = item.GetHashCode();
+
+                if (item.colliderPosType == ColliderPosType.FollowPos)
+                {
+                    ColliderBehaviour damageCollider = null;
+                    //更新碰撞体位置
+                    if (mColliderDic.TryGetValue(hashCode, out damageCollider))
+                    {
+                        CreateOrUpdateCollider(item, damageCollider);
+                    }
+                }
                 //创建碰撞体
                 if(mCurLogicFrame == item.triggerFrame)
                 {
                     DestroyCollider(item);
-                    ColliderBehaviour collider = CreateCollider(item);
+                    ColliderBehaviour collider = CreateOrUpdateCollider(item,null);
                     //创建字典缓存当前碰撞体
                     mColliderDic.Add(hashCode, collider);
 
@@ -150,31 +160,32 @@ public partial class Skill
     /// <summary>
     /// 创建碰撞体
     /// </summary>
-    public ColliderBehaviour CreateCollider(SkillDamageConfig item)
+    public ColliderBehaviour CreateOrUpdateCollider(SkillDamageConfig item , ColliderBehaviour damageCollider,LogicObject followobj = null)
     {
-        ColliderBehaviour collider = null;
-
+        ColliderBehaviour collider = damageCollider;
+        LogicObject followTargetObj = followobj == null ? mSkillCreater : followobj;
         //创建对应的定点数碰撞体
         if(item.detectionMode == DamageDetectionMode.BOX3D)
         {
             FixIntVector3 boxSize = new FixIntVector3(item.boxSize);
-            FixIntVector3 offset = new FixIntVector3(item.boxOffset) * mSkillCreater.LogicXAxis;
+            FixIntVector3 offset = new FixIntVector3(item.boxOffset) * followTargetObj.LogicXAxis;
             //限制y轴的偏移只能往上进行偏移
-            offset.y = FixIntMath.Abs(boxSize.y);
-            collider = new FixIntBoxCollider(boxSize,offset);
+            offset.y = FixIntMath.Abs(offset.y);
+            if(collider == null)
+                collider = new FixIntBoxCollider(boxSize,offset);
             collider.SetBoxData(offset, boxSize);
 
-            collider.UpdateColliderInfo(mSkillCreater.LogicPos, boxSize);
+            collider.UpdateColliderInfo(followTargetObj.LogicPos, boxSize);
         }
         else if(item.detectionMode == DamageDetectionMode.Sphere3D)
         {
-            FixIntVector3 offset = new FixIntVector3(item.sphereOffset) * mSkillCreater.LogicXAxis;
+            FixIntVector3 offset = new FixIntVector3(item.sphereOffset) * followTargetObj.LogicXAxis;
             //限制y轴的偏移只能往上进行偏移
             offset.y = FixIntMath.Abs(offset.y);
-
-            collider = new FixIntSphereCollider(item.radius, offset);
+            if (collider == null)
+                collider = new FixIntSphereCollider(item.radius, offset);
             collider.SetBoxData(item.radius, offset);
-            collider.UpdateColliderInfo(mSkillCreater.LogicPos, FixIntVector3.zero,item.radius);
+            collider.UpdateColliderInfo(followTargetObj.LogicPos, FixIntVector3.zero,item.radius);
         }
 
         return collider;

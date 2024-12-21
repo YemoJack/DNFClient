@@ -25,7 +25,7 @@ namespace ZMGC.Battle
 
 		private Dictionary<int, int[]> mHeroSkillCfgDic = new Dictionary<int, int[]>()
 		{
-			{1000, new int[] {1004} } ,//鬼剑士
+			{1000, new int[] {1004,1005,1007,1008} } ,//鬼剑士
 		};
 
 

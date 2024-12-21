@@ -54,7 +54,16 @@ public partial class Skill
                 {
                     //技能特效结束，开始销毁
                     DestroyEffect(item);
+                    continue;
                 }
+
+                SkillEffectLogic effectLogicObj = null;
+                //更新特效逻辑层逻辑帧
+                if(mEffectDic.TryGetValue(item.GetHashCode(), out effectLogicObj))
+                {
+                    effectLogicObj.OnLogicFrameEffectUpdate(this,mCurLogicFrame);
+                }
+
 
             }
         }
