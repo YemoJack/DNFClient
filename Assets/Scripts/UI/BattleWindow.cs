@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using ZMUIFrameWork;
 using ZMGC.Battle;
+using System.Collections.Generic;
 
 public class BattleWindow : WindowBase
 {
@@ -17,6 +18,12 @@ public class BattleWindow : WindowBase
 
     private HeroLogic mHeroLogic;
 
+    /// <summary>
+    /// 技能按钮节点列表
+    /// </summary>
+    private List<Transform> mSkillItemRootList;
+
+    private List<SkillItem> mSkillItemList;
 
     #region 声明周期函数
     //调用机制与Mono Awake一致
@@ -25,12 +32,34 @@ public class BattleWindow : WindowBase
         dataCompt = gameObject.GetComponent<BattleWindowDataComponent>();
         dataCompt.InitComponent(this);
         base.OnAwake();
+        mSkillItemRootList = new List<Transform>();
+        mSkillItemList = new List<SkillItem>();
+        for(int i = 0; i < dataCompt.SkillRootTransform.childCount; i++)
+        {
+            mSkillItemRootList.Add(dataCompt.SkillRootTransform.GetChild(i));
+        }
+
     }
     //物体显示时执行
     public override void OnShow()
     {
         base.OnShow();
         mHeroLogic = BattleWorld.GetExitsLogicCtrl<HeroLogicCtrl>().HeroLogic;
+
+
+        //获取角色技能id数组
+        int[] heroSkillidArr = BattleWorld.GetExitsDataMgr<HeroDataMgr>().GetHeroSkillArr(mHeroLogic.Heroid);
+        //遍历角色技能数组 生成对应的按钮
+        for(int i = 0;i < heroSkillidArr.Length;i++)
+        {
+            GameObject skillItemObj = ZM.AssetFrameWork.ZMAssetsFrame.Instantiate(AssetPathConfig.GAME_PREFABS + "Item/SkillItem.prefab", mSkillItemRootList[i]);
+            SkillItem item = skillItemObj.GetComponent<SkillItem>();
+            mSkillItemList.Add(item);
+            item.SetItemSkillData(mHeroLogic.GetSKill(heroSkillidArr[i]), mHeroLogic);
+            item.transform.localPosition = Vector3.zero;
+            item.transform.rotation = Quaternion.identity;
+            item.transform.localScale = Vector3.one;
+        }
     }
     //物体隐藏时执行
     public override void OnHide()
@@ -49,7 +78,7 @@ public class BattleWindow : WindowBase
     #region UI组件事件
     public void OnNormalAttackButtonClick()
     {
-        mHeroLogic.ReleaseSkill(1001);
+        mHeroLogic.ReleaseNormalAttack();
     }
     #endregion
 }

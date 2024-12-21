@@ -18,6 +18,14 @@ public class SkillComplierWindow : OdinEditorWindow
     [TabGroup("SkillComplier", "Effect", SdfIconType.OpticalAudio, TextColor = "blue")]
     public List<SkillEffectConfig> effectList = new List<SkillEffectConfig>();
 
+    [TabGroup("SkillComplier", "Audio", SdfIconType.OpticalAudio, TextColor = "blue")]
+    public List<SkillAudioConfig> audioList = new List<SkillAudioConfig>();
+
+    [TabGroup("SkillComplier", "Action", SdfIconType.OpticalAudio, TextColor = "cyan")]
+    public List<SkillActionConfig> actionList = new List<SkillActionConfig>();
+
+
+
 #if UNITY_EDITOR
     //技能是否开始播放
     private bool isStartPlaySkill = false;
@@ -36,7 +44,7 @@ public class SkillComplierWindow : OdinEditorWindow
     /// </summary>
     public void SaveSkillData()
     {
-        SkillDataConfig.SaveSkillData(character, skill, damageList, effectList);
+        SkillDataConfig.SaveSkillData(character, skill, damageList, effectList,audioList,actionList);
         Close();
     }
     /// <summary>
@@ -49,6 +57,8 @@ public class SkillComplierWindow : OdinEditorWindow
         this.skill = skilldata.skillCfg;
         this.damageList = skilldata.damageCfgList;
         this.effectList = skilldata.effectCfgList;
+        this.audioList = skilldata.audioCfgList;
+        this.actionList = skilldata.actionCfgList;
     }
 
     /// <summary>

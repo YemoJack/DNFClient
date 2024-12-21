@@ -48,8 +48,15 @@ public class SkillSystem
     {
         foreach(var skill in mSkillArr)
         {
-            if(skill.mSkillid == skillId)
+            if(skill.skillid == skillId)
             {
+
+                if(skill.skillState != SkillState.None && skill.skillState != SkillState.End)
+                {
+                    Debug.Log($"技能{skill.skillid} 正在释放中 不能再次释放");
+                    return null;
+                }
+
                 //释放技能
                 skill.ReleaseSkill(OnReleaseAfter, (skill, combinationSkill) =>
                 {
@@ -68,6 +75,17 @@ public class SkillSystem
         Debug.LogError($"没有找到id为{skillId}的技能");
         return null;
     }
+
+    public Skill GetSkill(int skillId)
+    {
+        foreach(var skill in mSkillArr)
+        {
+            if(skill.skillid == skillId)
+            { return skill; }
+        }
+        return null;
+    }
+
 
 
     public void OnLogicFrameUpdate()

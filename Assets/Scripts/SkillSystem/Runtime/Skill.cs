@@ -17,13 +17,15 @@ public enum SkillState
 
 
 
-
+/// <summary>
+/// 技能
+/// </summary>
 public partial class Skill 
 {
     /// <summary>
     /// 技能id
     /// </summary>
-    public int mSkillid;
+    public int skillid;
     /// <summary>
     /// 技能创建者
     /// </summary>
@@ -33,6 +35,8 @@ public partial class Skill
     /// 技能数据
     /// </summary>
     private SkillDataConfig mSkillData;
+
+    public SkillConfig SkillConfig { get { return mSkillData.skillCfg; } }
 
     /// <summary>
     /// 释放技能后摇
@@ -66,7 +70,7 @@ public partial class Skill
     /// <param name="skillCreater"></param>
     public Skill(int skillid,LogicActor skillCreater)
     {
-        mSkillid = skillid;
+        this.skillid = skillid;
         mSkillCreater = skillCreater;
         mSkillData = ZMAssetsFrame.LoadScriptableObject<SkillDataConfig>(AssetPathConfig.SKILL_DATA_PATH + skillid + ".asset");
     }
@@ -112,6 +116,7 @@ public partial class Skill
     public void SkillAfter()
     {
         skillState = SkillState.After;
+        OnReleaseAfter?.Invoke(this);
     }
 
     /// <summary>
@@ -150,14 +155,14 @@ public partial class Skill
         //更新伤害逻辑帧
         OnLogicFrameUpdateDamage();
         //更新行动逻辑帧
-
+        OnLogicFrameUpdateAction();
         //更新音效逻辑帧
-
+        OnLogicFrameUpdateAudio();
         //更新子弹逻辑帧
 
 
         //判断技能是否释放结束
-        if(mCurLogicFrame == mSkillData.character.logicFrame)
+        if (mCurLogicFrame == mSkillData.character.logicFrame)
         {
             SkillEnd();
         }

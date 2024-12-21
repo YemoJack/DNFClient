@@ -10,27 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9be7f3014777391498d31d44449bea27, type: 3}
-  m_Name: 1001
+  m_Name: 1003
   m_EditorClassIdentifier: 
   character:
     skillCharacter: {fileID: 0}
-    SkillAnim: {fileID: 7400000, guid: 4a3916918c4bfd942af61149ea64ab91, type: 2}
+    SkillAnim: {fileID: 7400000, guid: 444cadff88f976748aa1d527e2f15a9a, type: 2}
     animProgress: 100
     isLoopAnim: 0
     animLoopCount: 0
-    logicFrame: 8
-    animLength: 0.53333336
-    skillDurationMS: 533.3334
+    logicFrame: 10
+    animLength: 0.66666687
+    skillDurationMS: 666.6669
   skillCfg:
     showStockPileData: 0
     showSkillGuide: 0
     skillIcon: {fileID: 21300000, guid: d9f3862f7759d7343ab3a56d9b2279c9, type: 3}
-    skillid: 1001
-    skillName: "\u91CC\u9B3C\u6280\u80FD1"
+    skillid: 1003
+    skillName: "\u91CC\u9B3C\u6280\u80FD03"
     needMgicValue: 0
-    skillShakeBeforeTimeMs: 98
-    skillAttackDurationMs: 533
-    skillShakeAfterMs: 260
+    skillShakeBeforeTimeMs: 66
+    skillAttackDurationMs: 666
+    skillShakeAfterMs: 520
     skillCDTimeMs: 0
     skillType: 0
     stockPileStageData: []
@@ -39,7 +39,7 @@ MonoBehaviour:
     ComobinationSkillid: 0
     skillHitEffect: {fileID: 5023627635078921320, guid: eebb9919fe1d53f4690a67203d880219, type: 3}
     hitEffectSurivalTimeMs: 100
-    skillHitAudio: {fileID: 8300000, guid: 17ee30fc61d38614b9d605976ec2c129, type: 3}
+    skillHitAudio: {fileID: 8300000, guid: a0a0952ba5d216a4bb7f7c06c16b5f79, type: 3}
     showSkillPortrait: 0
     skillPortrait: {fileID: 0}
     skillDes: 
@@ -48,38 +48,46 @@ MonoBehaviour:
     endFrame: 2
     triggerIntervalMs: 0
     isFollowEffect: 0
-    damageType: 0
+    damageType: 2
     damageRate: 0
     detectionMode: 1
-    boxSize: {x: 1.73, y: 1.58, z: 1}
-    boxOffset: {x: 1.02, y: 1.01, z: 0}
+    boxSize: {x: 2.14, y: 1.91, z: 1}
+    boxOffset: {x: 2.16, y: 1.05, z: 0}
     sphereOffset: {x: 0, y: 0.9, z: 0}
     radius: 1
     raduisHeight: 0
     colliderPosType: 0
-    targetType: 0
+    targetType: 2
     addBuffs: 
     triggerSkillid: 0
   effectCfgList:
-  - skillEffect: {fileID: 1845321840847504, guid: 44a74021eecfb9146a56c08aaf437597, type: 3}
+  - skillEffect: {fileID: 1983390214506344, guid: bf7ca15f807f2d6418cde94c17c85eea, type: 3}
     triggerFrame: 1
-    endFrame: 8
+    endFrame: 9
     effectOffsetPos: {x: 0, y: 0, z: 0}
-    effectPosType: 0
+    effectPosType: 1
     isSetTransParent: 0
     transParent: 0
     GameEffectobj: {fileID: 0}
   - skillEffect: {fileID: 1351735087442694, guid: f33f2e97566a7144794e63ee9b2fa4e2, type: 3}
     triggerFrame: 1
-    endFrame: 8
+    endFrame: 10
     effectOffsetPos: {x: 0, y: 0, z: 0}
     effectPosType: 5
     isSetTransParent: 1
     transParent: 1
     GameEffectobj: {fileID: 0}
   audioCfgList:
-  - skillAudio: {fileID: 8300000, guid: 6492f783cc0f0984f9736a22e7fec1e0, type: 3}
-    audioName: Swordsman_liguidj_huidao01
+  - skillAudio: {fileID: 8300000, guid: 19f00181d5133f342825ca53e5401888, type: 3}
+    audioName: Swordsman_liguidj_huidao03
     triggerFrame: 1
     isLoop: 0
     endFrame: 0
+  actionCfgList:
+  - triggerFrame: 1
+    moveActionType: 0
+    heightPos: {x: 0, y: 0, z: 0}
+    movePos: {x: 0.2, y: 0, z: 0}
+    durationMs: 200
+    actionFinishOpation: 0
+    actionFinishidList: 

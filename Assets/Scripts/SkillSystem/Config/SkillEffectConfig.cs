@@ -137,5 +137,6 @@ public enum EffectPosType
     [LabelText("屏幕中心位置")] ConterPos,//屏幕中心位置
     [LabelText("引导位置")] GuidePos,//引导位置
     [LabelText("跟随特效移动位置")] FollowEffectMovePos,//跟随特效移动位置
+    [LabelText("位置归零")] Zero,//位置归零
 }
 

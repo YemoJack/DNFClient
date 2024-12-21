@@ -28,6 +28,16 @@ public class SkillDataConfig : ScriptableObject
     /// </summary>
     public List<SkillEffectConfig> effectCfgList;
 
+    /// <summary>
+    /// 音效配置
+    /// </summary>
+    public List<SkillAudioConfig> audioCfgList;
+
+    /// <summary>
+    /// 行为配置
+    /// </summary>
+    public List<SkillActionConfig> actionCfgList;
+
 
 #if UNITY_EDITOR
 
@@ -38,7 +48,7 @@ public class SkillDataConfig : ScriptableObject
     /// <param name="skillCfg"></param>
     /// <param name="damageCfgList"></param>
     /// <param name="effectCfgList"></param>
-    public static void SaveSkillData(SkillCharacterConfig characterCfg,SkillConfig skillCfg,List<SkillDamageConfig> damageCfgList,List<SkillEffectConfig> effectCfgList)
+    public static void SaveSkillData(SkillCharacterConfig characterCfg,SkillConfig skillCfg,List<SkillDamageConfig> damageCfgList,List<SkillEffectConfig> effectCfgList,List<SkillAudioConfig> audioCfgList,List<SkillActionConfig> actionCfgList)
     {
         //通过代码创建SkillDataConfig的实例，并对字段进行赋值存储
         SkillDataConfig skillDataCfg = ScriptableObject.CreateInstance<SkillDataConfig>();
@@ -46,6 +56,8 @@ public class SkillDataConfig : ScriptableObject
         skillDataCfg.skillCfg = skillCfg;
         skillDataCfg.damageCfgList = damageCfgList;
         skillDataCfg.effectCfgList = effectCfgList;
+        skillDataCfg.audioCfgList = audioCfgList;
+        skillDataCfg.actionCfgList = actionCfgList;
         //把当前实例存储为.asset文件 当作技能配置
         string assetPath = "Assets/GameData/Game/SkillSystem/SkillData/" + skillCfg.skillid + ".asset";
 

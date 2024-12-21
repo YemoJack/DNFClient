@@ -20,11 +20,18 @@ public class RenderObject : MonoBehaviour
     protected float mSmoothPosSpeed = 10;
 
 
-    public void SetLogicObject(LogicObject logicObject)
+    private bool isUpdatePosAndRot = true;
+
+    public void SetLogicObject(LogicObject logicObject,bool isUpdatePosAndRot = true)
     {
         this.logicObject = logicObject;
+        this.isUpdatePosAndRot = isUpdatePosAndRot;
         //初始化
         transform.position = logicObject.LogicPos.ToVector3();
+
+        if(!isUpdatePosAndRot)
+            transform.localPosition = Vector3.zero;
+        UpdateDir();
     }
 
     /// <summary>
@@ -59,6 +66,8 @@ public class RenderObject : MonoBehaviour
     /// </summary>
     private void UpdatePosition()
     {
+        if (!isUpdatePosAndRot)
+            return;
         transform.position = Vector3.Lerp(transform.position,logicObject.LogicPos.ToVector3(),Time.deltaTime * mSmoothPosSpeed);
     }
 
@@ -67,14 +76,16 @@ public class RenderObject : MonoBehaviour
     /// </summary>
     private void UpdateDir()
     {
+        if (!isUpdatePosAndRot)
+            return;
         //transform.rotation = Quaternion.Euler(logicObject.LogicDir.ToVector3());
 
-        //mRenderDir.x = logicObject.LogicXAxis >= 0 ? 0 : -20;
-        //mRenderDir.y = logicObject.LogicXAxis >= 0 ? 0 : 180;
-        //transform.localEulerAngles = mRenderDir;
+        mRenderDir.x = logicObject.LogicXAxis >= 0 ? 0 : -20;
+        mRenderDir.y = logicObject.LogicXAxis >= 0 ? 0 : 180;
+        transform.localEulerAngles = mRenderDir;
 
-        
-        transform.localScale = new Vector3(logicObject.LogicXAxis >= 0 ? 1 : -1,1,1);
+        //TODO...调整角色左右的朝向
+        //transform.localScale = new Vector3(logicObject.LogicXAxis >= 0 ? 1 : -1,1,1);
 
     }
 
@@ -96,6 +107,19 @@ public class RenderObject : MonoBehaviour
         item.ShowDamageText(damageValue,this);
     }
 
+    public virtual void OnHit(GameObject effectHitObj, int surcicalTimems, LogicActor source)
+    {
+        GameObject hitEffect = GameObject.Instantiate(effectHitObj);
+        hitEffect.transform.position = transform.position;
+        hitEffect.transform.localScale = source.LogicXAxis >0 ?Vector3.one :new Vector3(-1,1,1);
+        GameObject.Destroy(hitEffect,surcicalTimems/1000f);
+    }
+
+
+    public virtual Transform GetTransParent(TransParentType parentType)
+    {
+        return null;
+    }
 
 
 }

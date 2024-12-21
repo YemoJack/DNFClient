@@ -127,8 +127,21 @@ public partial class Skill
             //添加Buff TODO...
 
             //添加击中特效
-
+            AddHitEffect(target);
             //添加击中音效
+            PlayHitAudio();
+        }
+    }
+
+    /// <summary>
+    /// 添加击中特效
+    /// </summary>
+    /// <param name="targetObj"></param>
+    public void AddHitEffect(LogicActor targetObj)
+    {
+        if(mSkillData.skillCfg.skillHitEffect != null)
+        {
+            targetObj.OnHit(mSkillData.skillCfg.skillHitEffect,mSkillData.skillCfg.hitEffectSurivalTimeMs,mSkillCreater);
         }
     }
 

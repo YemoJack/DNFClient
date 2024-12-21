@@ -7,12 +7,25 @@ public class HeroRender : RenderObject
 {
     private HeroLogic mHeroLogic;
 
-    private Vector3 inputDir;
+    /// <summary>
+    /// 当前摇杆输入方向
+    /// </summary>
+    private Vector3 mInputDir;
 
     /// <summary>
     /// 角色动画
     /// </summary>
     private Animation mAnima;
+
+    /// <summary>
+    /// 左手节点
+    /// </summary>
+    public Transform Left_Hand_RootTrans;
+    /// <summary>
+    /// 右手节点
+    /// </summary>
+    public Transform Right_Hand_RootTrans;
+
 
 
     public override void OnCreate()
@@ -37,7 +50,7 @@ public class HeroRender : RenderObject
     /// <param name="inputDir"></param>
     private void OnJoyStickMove(Vector3 inputDir) 
     {
-        this.inputDir = inputDir;
+        this.mInputDir = inputDir;
         FixIntVector3 logicDir = FixIntVector3.zero;
 
         if(inputDir != Vector3.zero)
@@ -57,7 +70,7 @@ public class HeroRender : RenderObject
         if(mHeroLogic.releaseSkillList.Count == 0)
         {
             //判断输入值 有值就播放奔跑动画 没有值就播放 Idle 动画
-            if (inputDir == Vector3.zero)
+            if (mInputDir == Vector3.zero)
             {
                 PlayAnima("Anim_Idle02");
             }
@@ -95,6 +108,25 @@ public class HeroRender : RenderObject
         }
         mAnima.clip = clip;
         mAnima.Play(clip.name);
+    }
+
+    /// <summary>
+    /// 获取父节点
+    /// </summary>
+    /// <param name="parentType"></param>
+    /// <returns></returns>
+    public override Transform GetTransParent(TransParentType parentType)
+    {
+        if(parentType == TransParentType.LeftHand)
+        {
+            return Left_Hand_RootTrans;
+        }
+        else if(parentType == TransParentType.RightHand)
+        {
+            return Right_Hand_RootTrans;
+        }
+
+        return null;
     }
 
 

@@ -16,12 +16,16 @@ public class SkillEffectLogic : LogicObject
         RenderObj = renderObj;
         mEffectCfg = effectCfg;
         LogicXAxis = mSkillCreater.LogicXAxis;
-        //初始化特效逻辑位置
+        //鍒濆鍖栫壒鏁堥�昏緫浣嶇疆
         if(effectCfg.effectPosType == EffectPosType.FollowPosDir || effectCfg.effectPosType == EffectPosType.FollowDir)
         {
             FixIntVector3 offset = new FixMath.FixIntVector3(effectCfg.effectOffsetPos) * LogicXAxis;
             offset.y = FixIntMath.Abs(offset.y);
             LogicPos = mSkillCreater.LogicPos + offset;
+        }
+        else if(effectCfg.effectPosType == EffectPosType.Zero)
+        {
+            LogicPos = FixIntVector3.zero;
         }
     }
 

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//技能特效相关
+//SkillEffect
 public partial class Skill
 {
 
@@ -26,8 +26,15 @@ public partial class Skill
                 if(item.skillEffect != null && mCurLogicFrame == item.triggerFrame)
                 {
                     DestroyEffect(item);
+                    Transform parent = null;
+                    if(item.isSetTransParent)
+                    {
+                        //获取左手或右手节点
+                        parent = mSkillCreater.RenderObj.GetTransParent(item.transParent);
+                    }
+
                     //技能特效生成
-                    GameObject effectObj = GameObject.Instantiate(item.skillEffect);//TODO...1.通过Editor获取当前对象的一个路径，2.把特效名字改成字符串
+                    GameObject effectObj = GameObject.Instantiate(item.skillEffect,parent);//TODO...1.通过Editor获取当前对象的一个路径，2.把特效名字改成字符串
                     effectObj.transform.position = Vector3.zero;
                     effectObj.transform.rotation = Quaternion.identity;
                     effectObj.transform.localScale = Vector3.one;
@@ -39,7 +46,7 @@ public partial class Skill
                     }
                     //创建技能特效逻辑层
                     SkillEffectLogic effectLogic = new SkillEffectLogic(LogicObjectType.Effect,item, effectRender, mSkillCreater);
-                    effectRender.SetLogicObject(effectLogic);
+                    effectRender.SetLogicObject(effectLogic,item.effectPosType != EffectPosType.Zero);
                     mEffectDic.Add(item.GetHashCode(),effectLogic);
                 }
 
