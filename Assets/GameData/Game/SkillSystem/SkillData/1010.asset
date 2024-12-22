@@ -1,0 +1,92 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9be7f3014777391498d31d44449bea27, type: 3}
+  m_Name: 1010
+  m_EditorClassIdentifier: 
+  character:
+    skillCharacter: {fileID: 0}
+    SkillAnim: {fileID: 7400000, guid: edf4fecabf4690f40baf7cbf28a4a44f, type: 2}
+    animProgress: 100
+    isLoopAnim: 0
+    animLoopCount: 0
+    logicFrame: 4
+    animLength: 0.2666667
+    skillDurationMS: 266.66672
+  skillCfg:
+    showStockPileData: 1
+    showSkillGuide: 0
+    skillIcon: {fileID: 21300000, guid: 417e1b5b828b21744a31b57ba95377d8, type: 3}
+    skillid: 1010
+    skillName: "\u62D4\u5200\u65A9\u84C4\u529B"
+    needMgicValue: 0
+    skillShakeBeforeTimeMs: 0
+    skillAttackDurationMs: 266
+    skillShakeAfterMs: 266
+    skillCDTimeMs: 0
+    skillType: 3
+    stockPileStageData:
+    - stage: 1
+      skillid: 1011
+      startTimeMs: 500
+      endTimeMs: 3000
+    - stage: 2
+      skillid: 1012
+      startTimeMs: 3001
+      endTimeMs: 5000
+    skillGuideObj: {fileID: 0}
+    skillGuideRange: 0
+    ComobinationSkillid: 0
+    skillHitEffect: {fileID: 0}
+    hitEffectSurivalTimeMs: 100
+    skillHitAudio: {fileID: 0}
+    showSkillPortrait: 0
+    skillPortrait: {fileID: 0}
+    skillDes: 
+  damageCfgList: []
+  effectCfgList:
+  - skillEffect: {fileID: 1206692485714072, guid: 1fd07134a5eb196479e2fdc2104039eb, type: 3}
+    triggerFrame: 1
+    endFrame: 0
+    effectOffsetPos: {x: 0, y: 0, z: 0}
+    effectPosType: 0
+    isSetTransParent: 0
+    transParent: 0
+    isAttachDamage: 0
+    damageConfig:
+      triggerFrame: 0
+      endFrame: 0
+      triggerIntervalMs: 0
+      isFollowEffect: 0
+      damageType: 0
+      damageRate: 0
+      detectionMode: 0
+      boxSize: {x: 1, y: 1, z: 1}
+      boxOffset: {x: 0, y: 0, z: 0}
+      sphereOffset: {x: 0, y: 0.9, z: 0}
+      radius: 1
+      raduisHeight: 0
+      colliderPosType: 0
+      targetType: 0
+      addBuffs: 
+      triggerSkillid: 0
+    isAttachAction: 0
+    actionConfig:
+      triggerFrame: 0
+      moveActionType: 0
+      heightPos: {x: 0, y: 0, z: 0}
+      movePos: {x: 0, y: 0, z: 0}
+      durationMs: 0
+      actionFinishOpation: 0
+      actionFinishidList: 
+    GameEffectobj: {fileID: 0}
+  audioCfgList: []
+  actionCfgList: []

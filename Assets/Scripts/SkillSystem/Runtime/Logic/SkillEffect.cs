@@ -50,7 +50,7 @@ public partial class Skill
                     mEffectDic.Add(item.GetHashCode(),effectLogic);
                 }
 
-                if(mCurLogicFrame == item.endFrame)
+                if(mCurLogicFrame == item.endFrame && !item.isAttachAction)
                 {
                     //技能特效结束，开始销毁
                     DestroyEffect(item);
@@ -88,6 +88,21 @@ public partial class Skill
             effect.OnDestroy();
         }
     }
+
+
+    /// <summary>
+    ///  销毁所有的特效
+    /// </summary>
+    public void ReleaseAllEffect()
+    {
+        foreach(var item in mSkillData.effectCfgList)
+        {
+            if(!item.isAttachAction)
+                DestroyEffect(item);
+        }
+
+    }
+
 
 
 

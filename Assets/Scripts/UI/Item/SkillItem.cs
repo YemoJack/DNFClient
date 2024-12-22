@@ -50,7 +50,8 @@ public class SkillItem : MonoBehaviour
         }
         else if(sKillGuide == SKillGuideType.LongPress)
         {
-            //触发蓄力技能 TODO
+            //触发蓄力技能 
+            mSkillCreater.TriggerStockPileSkill(skillId);
         }
         else if(sKillGuide == SKillGuideType.Position)
         {
@@ -69,7 +70,14 @@ public class SkillItem : MonoBehaviour
     /// <param name="skillDirDis">技能半径</param>
     public void OnUpdateSkillGuide(SKillGuideType sKillGuide,bool isCancel,Vector3 skillPos,int skillId,float skillDirDis)
     {
-
+        if(sKillGuide == SKillGuideType.LongPress)
+        {
+            mSkillCreater.ReleaseSkill(skillId);
+        }
+        else if (sKillGuide == SKillGuideType.Position)
+        {
+            //TODO ...
+        }
     }
 
 

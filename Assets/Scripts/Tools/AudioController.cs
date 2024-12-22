@@ -28,11 +28,11 @@ public class AudioController : MonoBehaviour {
     /// <summary>
     /// 音效音量
     /// </summary>
-    private float mSoundVolume = 1;
+    private float mSoundVolume = 0.3f;
     /// <summary>
     /// 音乐音量
     /// </summary>
-    private float mMusicVolume = 1;
+    private float mMusicVolume = 0.5f;
 
     /// <summary>
     /// 单利
@@ -121,7 +121,7 @@ public class AudioController : MonoBehaviour {
     /// </summary>
     /// <param name="name"></param>
     /// <param name="priority"></param>
-    public void PlaySoundByName(string name,int priority)
+    public void PlaySoundByName(string name,int priority, float soundVolume = -1)
     {
         string path= "Audio/" + name;
         //获取需要播放的音源
@@ -136,7 +136,7 @@ public class AudioController : MonoBehaviour {
             //切换声音
             audioSourceInfo.audioSource.Stop();
             audioSourceInfo.audioSource.clip = clip;
-            audioSourceInfo.audioSource.volume = mSoundVolume;
+            audioSourceInfo.audioSource.volume = soundVolume > 0 ? soundVolume : mSoundVolume;
             audioSourceInfo.audioSource.Play();
             //改变优先级 
             audioSourceInfo.priority = priority;
@@ -146,7 +146,7 @@ public class AudioController : MonoBehaviour {
             Debug.Log("name："+ name +" 音频优先级过低且音源池无空闲音频，无法正常播放！");
         }
     }
-    public void PlaySoundByAudioClip(AudioClip audioClip,bool isLoop, int priority,float soundVolume=1)
+    public void PlaySoundByAudioClip(AudioClip audioClip,bool isLoop, int priority,float soundVolume=-1)
     {
         //获取空闲或优先级最小的音频信息
         AudioSourceInfo audioSourceInfo = GetMinPriorityAudioInfo();
@@ -157,7 +157,7 @@ public class AudioController : MonoBehaviour {
             //切换声音
             audioSourceInfo.audioSource.Stop();
             audioSourceInfo.audioSource.clip = audioClip;
-            audioSourceInfo.audioSource.volume = soundVolume;
+            audioSourceInfo.audioSource.volume = soundVolume >0 ?soundVolume : mSoundVolume;
             audioSourceInfo.audioSource.loop = isLoop;
             audioSourceInfo.audioSource.Play();
             

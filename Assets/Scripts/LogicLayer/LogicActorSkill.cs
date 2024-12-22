@@ -89,8 +89,21 @@ public partial class LogicActor
             {
                 mCurNormalComboIndex = 0;
             }
+
+            ActionState = LogicObjectActionState.ReleaseSkill;
         }
     }
+
+    /// <summary>
+    /// 触发蓄力技能
+    /// </summary>
+    /// <param name="skillid"></param>
+    public void TriggerStockPileSkill(int skillid)
+    {
+        mSkillSystem.TriggerStockPileSkill(skillid);
+    }
+
+
 
     /// <summary>
     /// 释放技能后摇
@@ -124,6 +137,7 @@ public partial class LogicActor
         releaseSkillList.Remove(skill);
         if(releaseSkillList.Count== 0)
         {
+            ActionState = LogicObjectActionState.Idle;
             mCurNormalComboIndex = 0;
         }
     }

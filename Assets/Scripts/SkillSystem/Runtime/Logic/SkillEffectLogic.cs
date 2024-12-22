@@ -50,15 +50,32 @@ public class SkillEffectLogic : LogicObject
         if(mEffectCfg.isAttachAction && mEffectCfg.actionConfig.triggerFrame ==  curFrame)
         {
             skill.AddMoveAction(mEffectCfg.actionConfig, this, () =>{
-                if(mCollider.ColliderType == ColliderType.Box)
-                {
-                    (mCollider as FixIntBoxCollider).OnRelease();
-                }
-                else if(mCollider.ColliderType == ColliderType.Shpere)
-                {
-                    (mCollider as FixIntSphereCollider).OnRelease();
-                }
+                mCollider.OnRelease();
+                skill.DestroyEffect(mEffectCfg);
                 mCollider = null;
+            }, () =>
+            {
+                //特效移动逻辑帧更新回调
+                //更新碰撞体位置
+                if (mEffectCfg.damageConfig.isFollowEffect)
+                {
+                    skill.CreateOrUpdateCollider(mEffectCfg.damageConfig, mCollider, this);
+                }
+
+
+                if (mEffectCfg.isAttachDamage)
+                {
+                    //处理间隔性伤害
+                    if (mEffectCfg.damageConfig.triggerIntervalMs != 0 && mCollider != null)
+                    {
+                        mAccRunTime += LogicFrameConfig.LogicFrameIntervalMS;
+                        if (mAccRunTime >= mEffectCfg.damageConfig.triggerIntervalMs)
+                        {
+                            skill.TriggerColliderDamage(mCollider, mEffectCfg.damageConfig);
+                            mAccRunTime -= mEffectCfg.damageConfig.triggerIntervalMs;
+                        }
+                    }
+                }
             });
         }
         //2. 处理伤害配置，让伤害碰撞体能够跟随动效进行移动
@@ -73,16 +90,7 @@ public class SkillEffectLogic : LogicObject
                     skill.TriggerColliderDamage(mCollider,mEffectCfg.damageConfig);
                 }
             }
-            //处理间隔性伤害
-            if(mEffectCfg.damageConfig.triggerIntervalMs != 0 && mCollider != null)
-            {
-                mAccRunTime += LogicFrameConfig.LogicFrameIntervalMS;
-                if(mAccRunTime >= mEffectCfg.damageConfig.triggerIntervalMs)
-                {
-                    skill.TriggerColliderDamage(mCollider, mEffectCfg.damageConfig);
-                    mAccRunTime -= mEffectCfg.damageConfig.triggerIntervalMs;
-                }
-            }
+           
 
             //更新碰撞体位置
             if (mEffectCfg.damageConfig.isFollowEffect) 

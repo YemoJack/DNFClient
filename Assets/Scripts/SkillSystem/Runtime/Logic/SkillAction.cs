@@ -33,7 +33,7 @@ public partial class Skill
     /// </summary>
     /// <param name="item">行动配置</param>
     /// <param name="logicMoveObj">逻辑移动对象</param>
-    public void AddMoveAction(SkillActionConfig item,LogicObject logicMoveObj,Action moveFinish = null)
+    public void AddMoveAction(SkillActionConfig item,LogicObject logicMoveObj,Action moveFinish = null,Action moveUpdateCallBack = null)
     {
         FixIntVector3 movePos = new FixIntVector3(item.movePos);
         FixIntVector3 targetPos;
@@ -72,7 +72,7 @@ public partial class Skill
                         break;
                 }
             }
-        }, null, moveType);
+        }, moveUpdateCallBack, moveType);
         //开始行动
         LogicActionController.Instance.RunAction(action);
 

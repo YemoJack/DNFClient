@@ -84,7 +84,7 @@ public enum LogicObjectActionState
 {
     Idle,//待机
     Move,//移动中
-    SKillReleaseSkilling,//释放技能中
+    ReleaseSkill,//释放技能中
     Floating,//浮空中
     Hiting,//受击中
     StockPileing,//蓄力中
