@@ -58,7 +58,7 @@ MonoBehaviour:
     raduisHeight: 0
     colliderPosType: 0
     targetType: 0
-    addBuffs: 
+    addBuffs: 1a270000
     triggerSkillid: 0
   effectCfgList:
   - skillEffect: {fileID: 1845321840847504, guid: 44a74021eecfb9146a56c08aaf437597, type: 3}
@@ -68,6 +68,33 @@ MonoBehaviour:
     effectPosType: 0
     isSetTransParent: 0
     transParent: 0
+    isAttachDamage: 0
+    damageConfig:
+      triggerFrame: 0
+      endFrame: 0
+      triggerIntervalMs: 0
+      isFollowEffect: 0
+      damageType: 0
+      damageRate: 0
+      detectionMode: 0
+      boxSize: {x: 1, y: 1, z: 1}
+      boxOffset: {x: 0, y: 0, z: 0}
+      sphereOffset: {x: 0, y: 0.9, z: 0}
+      radius: 1
+      raduisHeight: 0
+      colliderPosType: 0
+      targetType: 0
+      addBuffs: 
+      triggerSkillid: 0
+    isAttachAction: 0
+    actionConfig:
+      triggerFrame: 0
+      moveActionType: 0
+      heightPos: {x: 0, y: 0, z: 0}
+      movePos: {x: 0, y: 0, z: 0}
+      durationMs: 0
+      actionFinishOpation: 0
+      actionFinishidList: 
     GameEffectobj: {fileID: 0}
   - skillEffect: {fileID: 1351735087442694, guid: f33f2e97566a7144794e63ee9b2fa4e2, type: 3}
     triggerFrame: 1
@@ -76,6 +103,33 @@ MonoBehaviour:
     effectPosType: 5
     isSetTransParent: 1
     transParent: 1
+    isAttachDamage: 0
+    damageConfig:
+      triggerFrame: 0
+      endFrame: 0
+      triggerIntervalMs: 0
+      isFollowEffect: 0
+      damageType: 0
+      damageRate: 0
+      detectionMode: 0
+      boxSize: {x: 1, y: 1, z: 1}
+      boxOffset: {x: 0, y: 0, z: 0}
+      sphereOffset: {x: 0, y: 0.9, z: 0}
+      radius: 1
+      raduisHeight: 0
+      colliderPosType: 0
+      targetType: 0
+      addBuffs: 
+      triggerSkillid: 0
+    isAttachAction: 0
+    actionConfig:
+      triggerFrame: 0
+      moveActionType: 0
+      heightPos: {x: 0, y: 0, z: 0}
+      movePos: {x: 0, y: 0, z: 0}
+      durationMs: 0
+      actionFinishOpation: 0
+      actionFinishidList: 
     GameEffectobj: {fileID: 0}
   audioCfgList:
   - skillAudio: {fileID: 8300000, guid: 6492f783cc0f0984f9736a22e7fec1e0, type: 3}
@@ -83,3 +137,4 @@ MonoBehaviour:
     triggerFrame: 1
     isLoop: 0
     endFrame: 0
+  actionCfgList: []

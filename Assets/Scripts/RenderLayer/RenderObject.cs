@@ -94,6 +94,11 @@ public class RenderObject : MonoBehaviour
 
     }
 
+    public virtual void PlayAnim(string name)
+    {
+
+    }
+
 
     /// <summary>
     /// 伤害

@@ -43,7 +43,8 @@ namespace ZMGC.Battle
 
             UIModule.PopUpWindow<BattleWindow>();
             Debug.Log("BattleWorld  OnCretae>>>");
-            
+
+            BuffSystem.Instance.OnCreate();
         }
 
 
@@ -80,6 +81,7 @@ namespace ZMGC.Battle
             HeroLogicCtrl.OnLogicFrameUpdate();
             MonsterLogicCtrl.OnLogicFrameUpdate();
             LogicActionController.Instance.OnLogicFrameUpdate();
+            BuffSystem.Instance.OnLogicFrameUpdate();
         }
 
 
@@ -92,6 +94,7 @@ namespace ZMGC.Battle
         {
             base.OnDestroy();
             LogicActionController.Instance.OnDestory();
+            BuffSystem.Instance.OnDestroy();
         }
 
         public override void OnDestroyPostProcess(object args)

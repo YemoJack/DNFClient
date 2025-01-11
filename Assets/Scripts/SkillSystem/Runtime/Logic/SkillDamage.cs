@@ -134,7 +134,15 @@ public partial class Skill
             //对敌人造成伤害
             target.SkillDamage(9999, damageConfig);
 
-            //添加Buff TODO...
+            //添加Buff 
+            if( damageConfig.addBuffs!=null && damageConfig.addBuffs.Length > 0)
+            {
+                foreach(var buffid in damageConfig.addBuffs)
+                {
+                    BuffSystem.Instance.AttachBuff(buffid,mSkillCreater,target,this,null);
+                }
+            }
+
 
             //添加击中特效
             AddHitEffect(target);

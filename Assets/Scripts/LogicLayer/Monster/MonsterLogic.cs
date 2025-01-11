@@ -18,6 +18,35 @@ public class MonsterLogic : LogicActor
         ObjectType = LogicObjectType.Monster;
     }
 
+    public override void OnHit(GameObject effectHitObj, int surcicalTimems, LogicActor source)
+    {
+        base.OnHit(effectHitObj, surcicalTimems, source);
+        LogicXAxis = -source.LogicXAxis;
+    }
+
+
+    public override void Floating(bool upFloating)
+    {
+
+        string animName = upFloating ? "Anim_Float_up" : "Anim_Float_down";
+        PlayAnim(animName);
+        ActionState = LogicObjectActionState.Floating;
+    }
+
+
+    public override void TriggerGround()
+    {
+        //处理怪物触地
+        if(ObjectState != LogicObjectState.Death)
+        {
+            PlayAnim("Anim_Getup");
+        }
+        else
+        {
+            PlayAnim("Anim_Dead");
+        }
+
+    }
 
 
 }

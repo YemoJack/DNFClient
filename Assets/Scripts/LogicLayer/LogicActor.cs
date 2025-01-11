@@ -36,6 +36,29 @@ public partial class LogicActor : LogicObject
     }
 
 
+    public void PlayAnim(string name)
+    {
+        RenderObj.PlayAnim(name);
+    }
+
+
+    /// <summary>
+    /// 浮空回调
+    /// </summary>
+    /// <param name="upFloating">是否处于上浮</param>
+    public virtual void Floating(bool upFloating)
+    {
+
+    }
+
+    /// <summary>
+    /// 触地回调
+    /// </summary>
+    public virtual void TriggerGround()
+    {
+
+    }
+
 
 
     public override void OnDestroy()
