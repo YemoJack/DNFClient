@@ -9,22 +9,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f2acf09c3dc03c4891e7a2effa68d9e, type: 3}
+  m_Script: {fileID: 11500000, guid: 6e5544d65ba116a4ead925b937d5a54f, type: 3}
   m_Name: 10040
   m_EditorClassIdentifier: 
   buffIcon: {fileID: 0}
   buffid: 10040
-  buffName: "\u6D6E\u7A7A"
+  buffName: "\u4E0A\u6311\u6D6E\u7A7A"
   buffDelay: 0
   buffIntervalms: 0
-  buffDurationms: 300
+  buffDurationms: 700
   buffType: 2
   attachType: 2
   buffPosType: 0
   damageType: 0
   damageRate: 0
   buffParamsList:
-  - value: 1
+  - value: 17
     des: "\u4E0A\u5347\u9AD8\u5EA6"
   targetGrabData:
     garbMoveTargetPos: {x: 0, y: 0, z: 0}
@@ -52,7 +52,7 @@ MonoBehaviour:
       boxSize: {x: 1, y: 1, z: 1}
       boxOffset: {x: 0, y: 0, z: 0}
       sphereOffset: {x: 0, y: 0.9, z: 0}
-      radius: 1
+      raduis: 1
       raduisHeight: 0
       colliderPosType: 0
       targetType: 0

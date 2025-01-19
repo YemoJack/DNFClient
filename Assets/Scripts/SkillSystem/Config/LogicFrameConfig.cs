@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LogicFrameConfig : MonoBehaviour
+public class LogicFrameConfig 
 {
-    //é€»è¾‘å¸§ID è‡ªå¢
+    //Âß¼­Ö¡id ×ÔÔö
     public static long LogicFrameid;
-    //å®é™…é€»è¾‘å¸§é—´éš”
-    public static float LogicFrameInterval = 0.066f; //ä¸€ç§’åäº”å¸§
-    //æ¯«ç§’çº§é€»è¾‘å¸§é—´éš” ç”¨æ¥è®¡ç®—å½“å‰é€»è¾‘å¸§ç´¯åŠ æ—¶é—´
-    public static int LogicFrameIntervalMS = 66;
+    //Êµ¼ÊÂß¼­Ö¡¼ä¸ô
+    public static float LogicFrameInterval = 0.066f;//Ò»Ãë15Ö¡
+    //ºÁÃë¼¶Âß¼­Ö¡¼ä¸ô£¬ÓÃÀ´¼ÆËãµ±Ç°Âß¼­Ö¡ÀÛ¼ÓÊ±¼ä
+    public static int  LogicFrameIntervalms = 66;//Ò»Ãë15Ö¡
 }

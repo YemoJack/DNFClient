@@ -24,7 +24,7 @@ public class AudioController : MonoBehaviour {
     /// <summary>
     /// 最大缓存数量
     /// </summary>
-    private static int MaxCacheCount=100;
+    private static int MaxCacheCount=30;
     /// <summary>
     /// 音效音量
     /// </summary>
@@ -32,7 +32,7 @@ public class AudioController : MonoBehaviour {
     /// <summary>
     /// 音乐音量
     /// </summary>
-    private float mMusicVolume = 0.5f;
+    private float mMusicVolume = 0.3f;
 
     /// <summary>
     /// 单利
@@ -69,16 +69,16 @@ public class AudioController : MonoBehaviour {
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
-    private AudioClip GetAudioClip(string path)
+    private AudioClip GetAudioClip(string fullPath)
     {
         AudioClip clip=null;
         //判断资源池当中有没有这个声音
-        if (!soundAudioDic.TryGetValue(path, out clip) &&clip ==null)
+        if (!soundAudioDic.TryGetValue(fullPath, out clip) &&clip ==null)
         {
             //clip = Resources.Load<AudioClip>("Audio/" + name);//同一个声音反复加载，能不能存起来，不要加载
-            //clip = ("Audios/V3/DeepRoomSound.mp3");
+            clip = ZM.AssetFrameWork.ZMAssetsFrame.LoadAudio(fullPath);//同一个声音反复加载，能不能存起来，不要加载
             //放入字典
-            soundAudioDic.Add(path, clip);
+            soundAudioDic.Add(fullPath, clip);
             //soundAudioDic.Clear();
         }
         return clip;
@@ -136,7 +136,7 @@ public class AudioController : MonoBehaviour {
             //切换声音
             audioSourceInfo.audioSource.Stop();
             audioSourceInfo.audioSource.clip = clip;
-            audioSourceInfo.audioSource.volume = soundVolume > 0 ? soundVolume : mSoundVolume;
+            audioSourceInfo.audioSource.volume = soundVolume > 0 ? soundVolume : mSoundVolume; ;
             audioSourceInfo.audioSource.Play();
             //改变优先级 
             audioSourceInfo.priority = priority;
@@ -157,7 +157,7 @@ public class AudioController : MonoBehaviour {
             //切换声音
             audioSourceInfo.audioSource.Stop();
             audioSourceInfo.audioSource.clip = audioClip;
-            audioSourceInfo.audioSource.volume = soundVolume >0 ?soundVolume : mSoundVolume;
+            audioSourceInfo.audioSource.volume = soundVolume>0?soundVolume: mSoundVolume;
             audioSourceInfo.audioSource.loop = isLoop;
             audioSourceInfo.audioSource.Play();
             
@@ -201,9 +201,9 @@ public class AudioController : MonoBehaviour {
     /// </summary>
     /// <param name="name"></param>
     /// <param name="duration"></param>
-    public void PlayMusicFade(string name, float duration)
+    public void PlayMusicFade(string fullPath, float duration)
     {
-        AudioClip clip = GetAudioClip(name);
+        AudioClip clip = GetAudioClip(fullPath);
         if (clip != null)
         {
             mMusicSource.Stop();

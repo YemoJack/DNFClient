@@ -2,81 +2,114 @@ using FixMath;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
-//SkillAction
-public partial class Skill
+public partial class Skill 
 {
-   
+    
     /// <summary>
-    /// Ë°åÂä®ÈÄªËæëÂ∏ßÊõ¥Êñ∞
+    /// ––∂Ø¬ﬂº≠÷°∏¸–¬
     /// </summary>
     public void OnLogicFrameUpdateAction()
     {
-        if(mSkillData.actionCfgList != null && mSkillData.actionCfgList.Count > 0)
+        //¥¶¿Ì––∂Ø≈‰÷√
+        if (mSkillData.actionCfgList != null && mSkillData.actionCfgList.Count > 0)
         {
-            foreach(var item  in mSkillData.actionCfgList)
+            foreach (var item in mSkillData.actionCfgList)
             {
-                if(item.triggerFrame == mCurLogicFrame)
+                if (item.triggerFrame==mCurLogicFrame)
                 {
-                    //Ëß¶ÂèëË°åÂä®
-                    AddMoveAction(item, mSkillCreater);
+                    //¥•∑¢––∂Ø
+                    AddMoveAction(item,mSkillCreater);
                 }
             }
         }
     }
-
-
     /// <summary>
-    /// Ê∑ªÂä†ÁßªÂä®Ë°åÂä®
+    /// ÃÌº”“∆∂Ø––∂Ø
     /// </summary>
-    /// <param name="item">Ë°åÂä®ÈÖçÁΩÆ</param>
-    /// <param name="logicMoveObj">ÈÄªËæëÁßªÂä®ÂØπË±°</param>
-    public void AddMoveAction(SkillActionConfig item,LogicObject logicMoveObj,Action moveFinish = null,Action moveUpdateCallBack = null)
+    /// <param name="item">––∂Ø≈‰÷√</param>
+    /// <param name="logicMoveObj">¬ﬂº≠“∆∂Ø∂‘œÛ</param>
+    public void AddMoveAction(SkillActionConfig item,LogicObject logicMoveObj,Vector3 offset=default(Vector3), Action moveFinish= null,Action moveUpdateCallBack=null)
     {
-        FixIntVector3 movePos = new FixIntVector3(item.movePos);
-        FixIntVector3 targetPos;
-        targetPos = logicMoveObj.LogicPos + movePos * logicMoveObj.LogicXAxis;
 
-        MoveType moveType = MoveType.Target;
-        if(movePos.x != FixInt.Zero && movePos.y ==  FixInt.Zero && movePos.z == FixInt.Zero)
+        void OnActionFinish()
         {
-            moveType = MoveType.X;
-        }
-        else if(movePos.x == FixInt.Zero && movePos.y != FixInt.Zero && movePos.z  == FixInt.Zero)
-        {
-            moveType = MoveType.Y;
-        }
-        else if(movePos.x == FixInt.Zero && movePos.y == FixInt.Zero && movePos.z != FixInt.Zero)
-        {
-            moveType = MoveType.Z;
-        }
-
-        //ÊûÑÂª∫Ë°åÂä®Á±ª
-        MoveToAction action = new MoveToAction(logicMoveObj, logicMoveObj.LogicPos, targetPos, item.durationMs, () =>
-        {
+            Debug.Log("MoveToAction Finish");
             moveFinish?.Invoke();
-            if(item.actionFinishOpation != MoveActionFinishOpation.None)
+            if (item.actionFinishOpation != MoveActionFinishOpation.None)
             {
-                switch(item.actionFinishOpation)
+                switch (item.actionFinishOpation)
                 {
-                    case MoveActionFinishOpation.Skill:
-                        foreach(var item in item.actionFinishidList)
+                    case MoveActionFinishOpation.Skill:// Õ∑≈∫Û–¯ººƒ‹
+                        foreach (var item in item.actionFinishidList)
                         {
-                            mSkillCreater.ReleaseSkill(item);
+                            mSkillCreater.ReleaseSKill(item);
                         }
                         break;
-                    case MoveActionFinishOpation.Buff:
-                        //TODO 
+                    case MoveActionFinishOpation.Buff://ÃÌº”“ª∏ˆbuff
+                        sKillGuidePos = logicMoveObj.LogicPos;
+                        foreach (var buffid in item.actionFinishidList)
+                        {
+                            BuffSystem.Instance.AttachBuff(buffid, mSkillCreater, mSkillCreater, this);
+                        }
+                        // 1.ƒ‹‘⁄÷∏∂®µÿµ„…˙≥… 2.æﬂ”–≈ˆ◊≤ºÏ≤‚ 3.ƒ‹∂‘∂‡»À‘Ï≥……À∫¶°£
+                        // »∫ÃÂ Ù–‘–ﬁ∏ƒBuff
                         break;
                 }
             }
-        }, moveUpdateCallBack, moveType);
-        //ÂºÄÂßãË°åÂä®
-        LogicActionController.Instance.RunAction(action);
+        }
 
+        FixIntVector3 movePos = new FixIntVector3(item.movePos);
+        FixIntVector3 targetPos;
+        FixIntVector3 startPos = logicMoveObj.LogicPos;
+        targetPos = logicMoveObj.LogicPos + movePos* logicMoveObj.LogicXAxis; //-1 1
+                                                                              //º∆À„“∆∂Ø¿‡–Õ
+        MoveType moveType = MoveType.target;
+        if (item.moveActionType == MoveActionType.TargetPos)
+        {
+            if (movePos.x != FixInt.Zero && movePos.y == FixInt.Zero && movePos.z == FixInt.Zero)
+            {
+                moveType = MoveType.X;
+            }
+            else if (movePos.x == FixInt.Zero && movePos.y != FixInt.Zero && movePos.z == FixInt.Zero)
+            {
+                moveType = MoveType.Y;
+            }
+            else if (movePos.x == FixInt.Zero && movePos.y == FixInt.Zero && movePos.z != FixInt.Zero)
+            {
+                moveType = MoveType.Z;
+            }
+        }
+        //¥¶¿Ìººƒ‹“˝µºŒª÷√“∆∂Ø¬ﬂº≠
+        else if (item.moveActionType == MoveActionType.GuidePos)
+        {
+            //ƒø±ÍŒª÷√
+            targetPos = sKillGuidePos;
+            //∆ ºŒª÷√
+            startPos = targetPos + mSkillCreater.LogicXAxis * new FixIntVector3(offset);
+            startPos.y = FixIntMath.Abs(startPos.y);
+        }
+        else if (item.moveActionType == MoveActionType.BezierPos)
+        {
+            //1.º∆À„∆ ºŒª÷√
+            startPos = mSkillCreater.LogicPos + mSkillCreater.LogicXAxis * new FixIntVector3 (offset);
+            startPos.y = FixIntMath.Abs(startPos.y);//≤ª»√µ±«∞∂‘œÛ£¨y<0£¨∑Ò‘ÚæÕª·≈‹µΩµÿœ¬»•
+            //2.º∆À„◊Ó∏ﬂµ„Œª÷√
+            FixIntVector3 heightPosOffset = new FixIntVector3(item.heightPos) * mSkillCreater.LogicXAxis;
+            heightPosOffset.y = FixIntMath.Abs(heightPosOffset.y);
+            FixIntVector3 heightPos = mSkillCreater.LogicPos + heightPosOffset;
+            //3.º∆À„Ω· ¯Œª÷√
+            FixIntVector3 endPosOffset = new FixIntVector3(item.movePos) * mSkillCreater.LogicXAxis;
+            endPosOffset.y= FixIntMath.Abs(endPosOffset.y);
+            targetPos = mSkillCreater.LogicPos + endPosOffset;
+            //3.÷¥––±¥»˚∂˚‘À∂Ø
+            MoveBezierAction moveBezier = new MoveBezierAction(logicMoveObj,startPos,heightPos,targetPos,item.durationMs, OnActionFinish, moveUpdateCallBack);
+            LogicActionController.Instance.RunAciton(moveBezier);
+            return;
+        }
+        MoveToAction action = new MoveToAction(logicMoveObj, startPos, targetPos,item.durationMs, OnActionFinish, moveUpdateCallBack, moveType);
+        //ø™ º––∂Ø
+        LogicActionController.Instance.RunAciton(action);
     }
-
-
 }

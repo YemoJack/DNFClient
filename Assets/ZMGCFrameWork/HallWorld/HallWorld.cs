@@ -18,10 +18,9 @@ namespace ZMGC.Hall
         {
             base.OnCretae();
             Debug.Log("HallWorld  OnCretae>>>");
-
-            UIModule.Instance.PopUpWindow<CreateRoleWindow>();
-
             //大厅世界构建完成，弹出大厅弹窗
+            UIModule.Instance.PopUpWindow<CreateRuleWindow>();
+            AudioController.GetInstance().PlayMusicFade(AssetPathConfig.GAME_AUIDO_PATH+ "BG/Login.mp3",2);
             //UIModule.PopUpWindow<LoginWindow>();
         }
         /// <summary>
@@ -35,7 +34,18 @@ namespace ZMGC.Hall
             //弹出大厅弹窗
             //UIModule.PopUpWindow<HallWindow>();
         }
-
+        /// <summary>
+        /// 进入战斗世界
+        /// </summary>
+        public static void EnterBattleWorld()
+        {
+            LoadSceneManager.Instance.LoadSceneAsync("Battle",()=> {
+                //创建英雄
+                UIModule.Instance.DestroyAllWindow();
+                WorldManager.CreateWorld<BattleWorld>();
+                Debug.Log("UserName:" + HallWorld.GetExitsDataMgr<UserDataMgr>().userName);
+            });
+        }
 
         /// <summary>
         /// 从游戏内返回至大厅  初始化一些大厅数据和状态
@@ -50,23 +60,6 @@ namespace ZMGC.Hall
             //弹出大厅弹窗
             //HallWorld.UIModule.PopUpWindow<HallWindow>();
         }
-
-        /// <summary>
-        /// 进入战斗世界
-        /// </summary>
-        public static void EnterBattleWorld()
-        {
-            LoadSceneManager.Instance.LoadSceneAsync("Battle", () =>
-            {
-                //创建角色
-                UIModule.Instance.DestroyAllWindow();
-
-                WorldManager.CreateWorld<BattleWorld>();
-
-                Debug.Log($"UserName: {HallWorld.GetExitsDataMgr<UserDataMgr>().userName}");
-            });
-        }
-
 
         public override void OnDestroy()
         {

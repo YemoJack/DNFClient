@@ -18,15 +18,12 @@ namespace FixIntPhysics
             this.Conter =new FixIntVector3(conter);
             ColliderType = ColliderType.Box;
         }
-
         public FixIntBoxCollider(FixIntVector3 size, FixIntVector3 conter)
         {
             this.Size = size;
             this.Conter = conter;
             ColliderType = ColliderType.Box;
         }
-
-
         /// <summary>
         /// 更新碰撞体信息
         /// </summary>
@@ -37,7 +34,6 @@ namespace FixIntPhysics
         {
             base.UpdateColliderInfo(pos, size, radius);
             this.Size = size;
-
             if (this.boxDraw!=null)
             {
                 this.boxDraw.transform.position = pos.ToVector3();
@@ -67,9 +63,8 @@ namespace FixIntPhysics
         /// <param name="isFloowTarget">碰撞体绘制是否跟随</param>
         public override void SetBoxData(Vector3 conter, Vector3 size, bool isFloowTarget = false)
         {
-            SetBoxData(new FixIntVector3(conter), new FixIntVector3(size), isFloowTarget);
+            SetBoxData(new FixIntVector3(conter),new FixIntVector3(size), isFloowTarget);
         }
-
 
         public override void SetBoxData(FixIntVector3 conter, FixIntVector3 size, bool isFloowTarget = false)
         {
@@ -81,14 +76,12 @@ namespace FixIntPhysics
             }
 
             mIsFloowTarget = isFloowTarget;
-            this.Conter = conter;
-            this.Size = size;
+            this.Conter =  conter ;
+            this.Size =size;
 
             //boxDraw.transform.localScale = this.Conter.x >= 0 ? Vector3.one : new Vector3(-1,1,1);
             boxDraw?.SetBoxData(conter.ToVector3(), size.ToVector3(), mIsFloowTarget);
         }
-
-
         public override void OnRelease()
         {
             if (boxDraw != null && boxDraw.gameObject != null)

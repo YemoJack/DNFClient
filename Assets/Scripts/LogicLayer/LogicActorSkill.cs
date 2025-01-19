@@ -1,193 +1,185 @@
-using FixMath;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ZMGC.Battle;
-
-
-//LogicActorSkill
+using FixMath;
 public partial class LogicActor
 {
-
     /// <summary>
-    /// æŠ€èƒ½ç³»ç»Ÿ
+    /// ¼¼ÄÜÏµÍ³
     /// </summary>
     private SkillSystem mSkillSystem;
-
-
     /// <summary>
-    /// æ™®é€šæ”»å‡»æŠ€èƒ½idæ•°ç»„
+    /// ÆÕÍ¨¹¥»÷¼¼ÄÜidÊı×é
     /// </summary>
-    private int[] mNormalSkillidArr = new int[] { 1001,1002,1003};
+    private int[] mNormalSkillidArr = new int[] { 1001, 1002, 1003 };
 
     private int[] mSkillidArr;
 
-    public List<Skill> releaseSkillList = new List<Skill>();
-
     /// <summary>
-    /// å½“å‰æ™®é€šæ”»å‡»è¿å‡»ç´¢å¼•
+    /// ÕıÔÚÊÍ·Å¼¼ÄÜµÄÁĞ±í
+    /// </summary>
+    public List<Skill> releaseingSkillList = new List<Skill>();
+    /// <summary>
+    /// µ±Ç°ÆÕÍ¨¹¥»÷Á¬»÷Ë÷Òı
     /// </summary>
     private int mCurNormalComboIndex = 0;
-
     /// <summary>
-    /// åˆå§‹åŒ–æŠ€èƒ½ç³»ç»Ÿ
+    /// µ±Ç°¶ÔÏó³ÖÓĞµÄËùÓĞbuff
     /// </summary>
-    public virtual void InitActorSkill()
-    {
-
-        HeroDataMgr heroData = BattleWorld.GetExitsDataMgr<HeroDataMgr>();
-        mNormalSkillidArr = heroData.GetHeroNormalSkillArr(1000);
-        mSkillidArr = heroData.GetHeroSkillArr(1000);
-
-        mSkillSystem = new SkillSystem(this);
-        mSkillSystem.InitSkills(mNormalSkillidArr);
-        mSkillSystem.InitSkills(mSkillidArr);
-    }
-
-
+    private List<Buff> mBuffList = new List<Buff>();
     /// <summary>
-    /// é‡Šæ”¾æ™®é€šæ”»å‡»
+    /// ³õÊ¼»¯¼¼ÄÜÁĞ±í
+    /// </summary>
+    public void InitActorSkill(int id)
+    {
+        HeroDataMgr heroData = BattleWorld.GetExitsDataMgr<HeroDataMgr>();
+        mNormalSkillidArr = heroData.GetHeroNormalSkilidArr(id);
+        mSkillidArr = heroData.GetHeroSkillIdArr(id);
+        mSkillSystem = new SkillSystem(this);
+        mSkillSystem.InitSKills(mNormalSkillidArr);
+        mSkillSystem.InitSKills(mSkillidArr);
+    }
+    /// <summary>
+    /// ÊÍ·ÅÆÕÍ¨¹¥»÷
     /// </summary>
     public void ReleaseNormalAttack()
     {
-        ReleaseSkill(mNormalSkillidArr[mCurNormalComboIndex]);
+        ReleaseSKill(mNormalSkillidArr[mCurNormalComboIndex]);
     }
-
     /// <summary>
-    /// åˆ¤æ–­æŠ€èƒ½æ˜¯å¦ä¸ºæ™®é€šæ”»å‡»
+    /// ÊÍ·Å¶ÔÓ¦µÄ¼¼ÄÜ
     /// </summary>
     /// <param name="skillid"></param>
-    /// <returns></returns>
-    public bool IsNormalAttackSkill(int skillid)
+    public void ReleaseSKill(int skillid,FixIntVector3 guidePos=default(FixIntVector3), Action<bool> releaseSkillCallBack = null)
     {
-        foreach (var skill in mNormalSkillidArr)
+        Skill skill = mSkillSystem.ReleaseSkill(skillid, guidePos,   OnSkillReleaseAfter, (skill)=> {
+            if (skill.SKillCfg.skillType== SKillType.StockPile)
+            {
+                releaseSkillCallBack?.Invoke(true);
+            }
+            OnSkillReleaseEnd(skill);
+        });
+        //£¡=null ËµÃ÷¼¼ÄÜÊÍ·Å³É¹¦
+        if (skill != null)
         {
-            if(skillid == skill)
-                return true;
-        }
-        return false;
-    }
-
-
-    public Skill GetSKill(int skillid)
-    {
-        return mSkillSystem.GetSkill(skillid);
-    }
-
-
-    /// <summary>
-    /// é‡Šæ”¾æŠ€èƒ½
-    /// </summary>
-    /// <param name="skillid"></param>
-    public virtual void ReleaseSkill(int skillid)
-    {
-        Skill skill = mSkillSystem.ReleaseSkill(skillid, OnSkillReleaseAfter, OnSkillReleaseEnd);
-        if(skill != null)
-        {
-            releaseSkillList.Add(skill);
-            if (!IsNormalAttackSkill(skillid))
+            releaseingSkillList.Add(skill);
+            if (!IsNormalAttackSkill(skill.skillid))
             {
                 mCurNormalComboIndex = 0;
             }
-
-            ActionState = LogicObjectActionState.ReleaseSkill;
+            ActionSate = LogicObjectActionState.ReleasingSkill;
+            if (skill.SKillCfg.skillType!= SKillType.StockPile)
+            {
+                releaseSkillCallBack?.Invoke(true);
+            }
+        }
+        else
+        {
+            releaseSkillCallBack?.Invoke(false);
         }
     }
-
     /// <summary>
-    /// è§¦å‘è“„åŠ›æŠ€èƒ½
+    /// Ö÷¶¯´¥·¢ĞîÁ¦¼¼ÄÜ
     /// </summary>
     /// <param name="skillid"></param>
     public void TriggerStockPileSkill(int skillid)
     {
         mSkillSystem.TriggerStockPileSkill(skillid);
     }
-
-
-
     /// <summary>
-    /// é‡Šæ”¾æŠ€èƒ½åæ‘‡
+    /// ÊÇ·ñÊÇÆÕÍ¨¹¥»÷¼¼ÄÜ
+    /// </summary>
+    /// <param name="skillid">Ğ£ÑéµÄ¼¼ÄÜid</param>
+    /// <returns></returns>
+    public bool IsNormalAttackSkill(int skillid)
+    {
+        foreach (var item in mNormalSkillidArr)
+        {
+            if (skillid == item)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    /// <summary>
+    /// ¼¼ÄÜÊÍ·ÅºóÒ¡
     /// </summary>
     /// <param name="skill"></param>
-    public virtual void OnSkillReleaseAfter(Skill skill)
+    public void OnSkillReleaseAfter(Skill skill)
     {
-        //Debug.Log("é‡Šæ”¾æŠ€èƒ½å");
-        if(!IsNormalAttackSkill(skill.skillid))
+        if (!IsNormalAttackSkill(skill.skillid))
         {
             mCurNormalComboIndex = 0;
         }
         else
         {
             mCurNormalComboIndex++;
-            //å¦‚æœå½“å‰æ™®æ”»æ”»å‡»æŠ€èƒ½ç´¢å¼•å¤§äºç­‰äºæ™®é€šæ”»å‡»æŠ€èƒ½æ•°ç»„é•¿åº¦ï¼Œç´¢å¼•å½’é›¶
-            if(mCurNormalComboIndex >= mNormalSkillidArr.Length)
+            //Èç¹ûµ±Ç°ÆÕÍ¨¹¥»÷¼¼ÄÜËùÒÔ´óÓÚµÈ¼¶ÆÕÍ¨¹¥»÷¼¼ÄÜÊı×é³¤¶È£¬Ë÷Òı¹é0
+            if (mCurNormalComboIndex >= mNormalSkillidArr.Length || skill.skillid == mNormalSkillidArr[mNormalSkillidArr.Length - 1])
             {
                 mCurNormalComboIndex = 0;
             }
         }
     }
-
     /// <summary>
-    /// é‡Šæ”¾æŠ€èƒ½ç»“æŸ
+    /// ¼¼ÄÜÊÍ·ÅÍê³É
     /// </summary>
     /// <param name="skill"></param>
-    public virtual void OnSkillReleaseEnd(Skill skill)
+    public void OnSkillReleaseEnd(Skill skill)
     {
-        //Debug.Log("é‡Šæ”¾æŠ€èƒ½ç»“æŸ");
-        releaseSkillList.Remove(skill);
-        if(releaseSkillList.Count== 0)
+        releaseingSkillList.Remove(skill);
+        if (releaseingSkillList.Count == 0)
         {
-            ActionState = LogicObjectActionState.Idle;
+            ActionSate = LogicObjectActionState.Idle;
             mCurNormalComboIndex = 0;
         }
     }
 
-
-    /// <summary>
-    /// æŠ€èƒ½ä¼¤å®³(å—å‡»ä¼¤å®³)
-    /// </summary>
-    /// <param name="hp"></param>
-    /// <param name="damageConfig"></param>
-    public virtual void SkillDamage(FixInt hp, SkillDamageConfig damageConfig)
+    public Skill GetSKill(int skillid)
     {
-        Debug.Log($" SkillDamage  {hp}");
-        CacluDamage(hp, DamageSource.Skill);
+        return mSkillSystem.GetSKill(skillid);
     }
-
-    public virtual void OnHit(GameObject effectHitObj, int surcicalTimems,LogicActor source)
-    {
-        RenderObj.OnHit(effectHitObj, surcicalTimems, source);
-    }
-
-
-
     /// <summary>
-    /// è®¡ç®—ä¼¤å®³
+    /// Âß¼­Ö¡¸üĞÂ¼¼ÄÜ½Ó¿Ú
     /// </summary>
-    /// <param name="hp"></param>
-    /// <param name="damageSource"></param>
-    public virtual void CacluDamage(FixInt hp, DamageSource damageSource)
+    public void OnLogicFrameUpdateSkill()
     {
-        if(ObjectState == LogicObjectState.Survival)
+        if (mSkillSystem==null)
         {
-            //1. å¯¹è±¡é€»è¾‘å±‚è¡€é‡å‡å°‘
-
-            //2. åˆ¤æ–­å¯¹è±¡æ˜¯å¦æ­»äº¡ï¼Œ å¦‚æœæ­»äº¡å°±å¤„ç†æ­»äº¡é€»è¾‘
-
-            //3. è¿›è¡Œä¼¤å®³é£˜å­—æ¸²æŸ“
-            RenderObj.Damage(hp.RawInt, damageSource);
+            return;
+        }
+        mSkillSystem?.OnLogicFrameUpdate();
+    }
+    /// <summary>
+    /// Ìí¼ÓÒ»¸öbuff
+    /// </summary>
+    /// <param name="buff"></param>
+    public void AddBuff(Buff buff)
+    {
+        mBuffList.Add(buff);
+    }
+    /// <summary>
+    /// ÒÆ³ıÒ»¸öbuff
+    /// </summary>
+    /// <param name="buff"></param>
+    public void RemoveBuff(Buff buff)
+    {
+        if (mBuffList.Contains(buff))
+        {
+            mBuffList.Remove(buff);
+        }
+        if (ObjectState == LogicObjectState.Death)
+        {
+            return;
         }
 
-
+        if (mBuffList.Count == 0 && RenderObj.GetCurAnimName() != AnimationName.Anim_Getup)
+        {
+            PlayAnim(AnimationName.Anim_Idle);
+            ActionSate = LogicObjectActionState.Idle;
+        }
     }
-
-
-    /// <summary>
-    /// é€»è¾‘å¸§æ›´æ–°æŠ€èƒ½æ¥å£
-    /// </summary>
-    public virtual void OnLogicFrameUpdateSkill()
-    {
-        mSkillSystem.OnLogicFrameUpdate();
-    }
-
 }

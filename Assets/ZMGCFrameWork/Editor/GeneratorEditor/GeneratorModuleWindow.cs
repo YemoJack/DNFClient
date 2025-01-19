@@ -16,7 +16,7 @@ public class GeneratorModuleWindow : EditorWindow
     private string[] mMudileNameSpaceArr = new[] {"ZMGC.Hall", "ZMGC.Battle", "ZMGC.Fish3", "ZMGC.Majiang" };
     private string[] folderArr = new string[] { "/DataMgr/","/MsgMgr/","/LogicCtrl/"};
     private int mlastIndex = -1;
-    //private int mlastIndex2 = -1;
+    private int mlastIndex2 = -1;
     public static void ShowWindow(string conent, string fileName)
     {
         GeneratorModuleWindow window = (GeneratorModuleWindow)GetWindowWithRect(typeof(GeneratorModuleWindow), new Rect(100, 50, 800, 700), true, "模块代码生成界面");

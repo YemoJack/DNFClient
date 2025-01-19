@@ -112,7 +112,7 @@ public class SKillItem_JoyStick : MonoBehaviour, IPointerDownHandler, IDragHandl
         {
             mJoyPointTrans.transform.localPosition = eventData.position;
         }
-
+        Debug.Log("JoyPointTrans LocalPos:"+mJoyPointTrans.transform.localPosition);
         if (mSkillGuideType == SKillGuideType.Position)  //位置性技能
         {
             if (dir == Vector2.zero) return;
@@ -224,7 +224,7 @@ public class SKillItem_JoyStick : MonoBehaviour, IPointerDownHandler, IDragHandl
         //获取鼠标屏幕坐标
         Vector2 ConvertTomousePosition;
         //转换为Canvas针对物体的局部坐标
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(mRectTrans, mousePosition, UIModule.Instance.Camera, out ConvertTomousePosition);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(mRectTrans, mousePosition, UIModule.Instance.mUICamera, out ConvertTomousePosition);
         return ConvertTomousePosition;
     }
 }

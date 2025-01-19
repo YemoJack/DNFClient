@@ -2,39 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AssetPathConfig
+public class AssetPathConfig  
 {
-    /// <summary>
-    /// 游戏资源总路径
-    /// </summary>
-    public const string GAMEDATA = "Assets/GameData/";
-    /// <summary>
-    /// 游戏模块资源路径
-    /// </summary>
-    public const string GAME = GAMEDATA + "Game/";
-    /// <summary>
-    /// 游戏预制体资源路径
-    /// </summary>
-    public const string GAME_PREFABS = GAME + "Prefabs/";
-    /// <summary>
-    /// 游戏英雄预制体资源路径
-    /// </summary>
-    public const string GAME_PREFABS_HERO = GAME_PREFABS + "Hero/";
-    /// <summary>
-    /// 游戏怪物预制体资源路径
-    /// </summary>
-    public const string GAME_PREFABS_MONSTER = GAME_PREFABS + "Monster/";
-    /// <summary>
-    /// 大厅资源路径
-    /// </summary>
-    public const string HALL = GAMEDATA + "Hall/";
+    
 
-    /// <summary>
-    /// 技能数据配置资源路径
-    /// </summary>
+    //��Դ����·���ܽ��
+    public const string GAMEDATA = "Assets/GameData/";
+
+    public const string HALL = GAMEDATA + "Hall/";
+    //����Ԥ�����ļ���
+    public const string HALL_PREFABS = HALL + "Prefabs/";
+    public const string HALL_PREFABS_ITEM_PATH = HALL_PREFABS + "Item/";
+    public const string Hall_TEXTURES_PATH = HALL + "Textures/";
+    public const string Hall_EFFECTS_PATH = HALL + "Effects/";
+
+    public const string GAME = GAMEDATA+ "Game/";
+    //��Ϸ��Ԥ����·��
+    public const string GAME_PREFABS = GAME + "Prefabs/";
+
+    public const string GAME_PREFABS_HERO = GAME_PREFABS + "Hero/";
+    public const string GAME_PREFABS_MONSTER = GAME_PREFABS + "Monster/";
+  
+
     public const string SKILL_DATA_PATH = GAME + "SkillSystem/SkillData/";
-    /// <summary>
-    /// 技能数据配置资源路径
-    /// </summary>
     public const string BUFF_DATA_PATH = GAME + "SkillSystem/BuffData/";
+    public const string GAME_AUIDO_PATH = GAME + "Sound/";
+
+    public const string GAME_DATA_PATH = GAME+"Data/";
+    public const string GAME_TEXTURES_PATH = GAME + "Textures/";
 }

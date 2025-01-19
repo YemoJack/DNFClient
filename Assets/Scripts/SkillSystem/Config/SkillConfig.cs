@@ -5,94 +5,97 @@ using UnityEngine;
 
 [HideMonoScript]
 [System.Serializable]
-public class SkillConfig 
+public class SkillConfig
 {
     [HideInInspector]
-    public bool showStockPileData = false;//æ˜¯å¦æ˜¾ç¤ºæŠ€èƒ½è“„åŠ›é˜¶æ®µæ•°æ®
-
+    public bool showStockPileData = false;//ÊÇ·ñÏÔÊ¾ĞîÁ¦¼¼ÄÜÊı¾İ
     [HideInInspector]
-    public bool showSkillGuide = false;//æ˜¯å¦æ˜¾ç¤ºæŠ€èƒ½å¼•å¯¼
+    public bool showSkillGuide = false;//ÊÇ·ñÏÔÊ¾¼¼ÄÜÒıµ¼Êı¾İ
 
 
-    [LabelText("æŠ€èƒ½å›¾æ ‡"),LabelWidth(0.1f),PreviewField(70,ObjectFieldAlignment.Left),SuffixLabel("æŠ€èƒ½å›¾æ ‡")]
-    public Sprite skillIcon;//æŠ€èƒ½å›¾æ ‡
-    [LabelText("æŠ€èƒ½id")]
-    public int skillid;//æŠ€èƒ½id
-    [LabelText("æŠ€èƒ½åç§°")]
-    public string skillName;//æŠ€èƒ½åç§°
-    [LabelText("æŠ€èƒ½æ¶ˆè€—é­”æ³•å€¼")]
-    public int needMgicValue;//æŠ€èƒ½æ¶ˆè€—é­”æ³•å€¼
-    [LabelText("æŠ€èƒ½é‡Šæ”¾å‰æ‘‡æ—¶é—´ms")]
-    public int skillShakeBeforeTimeMs;//æŠ€èƒ½é‡Šæ”¾å‰æ‘‡æ—¶é—´
-    [LabelText("æŠ€èƒ½æ”»å‡»æŒç»­æ—¶é—´ms")]
-    public int skillAttackDurationMs;//æŠ€èƒ½æ”»å‡»æŒç»­æ—¶é—´
-    [LabelText("æŠ€èƒ½é‡Šæ”¾åæ‘‡æ—¶é—´ms")]
-    public int skillShakeAfterMs;//æŠ€èƒ½é‡Šæ”¾åæ‘‡æ—¶é—´
-    [LabelText("æŠ€èƒ½CDæ—¶é—´ms")]
-    public int skillCDTimeMs;//æŠ€èƒ½CDæ—¶é—´
-    [LabelText("æŠ€èƒ½ç±»å‹"),OnValueChanged("OnSkillTypeChange")]
-    public SkillType skillType;
-    
-    [LabelText("è“„åŠ›é˜¶æ®µé…ç½®ï¼ˆè‹¥ç¬¬ä¸€é˜¶æ®µè§¦å‘æ—¶é—´ä¸ä¸º0ï¼Œåˆ™ç©ºæŒ¡æ—¶é—´ä¸ºåŠ¨ç”»è¡¨ç°æ—¶é—´ï¼‰"),ShowIf("showStockPileData")]
-    public List<StockPileStageData> stockPileStageData;
+    [LabelText("¼¼ÄÜÍ¼±ê"),LabelWidth(0.1f),PreviewField(70,ObjectFieldAlignment.Left),SuffixLabel("¼¼ÄÜÍ¼±ê")]
+    public Sprite skillIcon;
 
-    [LabelText("æŠ€èƒ½å¼•å¯¼ç‰¹æ•ˆ"),ShowIf("showSkillGuide")]
-    public GameObject skillGuideObj;//æŠ€èƒ½å¼•å¯¼ç‰¹æ•ˆ
-    [LabelText("æŠ€èƒ½å¼•å¯¼èŒƒå›´"), ShowIf("showSkillGuide")]
-    public float skillGuideRange;//æŠ€èƒ½å¼•å¯¼èŒƒå›´
+    [LabelText("¼¼ÄÜid")]
+    public int skillid;
+    [LabelText("¼¼ÄÜÃû³Æ")]
+    public string skillName;//¼¼ÄÜÃû³Æ
+    [LabelText("¼¼ÄÜËùĞèÀ¶Á¿")]
+    public int needMgicValue = 100;//¼¼ÄÜËùĞèÀ¶Á¿
+    [LabelText("¼¼ÄÜÇ°Ò¡Ê±¼ä")]
+    public int skillShakeBeforeTimeMs;//¼¼ÄÜÇ°Ò¡Ê±¼ä
+    [LabelText("¼¼ÄÜ¹¥»÷³ÖĞøÊ±¼ä")]
+    public int skillAttackDurationMs;//¼¼ÄÜ¹¥»÷³ÖĞøÊ±¼ä
+    [LabelText("¼¼ÄÜºóÒ¡Ê±¼ä")]
+    public int skillShakeArfterMs;//¼¼ÄÜºóÒ¡Ê±¼ä
+    [LabelText("¼¼ÄÜÀäÈ´Ê±¼ä")]
+    public int skillCDTimeMs;//¼¼ÄÜÀäÈ´Ê±¼ä
+    [LabelText("¼¼ÄÜÀàĞÍ"),OnValueChanged("OnSKillTypeChange")]
+    public SKillType skillType;//¼¼ÄÜÀàĞÍ
 
-    [LabelText("ç»„åˆæŠ€èƒ½idï¼ˆè¡”æ¥ä¸‹ä¸€ä¸ªæŠ€èƒ½idï¼‰"), Tooltip("æ¯”å¦‚ï¼šæŠ€èƒ½A ç”±æŠ€èƒ½C B D ç»„æˆ")]
+    [LabelText("ĞîÁ¦½×¶ÎÅäÖÃ(ÈôµÚÒ»½×¶Î´¥·¢Ê±¼ä²»Îª0£¬Ôò¿ÕµµÊ±¼äÎª¶¯»­±íÏÖÊ±¼ä)"),ShowIf("showStockPileData")]
+    public List<StockPileStageData> stockPileStageData;//¼¼ÄÜĞîÁ¦Êı¾İÅäÖÃ
+    [LabelText("¼¼ÄÜÒıµ¼ÌØĞ§"),ShowIf("showSkillGuide")]
+    public GameObject skillGuideObj;//¼¼ÄÜÒıµ¼ÌØĞ§
+    [LabelText("¼¼ÄÜÒıµ¼·¶Î§"), ShowIf("showSkillGuide")]
+    public float skillGuideRange;//¼¼ÄÜÒıµ¼·¶Î§
+
+    [LabelText("×éºÏ¼¼ÄÜid(ÏÎ½ÓÏÂÒ»¸ö¼¼ÄÜµÄid)"), Tooltip("±ÈÈç£º¼¼ÄÜA ÓÉ¼¼ÄÜ C B D×é³É")]
     public int ComobinationSkillid;
+    //¼¼ÄÜäÖÈ¾Ïà¹Ø
+    [LabelText("¼¼ÄÜÃüÖĞÌØĞ§"),TitleGroup("¼¼ÄÜäÖÈ¾","ËùÓĞÓ¢ĞÛäÖÈ¾Êı¾İ»áÔÚ¿ªÊ¼ÊÍ·Å¼¼ÄÜÊ±´¥·¢"),OnValueChanged("GetObjectPath")]
+    public GameObject skillHitEffect;//¼¼ÄÜÃüÖĞÌØĞ§
+    [ReadOnly]
+    public string skillHitEffectPath;
+    [LabelText("¼¼ÄÜ»÷ÖĞÌØĞ§´æ»îÊ±¼ä"), TitleGroup("¼¼ÄÜäÖÈ¾", "ËùÓĞÓ¢ĞÛäÖÈ¾Êı¾İ»áÔÚ¿ªÊ¼ÊÍ·Å¼¼ÄÜÊ±´¥·¢")]
+    public int hitEffectSurvivalTimeMs = 100;//¼¼ÄÜ»÷ÖĞÌØĞ§´æ»îÊ±¼ä
+    [LabelText("¼¼ÄÜÃüÖĞÒôĞ§"), TitleGroup("¼¼ÄÜäÖÈ¾", "ËùÓĞÓ¢ĞÛäÖÈ¾Êı¾İ»áÔÚ¿ªÊ¼ÊÍ·Å¼¼ÄÜÊ±´¥·¢")]
+    public AudioClip skillHitAudio;//¼¼ÄÜÃüÖĞÒôĞ§
+    [LabelText("ÊÇ·ñÏÔÊ¾¼¼ÄÜÁ¢»æ"), TitleGroup("¼¼ÄÜäÖÈ¾", "ËùÓĞÓ¢ĞÛäÖÈ¾Êı¾İ»áÔÚ¿ªÊ¼ÊÍ·Å¼¼ÄÜÊ±´¥·¢")]
+    public bool showSkillPortrait;//ÊÇ·ñÏÔÊ¾¼¼ÄÜÁ¢»æ
+    [LabelText("¼¼ÄÜÁ¢»æ¶ÔÏó"), TitleGroup("¼¼ÄÜäÖÈ¾", "ËùÓĞÓ¢ĞÛäÖÈ¾Êı¾İ»áÔÚ¿ªÊ¼ÊÍ·Å¼¼ÄÜÊ±´¥·¢"),ShowIf("showSkillPortrait")]
+    public GameObject skillProtraitObj;//¼¼ÄÜÁ¢»æ¶ÔÏó
+    [LabelText("¼¼ÄÜÃèÊö"), TitleGroup("¼¼ÄÜäÖÈ¾", "ËùÓĞÓ¢ĞÛäÖÈ¾Êı¾İ»áÔÚ¿ªÊ¼ÊÍ·Å¼¼ÄÜÊ±´¥·¢")]
+    public string skillDes;//¼¼ÄÜÃèÊö
+#if UNITY_EDITOR
 
-    //æŠ€èƒ½æ¸²æŸ“ç›¸å…³
-    [LabelText("æŠ€èƒ½å‘½ä¸­ç‰¹æ•ˆ"),TitleGroup("æŠ€èƒ½æ¸²æŸ“","æ‰€æœ‰è‹±é›„æ¸²æŸ“æ•°æ®ä¼šåœ¨å¼€å§‹é‡Šæ”¾æŠ€èƒ½æ—¶è§¦å‘")]
-    public GameObject skillHitEffect; //æŠ€èƒ½å‘½ä¸­ç‰¹æ•ˆ
-    [LabelText("å‘½ä¸­ç‰¹æ•ˆæ˜¾ç¤ºæ—¶é—´"), TitleGroup("æŠ€èƒ½æ¸²æŸ“", "æ‰€æœ‰è‹±é›„æ¸²æŸ“æ•°æ®ä¼šåœ¨å¼€å§‹é‡Šæ”¾æŠ€èƒ½æ—¶è§¦å‘")]
-    public int hitEffectSurivalTimeMs = 100;//å‘½ä¸­ç‰¹æ•ˆæ˜¾ç¤ºæ—¶é—´
-    [LabelText("æŠ€èƒ½å‘½ä¸­éŸ³æ•ˆ"), TitleGroup("æŠ€èƒ½æ¸²æŸ“", "æ‰€æœ‰è‹±é›„æ¸²æŸ“æ•°æ®ä¼šåœ¨å¼€å§‹é‡Šæ”¾æŠ€èƒ½æ—¶è§¦å‘")]
-    public AudioClip skillHitAudio; //æŠ€èƒ½å‘½ä¸­éŸ³æ•ˆ
-    [LabelText("æ˜¯å¦æ˜¾ç¤ºæŠ€èƒ½ç«‹ç»˜"), TitleGroup("æŠ€èƒ½æ¸²æŸ“", "æ‰€æœ‰è‹±é›„æ¸²æŸ“æ•°æ®ä¼šåœ¨å¼€å§‹é‡Šæ”¾æŠ€èƒ½æ—¶è§¦å‘")]
-    public bool showSkillPortrait; //æ˜¯å¦æ˜¾ç¤ºæŠ€èƒ½ç«‹ç»˜
-    [LabelText("æŠ€èƒ½ç«‹ç»˜"), TitleGroup("æŠ€èƒ½æ¸²æŸ“", "æ‰€æœ‰è‹±é›„æ¸²æŸ“æ•°æ®ä¼šåœ¨å¼€å§‹é‡Šæ”¾æŠ€èƒ½æ—¶è§¦å‘")]
-    [ShowIf("showSkillPortrait")]
-    public GameObject skillPortrait; //æŠ€èƒ½ç«‹ç»˜
-    [LabelText("æŠ€èƒ½æè¿°")]
-    public string skillDes; //æŠ€èƒ½æè¿°
-
-
-    public void OnSkillTypeChange(SkillType skillType)
+    public void GetObjectPath(GameObject obj)
     {
-        showStockPileData = skillType == SkillType.StockPlie;
-        showSkillGuide = skillType == SkillType.PosGuide;
+        skillHitEffectPath = UnityEditor.AssetDatabase.GetAssetPath(obj);
+        Debug.Log("skillHitEffectPath:" + skillHitEffectPath);
     }
-
+#endif
+    /// <summary>
+    /// ¼¼ÄÜÀàĞÍ¸Ä±ä
+    /// </summary>
+    public void OnSKillTypeChange(SKillType sKillType)
+    {
+        showStockPileData = sKillType == SKillType.StockPile;
+        showSkillGuide = sKillType == SKillType.PosGuide;
+    }
 }
 
-
-public enum SkillType
+public enum SKillType
 {
-    [LabelText("æ— é…ç½®ï¼ˆç¬å‘æŠ€èƒ½ï¼‰")]None,//æ— ï¼ˆç¬å‘ï¼‰
-    [LabelText("åŸå”±å‹æŠ€èƒ½")] Chnat,//åŸå”±å‹
-    [LabelText("å¼¹é“å‹æŠ€èƒ½")] Ballistic,//å¼¹é“å‹
-    [LabelText("è“„åŠ›å‹æŠ€èƒ½")] StockPlie,//è“„åŠ›å‹
-    [LabelText("ä½ç½®å¼•å¯¼å‹æŠ€èƒ½")] PosGuide,//ä½ç½®å¼•å¯¼å‹
+    [LabelText("ÎŞÅäÖÃ£¨Ë²·¢¼¼ÄÜ£©")] None, 
+    [LabelText("Ò÷³ªĞÍ¼¼ÄÜ")] Chnat,//Ò÷³ªĞÍ¼¼ÄÜ
+    [LabelText("µ¯µÀĞÍ¼¼ÄÜ")] Ballistic,//µ¯µÀĞÍ¼¼ÄÜ
+    [LabelText("ĞîÁ¦¼¼ÄÜ")] StockPile,//ĞîÁ¦¼¼ÄÜ 
+    [LabelText("Î»ÖÃÒıµ¼¼¼ÄÜ")] PosGuide,//Î»ÖÃÒıµ¼¼¼ÄÜ
 }
 
 /// <summary>
-/// æŠ€èƒ½è“„åŠ›é˜¶æ®µæ•°æ®
+/// ĞîÁ¦½×¶ÎÊı¾İ
 /// </summary>
 [System.Serializable]
 public class StockPileStageData
 {
-    [LabelText("è“„åŠ›é˜¶æ®µ")]
-    public int stage; //è“„åŠ›é˜¶æ®µ
-    [LabelText("å½“å‰è“„åŠ›é˜¶æ®µè§¦å‘çš„æŠ€èƒ½id")]
-    public int skillid; //å½“å‰è“„åŠ›é˜¶æ®µè§¦å‘çš„æŠ€èƒ½id
-    [LabelText("å½“å‰é˜¶æ®µå¼€å§‹æ—¶é—´")]
-
-    public int startTimeMs; //å½“å‰é˜¶æ®µå¼€å§‹æ—¶é—´
-    [LabelText("å½“å‰é˜¶æ®µç»“æŸæ—¶é—´")]
-    public int endTimeMs; //å½“å‰é˜¶æ®µç»“æŸæ—¶é—´
+    [LabelText("ĞîÁ¦½×¶Îid")]
+    public int stage;//ĞîÁ¦½×¶Îid
+    [LabelText("µ±Ç°ĞîÁ¦½×¶Î´¥·¢µÄ¼¼ÄÜid")]
+    public int skillid;//µ±Ç°ĞîÁ¦½×¶Î´¥·¢µÄ¼¼ÄÜid
+    [LabelText("µ±Ç°½×¶Î´¥·¢¿ªÊ¼Ê±¼ä")]
+    public int startTimeMs;//µ±Ç°½×¶Î´¥·¢¿ªÊ¼Ê±¼ä
+    [LabelText("µ±Ç°½×¶Î½áÊøÊ±¼ä")]
+    public int endTimeMs;//µ±Ç°½×¶Î½áÊøÊ±¼ä
 }
-
-

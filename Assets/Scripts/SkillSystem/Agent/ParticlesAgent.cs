@@ -5,55 +5,44 @@ using UnityEngine;
 
 public class ParticlesAgent : MonoBehaviour
 {
-
 #if UNITY_EDITOR
+
     private ParticleSystem[] mParticleArr;
     private double mLastRunTime;
-
     public void InitPlayAnim(Transform trans)
     {
-        mParticleArr = trans.GetComponentsInChildren<ParticleSystem>();
+        mParticleArr= trans.GetComponentsInChildren<ParticleSystem>();
         EditorApplication.update += OnUpdate;
     }
-
 
     public void OnDestroy()
     {
         EditorApplication.update -= OnUpdate;
     }
-
     public void OnUpdate()
     {
         if (mLastRunTime == 0)
         {
             mLastRunTime = EditorApplication.timeSinceStartup;
         }
-        //è·å–å½“å‰è¿è¡Œæ—¶é—´
+        //»ñÈ¡µ±Ç°ÔËĞĞµÄÊ±¼ä
         double curRunTime = EditorApplication.timeSinceStartup - mLastRunTime;
-        //æ¨¡æ‹Ÿç²’å­ç‰¹æ•ˆæ’­æ”¾è¿›åº¦
-        if(mParticleArr != null)
+
+        if (mParticleArr!=null)
         {
-            foreach(var particle in mParticleArr)
+            foreach (var item in mParticleArr)
             {
-                if(particle != null)
+                if (item!=null)
                 {
-                    //åœæ­¢æ‰€æœ‰ç²’å­åŠ¨æ•ˆçš„æ’­æ”¾
-                    particle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-                    //å…³é—­ç”±éšæœºç§å­æ’­æ”¾çš„ç²’å­ç‰¹æ•ˆ
-                    particle.useAutoRandomSeed = false;
-                    //æ¨¡æ‹Ÿç²’å­ç‰¹æ•ˆçš„æ’­æ”¾
-                    particle.Simulate((float)curRunTime);
+                    //Í£Ö¹ËùÓĞÁ£×Ó¶¯Ğ§µÄ²¥·Å
+                    item.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                    //¹Ø±ÕÓÉËæ»úÖÖ×Ó²¥·ÅµÄÁ£×ÓÌØĞ§
+                    item.useAutoRandomSeed = false;
+                    //Ä£ÄâÁ£×Ó¶¯Ğ§µÄ²¥·Å
+                    item.Simulate((float)curRunTime);
                 }
             }
         }
-
-
-
     }
-
-
-
-
 #endif
-
 }

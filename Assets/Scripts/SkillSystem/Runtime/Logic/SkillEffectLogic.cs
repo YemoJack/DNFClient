@@ -1,114 +1,102 @@
-using FixIntPhysics;
-using FixMath;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using FixMath;
+using FixIntPhysics;
 public class SkillEffectLogic : LogicObject
 {
-
     private LogicActor mSkillCreater;
     private SkillEffectConfig mEffectCfg;
-
     private ColliderBehaviour mCollider;
-    private float mAccRunTime; //ç´¯è®¡è¿è¡Œæ—¶é—´
-
-
-    public SkillEffectLogic(LogicObjectType objType,SkillEffectConfig effectCfg,RenderObject renderObj,LogicActor skillCreater)
+    private int mAccRumtime;//ÀÛ¼ÆÔËĞĞÊ±¼ä
+    public SkillEffectLogic(LogicObjectType objType, SkillEffectConfig effectCfg, RenderObject renderObject, LogicActor skillCreater,Skill skill)
     {
+        this.ObjectType = objType;
+        this.RenderObj = renderObject;
         this.mSkillCreater = skillCreater;
-        ObjectType = objType;
-        RenderObj = renderObj;
-        mEffectCfg = effectCfg;
-        LogicXAxis = mSkillCreater.LogicXAxis;
-        //åˆå§‹åŒ–ç‰¹æ•ˆé€»è¾‘ä½ç½®
-        if(effectCfg.effectPosType == EffectPosType.FollowPosDir || effectCfg.effectPosType == EffectPosType.FollowDir)
+        this.mEffectCfg = effectCfg;
+        this.LogicXAxis = skillCreater.LogicXAxis;
+        //³õÊ¼»¯ÌØĞ§Âß¼­Î»ÖÃ
+        if (effectCfg.effectPosType == EffectPosType.FollowDir || effectCfg.effectPosType == EffectPosType.FollowPosDir)
         {
-            FixIntVector3 offset = new FixMath.FixIntVector3(effectCfg.effectOffsetPos) * LogicXAxis;
-            offset.y = FixIntMath.Abs(offset.y);
-            LogicPos = mSkillCreater.LogicPos + offset;
+            FixIntVector3 offsetPos = new FixIntVector3(effectCfg.effectOffsetPos) * LogicXAxis;
+            offsetPos.y = FixIntMath.Abs(offsetPos.y);
+            LogicPos = skillCreater.LogicPos + offsetPos;
         }
-        else if(effectCfg.effectPosType == EffectPosType.Zero)
+        else if (effectCfg.effectPosType == EffectPosType.Zero)
         {
             LogicPos = FixIntVector3.zero;
         }
+        else if (effectCfg.effectPosType== EffectPosType.GuidePos)
+        {
+            //ÆğÊ¼Î»ÖÃ
+            FixIntVector3 initPos= skill.sKillGuidePos + mSkillCreater.LogicXAxis * new FixIntVector3(effectCfg.effectOffsetPos);
+            initPos.y = FixIntMath.Abs(initPos.y);
+            LogicPos = initPos;
+        }
+ 
     }
 
-
-
-    public void OnLogicFrameEffectUpdate(Skill skill,int curFrame)
+    public void OnLogicFrameEffectUpdate(Skill skill, int curLogicFrame)
     {
-        
-        if(mEffectCfg.effectPosType == EffectPosType.FollowPosDir)
+        if (mEffectCfg.effectPosType == EffectPosType.FollowPosDir)
         {
             FixIntVector3 offsetPos = new FixIntVector3(mEffectCfg.effectOffsetPos) * LogicXAxis;
             offsetPos.y = FixIntMath.Abs(offsetPos.y);
             LogicPos = mSkillCreater.LogicPos + offsetPos;
         }
-
-        //1. å¤„ç†ç‰¹æ•ˆè¡ŒåŠ¨é…ç½®ï¼Œè®©ç‰¹æ•ˆèƒ½å¤Ÿè·Ÿéšé…ç½®ç§»åŠ¨
-        if(mEffectCfg.isAttachAction && mEffectCfg.actionConfig.triggerFrame ==  curFrame)
+        //1.´¦ÀíÌØĞ§ĞĞ¶¯ÅäÖÃ£¬ÈÃÌØĞ§ÄÜ¹»¸úËæÅäÖÃÒÆ¶¯
+        if (mEffectCfg.isAttachAction && mEffectCfg.actionConfig.triggerFrame == curLogicFrame)
         {
-            skill.AddMoveAction(mEffectCfg.actionConfig, this, () =>{
-                mCollider.OnRelease();
+            skill.AddMoveAction(mEffectCfg.actionConfig, this,mEffectCfg.effectOffsetPos, () =>
+            {
+                Debug.Log("MoveToAction Finish SkillEffectLogic");
+                mCollider?.OnRelease();
                 skill.DestroyEffect(mEffectCfg);
                 mCollider = null;
             }, () =>
             {
-                //ç‰¹æ•ˆç§»åŠ¨é€»è¾‘å¸§æ›´æ–°å›è°ƒ
-                //æ›´æ–°ç¢°æ’ä½“ä½ç½®
+                //ÌØĞ§ÒÆ¶¯Âß¼­Ö¡»Øµ÷
+                //¸üĞÂÅö×²ÌåÎ»ÖÃ
                 if (mEffectCfg.damageConfig.isFollowEffect)
                 {
                     skill.CreateOrUpdateCollider(mEffectCfg.damageConfig, mCollider, this);
                 }
-
-
                 if (mEffectCfg.isAttachDamage)
                 {
-                    //å¤„ç†é—´éš”æ€§ä¼¤å®³
+                    //´¦Àí¼ä¸ôĞÔÉËº¦
                     if (mEffectCfg.damageConfig.triggerIntervalMs != 0 && mCollider != null)
                     {
-                        mAccRunTime += LogicFrameConfig.LogicFrameIntervalMS;
-                        if (mAccRunTime >= mEffectCfg.damageConfig.triggerIntervalMs)
+                        mAccRumtime += LogicFrameConfig.LogicFrameIntervalms;
+                        if (mAccRumtime >= mEffectCfg.damageConfig.triggerIntervalMs)
                         {
                             skill.TriggerColliderDamage(mCollider, mEffectCfg.damageConfig);
-                            mAccRunTime -= mEffectCfg.damageConfig.triggerIntervalMs;
+                            mAccRumtime -= mEffectCfg.damageConfig.triggerIntervalMs;
                         }
                     }
                 }
             });
         }
-        //2. å¤„ç†ä¼¤å®³é…ç½®ï¼Œè®©ä¼¤å®³ç¢°æ’ä½“èƒ½å¤Ÿè·ŸéšåŠ¨æ•ˆè¿›è¡Œç§»åŠ¨
+        //2.´¦ÀíÉËº¦ÅäÖÃ£¬ÈÃÉËº¦Åö×²ÌåÄÜ¹»¸úËæ¶¯Ğ§½øĞĞÒÆ¶¯
         if (mEffectCfg.isAttachDamage)
         {
-            //åˆ›å»ºä¼¤å®³ç¢°æ’ä½“
-            if(mEffectCfg.damageConfig.triggerFrame == curFrame)
+            //´´½¨ÉËº¦Åö×²Ìå
+            if (mEffectCfg.damageConfig.triggerFrame == curLogicFrame)
             {
-                mCollider = skill.CreateOrUpdateCollider(mEffectCfg.damageConfig, null,this);
-                if(mEffectCfg.damageConfig.triggerIntervalMs == 0)
+                mCollider = skill.CreateOrUpdateCollider(mEffectCfg.damageConfig, null, this);
+                if (mEffectCfg.damageConfig.triggerIntervalMs == 0)
                 {
-                    skill.TriggerColliderDamage(mCollider,mEffectCfg.damageConfig);
+                    skill.TriggerColliderDamage(mCollider, mEffectCfg.damageConfig);
                 }
-            }
-           
-
-            //æ›´æ–°ç¢°æ’ä½“ä½ç½®
-            if (mEffectCfg.damageConfig.isFollowEffect) 
-            {
-                skill.CreateOrUpdateCollider(mEffectCfg.damageConfig, mCollider, this);
             }
 
 
         }
-
-
     }
-
 
     public override void OnDestroy()
     {
         base.OnDestroy();
         RenderObj.OnRelease();
     }
-
 }

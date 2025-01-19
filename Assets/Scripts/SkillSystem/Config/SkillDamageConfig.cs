@@ -1,177 +1,154 @@
-using FixIntPhysics;
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FixIntPhysics;
 
 [System.Serializable]
-public class SkillDamageConfig 
+public class SkillDamageConfig  
 {
-    [LabelText("è§¦å‘å¸§")]
-    public int triggerFrame; //è§¦å‘å¸§
-    [LabelText("ç»“æŸå¸§")]
-    public int endFrame; //ç»“æŸå¸§
-    [LabelText("è§¦å‘é—´éš”ms(0ä¸ºè§¦å‘ä¸€æ¬¡)")]
-    public int triggerIntervalMs; //è§¦å‘é—´éš”ms(0ä¸ºè§¦å‘ä¸€æ¬¡)
-    [LabelText("ç¢°æ’ä½“æ˜¯å¦è·Ÿéšç‰¹æ•ˆ")]
-    public bool isFollowEffect; //ç¢°æ’ä½“æ˜¯å¦è·Ÿéšç‰¹æ•ˆ
-    [LabelText("ä¼¤å®³ç±»å‹")]
-    public DamageType damageType; //ä¼¤å®³ç±»å‹
-    [LabelText("ä¼¤å®³å€ç‡")]
-    public int damageRate; //ä¼¤å®³å€ç‡
-    [LabelText("ä¼¤å®³æ£€æµ‹æ¨¡å¼"),OnValueChanged("OnDetectionModeValueChange")]
-    public DamageDetectionMode detectionMode; //ä¼¤å®³æ£€æµ‹æ¨¡å¼
-    [LabelText("Boxç¢°æ’ä½“çš„å¤§å°"),ShowIf("isShowBox3D"),OnValueChanged("OnBoxValueChange")]
-    public Vector3 boxSize = new Vector3(1, 1, 1); //Boxç¢°æ’ä½“çš„å¤§å°
-    [LabelText("Boxç¢°æ’ä½“åç§»"), ShowIf("isShowBox3D"),OnValueChanged("OnColliderOffsetChange")]
-    public Vector3 boxOffset = new Vector3(0, 0, 0); //Boxç¢°æ’ä½“åç§»
-    [LabelText("çƒå‹ç¢°æ’ä½“åç§»"), ShowIf("isShowSphere3D"), OnValueChanged("OnColliderOffsetChange")]
-    public Vector3 sphereOffset = new Vector3(0, 0.9f, 0); //çƒå‹ç¢°æ’ä½“åç§»
-    [LabelText("åœ†çƒä¼¤å®³æ£€æµ‹åŠå¾„"), ShowIf("isShowSphere3D"), OnValueChanged("OnRadiusValueChange")]
-    public float radius = 1; //åœ†çƒä¼¤å®³æ£€æµ‹åŠå¾„
-    [LabelText("åœ†çƒä¼¤å®³æ£€æµ‹åŠå¾„é«˜åº¦"), ShowIf("isShowSphere3D")]
-    public float raduisHeight = 0f; //åœ†çƒä¼¤å®³æ£€æµ‹åŠå¾„é«˜åº¦
-    [LabelText("ç¢°æ’ä½“ä½ç½®ç±»å‹")]
-    public ColliderPosType colliderPosType = ColliderPosType.FollowDir; //ç¢°æ’ä½“ä½ç½®ç±»å‹
-    [LabelText("ä¼¤å®³è§¦å‘å¯¹è±¡")]
-    public TargetType targetType; //ä¼¤å®³è§¦å‘å¯¹è±¡
-    [TitleGroup("æŠ€èƒ½é™„åŠ Buff","ä¼¤å®³ç”Ÿæ•ˆçš„ä¸€ç¬é—´ï¼Œé™„åŠ æŒ‡å®šå¤šä¸ªbuff")]
-    public int[] addBuffs; //æŠ€èƒ½é™„åŠ Buff
-    [TitleGroup("è§¦å‘åç»­æŠ€èƒ½id","é€ æˆä¼¤å®³åä¸”æŠ€èƒ½é‡Šæ”¾å®Œæ¯•åè§¦å‘çš„æŠ€èƒ½")]
-    public int triggerSkillid; //è§¦å‘æŠ€èƒ½id
-
-
+    [LabelText("´¥·¢Ö¡")]
+    public int triggerFrame;//´¥·¢Ö¡
+    [LabelText("½áÊøÖ¡")]
+    public int endFrame;//½áÊøÖ¡
+    [LabelText("´¥·¢¼ä¸ô£¨ºÁÃë value=0 Ä¬ÈÏÒ»´Î£¬>0ÔòÎª¼ä¸ô£©")]
+    public int triggerIntervalMs;//´¥·¢¼ä¸ô£¨ºÁÃë value=0 Ä¬ÈÏÒ»´Î£¬>0ÔòÎª¼ä¸ô£©
+    [LabelText("ÊÇ·ñ¸úËæÌØĞ§ÒÆ¶¯")]
+    public bool isFollowEffect;//Åö×²ÌåÊÇ·ñ¸úËæÌØĞ§ÒÆ¶¯
+    [LabelText("ÉËº¦ÅäÖÃ")]
+    public DamageType damageType;//ÉËº¦ÅäÖÃ
+    [LabelText("ÉËº¦±¶ÂÊ")]
+    public int damageRate;//ÉËº¦±¶ÂÊ
+    [LabelText("ÉËº¦¼ì²â·½Ê½"),OnValueChanged("OnDectectionValueChange")]
+    public DamageDetectionMode detectionMode;//ÉËº¦¼ì²â·½Ê½
+    [LabelText("BoxÅö×²Ìå¿í¸ß"),ShowIf("mShowBox3D"),OnValueChanged("OnBoxValueChange")]
+    public Vector3 boxSize = new Vector3(1, 1, 1);//BoxÅö×²µÄ´óĞ¡
+    [LabelText("BoxÅö×²ÌåÆ«ÒÆ"), ShowIf("mShowBox3D"),OnValueChanged("OnColliderOffsetChange")]
+    public Vector3 boxOffset = new Vector3(0, 0, 0);//BoxÅö×²ÌåÆ«ÒÆÖµ
+    [LabelText("Ô²ÇòÅö×²ÌåÆ«ÒÆÖµ"), ShowIf("mShowShpere3D"),OnValueChanged("OnColliderOffsetChange")]
+    public Vector3 sphereOffset = new Vector3(0,0.9f,0);//Ô²ÇòÅö×²ÌåÆ«ÒÆÖµ
+    [LabelText("Ô²ÇòÉËº¦¼ì²â°ë¾¶"), ShowIf("mShowShpere3D"),OnValueChanged("OnRaduisValueChange")]
+    public float raduis = 1;//Ô²ÇòÉËº¦¼ì²é°ë¾¶
+    [LabelText("Ô²Çò¼ì²â°ë¾¶¸ß¶È"), ShowIf("mShowShpere3D")]
+    public float raduisHeight = 0;//Ô²Çò¼ì²â°ë¾¶¸ß¶È
+    [LabelText("Åö×²ÌåÎ»ÖÃÀàĞÍ")]
+    public ColliderPosType colliderPosType = ColliderPosType.FollowDir;//Åö×²ÌåÎ»ÖÃÀàĞÍ
+    [LabelText("ÉËº¦´¥·¢Ä¿±ê")]
+    public TargetType targetType;//ÉËº¦´¥·¢Ä¿±ê
+    [TitleGroup("¸½¼ÓBuff","ÉËº¦ÉúĞ§µÄÒ»Ë²¼ä£¬¸½¼ÓÖ¸¶¨µÄ¶à¸öbuff")]
+    public int[] addBuffs;//¼¼ÄÜ¸½¼ÓBUff
+    [TitleGroup("´¥·¢ºóĞø¼¼ÄÜ", "Ôì³ÉÉËº¦ºóÇÒ¼¼ÄÜÊÍ·ÅÍê±Ïºó´¥·¢µÄ¼¼ÄÜ")]
+    public int triggerSkillid;//´¥·¢¼¼ÄÜid
 #if UNITY_EDITOR
-    private bool isShowBox3D = false;
-    private bool isShowSphere3D = false;
+    private bool mShowBox3D;//ÊÇ·ñÏÔÊ¾3DboxÅö×²Ìå
+    private bool mShowShpere3D;//ÊÇ·ñÏÔÊ¾3DÔ²ÇòÅö×²Ìå
     private FixIntBoxCollider boxCollider;
     private FixIntSphereCollider sphereCollider;
-    private int mCurLogicFrame = 0; //å½“å‰é€»è¾‘å¸§
-
-
+    private int mCurLogicFrame=0;//µ±Ç°Ö´ĞĞµ½µÄÂß¼­Ö¡
     /// <summary>
-    /// ç¢°æ’æ£€æŸ¥ç±»å‹å‘ç”Ÿæ”¹å˜
+    /// Åö×²¼ì²âÀàĞÍ·¢Éú±ä»¯
     /// </summary>
-    /// <param name="mode"></param>
-    public void OnDetectionModeValueChange(DamageDetectionMode mode)
+    /// <param name="detectionMode"></param>
+    public void OnDectectionValueChange(DamageDetectionMode detectionMode)
     {
-        isShowBox3D = mode == DamageDetectionMode.BOX3D;
-        isShowSphere3D = mode == DamageDetectionMode.Sphere3D;
+        mShowBox3D = detectionMode == DamageDetectionMode.BOX3D;
+        mShowShpere3D = detectionMode == DamageDetectionMode.Sphere3D ;
         CreateCollider();
     }
-
     /// <summary>
-    /// Boxç¢°æ’ä½“å¤§å°å‘ç”Ÿæ”¹å˜
+    /// Ô²ÇòÅö×²Ìå¼ì²â°ë¾¶·¢Éú±ä»¯
+    /// </summary>
+    /// <param name="raduis"></param>
+    public void OnRaduisValueChange(float raduis)
+    {
+        if (sphereCollider!=null)
+            sphereCollider.SetBoxData(raduis, GetColliderOffsetPos(), colliderPosType == ColliderPosType.FollowPos);
+        else
+            Debug.LogError("sphereCollider is Null£¡");
+    }
+    /// <summary>
+    /// Åö×²ÌåÖĞĞÄµã·¢Éú±ä»¯
+    /// </summary>
+    public void OnColliderOffsetChange(Vector3 conter)
+    {
+        if (detectionMode == DamageDetectionMode.BOX3D&& boxCollider!=null)
+        {
+            boxCollider.SetBoxData(GetColliderOffsetPos(), boxSize, colliderPosType == ColliderPosType.FollowPos);
+        }
+        else if (detectionMode == DamageDetectionMode.Sphere3D&& sphereCollider!=null)
+        {
+            sphereCollider.SetBoxData(raduis, GetColliderOffsetPos(), colliderPosType == ColliderPosType.FollowPos);
+        }
+    }
+    /// <summary>
+    /// BoxÅö×²Ìå¿í¸ß·¢Éú±ä»¯
     /// </summary>
     public void OnBoxValueChange(Vector3 size)
     {
-        if (boxCollider != null)
-            boxCollider.SetBoxData(GetColliderOffsetPos(), size, colliderPosType == ColliderPosType.FollowPos);
+        if (boxCollider!=null)
+            boxCollider.SetBoxData(GetColliderOffsetPos(), size,colliderPosType == ColliderPosType.FollowPos);
         else
-            Debug.LogError("boxCollider is null !");
+            Debug.LogError("boxCollider is Null£¡");
     }
-
     /// <summary>
-    /// ç¢°æ’ä½“åç§»å‘ç”Ÿæ”¹å˜
-    /// </summary>
-    /// <param name="offset"></param>
-    public void OnColliderOffsetChange(Vector3 offset)
-    {
-        if (detectionMode == DamageDetectionMode.BOX3D && boxCollider != null)
-        {
-            boxCollider.SetBoxData(GetColliderOffsetPos(),boxSize,colliderPosType == ColliderPosType.FollowPos);
-        }
-        else if (detectionMode == DamageDetectionMode.Sphere3D &&sphereCollider != null)
-        {
-            sphereCollider.SetBoxData(radius, GetColliderOffsetPos(), colliderPosType == ColliderPosType.FollowPos);
-        }
-    }
-
-    /// <summary>
-    /// åœ†çƒä¼¤å®³æ£€æµ‹åŠå¾„å‘ç”Ÿæ”¹å˜
-    /// </summary>
-    /// <param name="value"></param>
-    public void OnRadiusValueChange(float value)
-    {
-        if (sphereCollider != null)
-            sphereCollider.SetBoxData(radius, GetColliderOffsetPos(), colliderPosType == ColliderPosType.FollowPos);
-        else
-            Debug.LogError("sphereCollider is null !");
-    }
-
-
-
-
-
-
-    /// <summary>
-    /// è·å–ç¢°æ’ä½“åç§»åçš„ä½ç½®
+    /// »ñÈ¡Åö×²ÌåµÄÆ«ÒÆÖµ
     /// </summary>
     /// <returns></returns>
     public Vector3 GetColliderOffsetPos()
     {
-        Vector3 characterPos = SkillComplierWindow.GetCharacterPos();
-        if(detectionMode == DamageDetectionMode.BOX3D)
+        Vector3 charaterPos= SkillComplierWindow.GetCharaterPos();
+        if (detectionMode == DamageDetectionMode.BOX3D)
         {
-            return characterPos + boxOffset;
+            return charaterPos + boxOffset;
         }
-        else if(detectionMode == DamageDetectionMode.Sphere3D)
+        else if (detectionMode == DamageDetectionMode.Sphere3D)
         {
-            return characterPos + sphereOffset;
+            return charaterPos + sphereOffset;
         }
         return Vector3.zero;
     }
-
-
     /// <summary>
-    /// åˆ›å»ºç¢°æ’ä½“
+    /// ´´½¨Åö×²Ìå
     /// </summary>
     public void CreateCollider()
     {
         DestroyCollider();
-        if(detectionMode == DamageDetectionMode.BOX3D)
+        if (detectionMode== DamageDetectionMode.BOX3D)
         {
             boxCollider = new FixIntBoxCollider(boxSize, GetColliderOffsetPos());
-            boxCollider.SetBoxData(GetColliderOffsetPos(), boxSize, colliderPosType == ColliderPosType.FollowPos);
+            boxCollider.SetBoxData(GetColliderOffsetPos(), boxSize,colliderPosType== ColliderPosType.FollowPos);
         }
-        else if(detectionMode== DamageDetectionMode.Sphere3D)
+        else if (detectionMode== DamageDetectionMode.Sphere3D)
         {
-            sphereCollider = new FixIntSphereCollider(radius, GetColliderOffsetPos());
-            sphereCollider.SetBoxData(radius, GetColliderOffsetPos(), colliderPosType == ColliderPosType.FollowPos);
+            sphereCollider = new FixIntSphereCollider(raduis, GetColliderOffsetPos());
+            sphereCollider.SetBoxData(raduis, GetColliderOffsetPos(), colliderPosType == ColliderPosType.FollowPos);
         }
-
-
     }
-
     public void DestroyCollider()
     {
-        if(boxCollider!= null)
+        if (boxCollider != null)
         {
             boxCollider.OnRelease();
         }
-        if(sphereCollider!= null)
+        if (sphereCollider != null)
         {
             sphereCollider.OnRelease();
         }
     }
-
-
     /// <summary>
-    /// å½“å‰çª—å£åˆå§‹åŒ–
+    /// µ±Ç°´°¿Ú³õÊ¼»¯
     /// </summary>
-    public void Init()
+    public void OnInit()
     {
         CreateCollider();
     }
-
     /// <summary>
-    /// å½“å‰çª—å£å…³é—­
+    /// µ±Ç°´°¿Ú¹Ø±Õ
     /// </summary>
     public void OnRelease()
     {
         DestroyCollider();
     }
-
 
     public void PlaySkillStart()
     {
@@ -179,73 +156,56 @@ public class SkillDamageConfig
         DestroyCollider();
     }
 
-    public void PlaySkillEnd()
+    public void PlaySkilEnd()
     {
         DestroyCollider();
     }
-
-
     public void OnLogicFrameUpdate()
     {
+        //ÊÇ·ñµ½´ï´¥·¢Ö¡
         if (mCurLogicFrame == triggerFrame)
         {
             CreateCollider();
         }
         else if (mCurLogicFrame == endFrame)
         {
-            DestroyCollider() ;
+            DestroyCollider();
         }
-
-
         mCurLogicFrame++;
     }
 
-
-
 #endif
-
 }
-
+public enum TargetType
+{
+    [LabelText("Î´ÅäÖÃ")] None,//Î´ÅäÖÃ
+    [LabelText("¶ÓÓÑ")] Teammate,//¶ÓÓÑ
+    [LabelText("µĞÈË")] Enemy,//µĞÈË
+    [LabelText("×ÔÉí")] Self,//×ÔÉí
+    [LabelText("ËùÓĞ¶ÔÏó")] AllObject,//ËùÓĞ¶ÔÏó
+}
 
 public enum ColliderPosType
 {
-    [LabelText("è·Ÿéšè§’è‰²æ–¹å‘")]FollowDir,//è·Ÿéšè§’è‰²æ–¹å‘
-    [LabelText("è·Ÿéšè§’è‰²ä½ç½®")] FollowPos,//è·Ÿéšè§’è‰²ä½ç½®
-    [LabelText("ä¸­å¿ƒåæ ‡")] CenterPos,//ä¸­å¿ƒåæ ‡
-    [LabelText("ç›®æ ‡ä½ç½®")] TargetPos,//ç›®æ ‡ä½ç½®
+    [LabelText("¸úËæ½ÇÉ«³¯Ïò")] FollowDir,//¸úËæ½ÇÉ«³¯Ïò
+    [LabelText("¸úËæ½ÇÉ«Î»ÖÃ")] FollowPos,//¸úËæ½ÇÉ«Î»ÖÃ
+    [LabelText("ÖĞĞÄ×ø±ê")] ConterPos,//ÖĞĞÄ×ø±ê
+    [LabelText("Ä¿±êÎ»ÖÃ")] TargetPos,//Ä¿±êÎ»ÖÃ
 }
-
-
-public enum TargetType
-{
-    [LabelText("æœªé…ç½®")] None,//æœªé…ç½®
-    [LabelText("å‹å†›")] Teammate,//å‹å†›
-    [LabelText("æ•Œå†›")] Enemy,//æ•Œå†›
-    [LabelText("è‡ªå·±")] Self,//è‡ªå·±
-    [LabelText("æ‰€æœ‰å¯¹è±¡")] AllObject,//æ‰€æœ‰å¯¹è±¡
-}
-
 
 public enum DamageType
 {
-    [LabelText("æ— é…ç½®")] None,//æ— é…ç½®
-    [LabelText("é­”æ³•ä¼¤å®³")] APDamage,//é­”æ³•ä¼¤å®³
-    [LabelText("ç‰©ç†ä¼¤å®³")] ADDamage,//ç‰©ç†ä¼¤å®³
+    [LabelText("ÎŞÉËº¦")]None,//ÎŞÉËº¦
+    [LabelText("ÎïÀíÉËº¦")] ADDamage,//ÎïÀíÉËº¦
+    [LabelText("Ä§·¨ÉËº¦")] APDamage,//Ä§·¨ÉËº¦
 }
-
 
 public enum DamageDetectionMode
 {
-    [LabelText("æ— é…ç½®")] None,//æ— é…ç½®
-    [LabelText("3DBoxç¢°æ’æ£€æµ‹")] BOX3D,//3DBoxç¢°æ’æ£€æµ‹
-    [LabelText("3Dçƒå‹æ£€æµ‹")] Sphere3D,//3Dçƒå‹æ£€æµ‹
-    [LabelText("3Dåœ†æŸ±æ£€æµ‹")] Cylinder3d,//3Dåœ†æŸ±æ£€æµ‹
-    [LabelText("åŠå¾„çš„è·ç¦»")] RadiusDistance,//åŠå¾„çš„è·ç¦»
-    [LabelText("æ‰€æœ‰ç›®æ ‡}")] AllTarget,//é€šè¿‡ä»£ç æœç´¢æ‰€æœ‰ç›®æ ‡
+    [LabelText("ÎŞÅäÖÃ")] None,//ÎŞÅäÖÃ
+    [LabelText("3DBoxÅö×²¼ì²â")] BOX3D,//3DBoxÅö×²¼ì²â
+    [LabelText("3DÔ²ÇòÅö×²¼ì²â")] Sphere3D,//3DÔ²ÇòÅö×²¼ì²â
+    [LabelText("3DÔ²ÖùÌåÅö×²¼ì²â")] Cylinder3D,//3DÔ²ÖùÌåÅö×²¼ì²â
+    [LabelText("°ë¾¶µÄ¾àÀë")] RadiusDistance,//°ë¾¶µÄ¾àÀë £¨´úÂëËÑË÷£©
+    [LabelText("ËùÓĞÄ¿±ê")] AllTarget,//Í¨¹ı´úÂëËÑË÷µÄËùÓĞÄ¿±ê
 }
-
-
-
-
-
-

@@ -4,127 +4,129 @@ using UnityEngine;
 using ZM.AssetFrameWork;
 
 /// <summary>
-/// æ¸²æŸ“å¯¹è±¡
+/// äÖÈ¾¶ÔÏó
 /// </summary>
 public class RenderObject : MonoBehaviour
 {
-
-    public LogicObject logicObject;
-
-    protected Vector2 mRenderDir;
-
-
     /// <summary>
-    /// ä½ç½®æ’å€¼é€Ÿåº¦
+    /// Âß¼­¶ÔÏó
+    /// </summary>
+    public LogicObject logicObject;
+    /// <summary>
+    /// Î»ÖÃ²åÖµËÙ¶È
     /// </summary>
     protected float mSmoothPosSpeed = 10;
 
-
-    private bool isUpdatePosAndRot = true;
-
-    public void SetLogicObject(LogicObject logicObject,bool isUpdatePosAndRot = true)
+    protected bool mIsUpdatePosAndRotation = true;
+    protected Vector2 mRenderDir;
+    public void SetLoigcObject(LogicObject logicObj,bool isUpdatePosAndRotation=true)
     {
-        this.logicObject = logicObject;
-        this.isUpdatePosAndRot = isUpdatePosAndRot;
-        //åˆå§‹åŒ–
-        transform.position = logicObject.LogicPos.ToVector3();
-
-        if(!isUpdatePosAndRot)
+        logicObject = logicObj;
+        mIsUpdatePosAndRotation = isUpdatePosAndRotation;
+        //³õÊ¼»¯Î»ÖÃ
+        transform.position = logicObj.LogicPos.ToVector3();
+        if (mIsUpdatePosAndRotation == false)
             transform.localPosition = Vector3.zero;
         UpdateDir();
     }
-
     /// <summary>
-    /// æ¸²æŸ“å±‚è„šæœ¬åˆ›å»º
+    /// äÖÈ¾²ã½Å±¾´´½¨
     /// </summary>
     public virtual void OnCreate()
     {
-        
-    }
 
+    }
     /// <summary>
-    /// æ¸²æŸ“å±‚è„šæœ¬é‡Šæ”¾
+    /// äÖÈ¾²ã½Å±¾ÊÍ·Å
     /// </summary>
     public virtual void OnRelease()
     {
-        
+
     }
-
-
-
     /// <summary>
-    /// Unityæ¸²æŸ“å¸§ æ ¹æ®ç¨‹åºé…ç½®ï¼Œæ¸²æŸ“å¸§ä¸€èˆ¬ä¸º30ï¼Œ60ï¼Œ120
+    /// UnityÒıÇæäÖÈ¾Ö¡£¬¸ù¾İ³ÌĞòÅäÖÃ£¬äÖÈ¾Ö¡Ò»°ãÒ»ÃëÎª30Ö¡¡¢ºÍ60Ö¡ÒÔ¼°120Ö¡ 
     /// </summary>
-    protected virtual void Update()
+    public virtual void Update()
     {
         UpdatePosition();
         UpdateDir();
     }
-
     /// <summary>
-    /// é€šç”¨çš„ä½ç½®æ›´æ–°
+    ///Í¨ÓÃµÄÎ»ÖÃ¸üĞÂÂß¼­
     /// </summary>
-    private void UpdatePosition()
+    public virtual void UpdatePosition()
     {
-        if (!isUpdatePosAndRot)
+        if (mIsUpdatePosAndRotation == false)
+        {
             return;
-        transform.position = Vector3.Lerp(transform.position,logicObject.LogicPos.ToVector3(),Time.deltaTime * mSmoothPosSpeed);
+        }
+        //¶ÔÂß¼­Î»ÖÃ×ö²åÖµ¶¯»­£¬Á÷³©äÖÈ¾¶ÔÏóÒÆ¶¯
+        transform.position = Vector3.Lerp(transform.position, logicObject.LogicPos.ToVector3(), Time.deltaTime * mSmoothPosSpeed);
     }
-
     /// <summary>
-    /// é€šç”¨çš„æ–¹å‘æ›´æ–°
+    /// Í¨ÓÃµÄ·½Ïò¸üĞÂÂß¼­
     /// </summary>
-    private void UpdateDir()
+    public virtual void UpdateDir()
     {
-        if (!isUpdatePosAndRot)
+        if (mIsUpdatePosAndRotation == false)
+        {
             return;
-        //transform.rotation = Quaternion.Euler(logicObject.LogicDir.ToVector3());
-
+        }
         //mRenderDir.x = logicObject.LogicXAxis >= 0 ? 0 : -20;
         mRenderDir.y = logicObject.LogicXAxis >= 0 ? 0 : 180;
         transform.localEulerAngles = mRenderDir;
-
-        //TODO...è°ƒæ•´è§’è‰²å·¦å³çš„æœå‘
-        //transform.localScale = new Vector3(logicObject.LogicXAxis >= 0 ? 1 : -1,1,1);
+    }
+    public virtual void OnDeath()
+    {
 
     }
-
     public virtual void PlayAnim(AnimationClip clip)
     {
 
     }
-
     public virtual void PlayAnim(string name)
     {
 
     }
 
-
+    public virtual string GetCurAnimName()
+    {
+        return "";
+    }
     /// <summary>
-    /// ä¼¤å®³
+    /// ÉËº¦
     /// </summary>
-    /// <param name="damageValue"></param>
-    /// <param name="damageSource">ä¼¤å®³æ¥æº</param>
-    public virtual void Damage(int damageValue , DamageSource damageSource)
+    /// <param name="damageValue">ÉËº¦Öµ</param>
+    /// <param name="source">ÉËº¦À´Ô´</param>
+    public virtual void Damage(int damageValue, DamageSource source)
     {
         GameObject damageItemObj = ZMAssetsFrame.Instantiate(AssetPathConfig.GAME_PREFABS + "DamageItem/DamageText", null);
         DamageTextItem item = damageItemObj.GetComponent<DamageTextItem>();
-        item.ShowDamageText(damageValue,this);
+        item.ShowDamageText(damageValue, this);
     }
-
-    public virtual void OnHit(GameObject effectHitObj, int surcicalTimems, LogicActor source)
+    public virtual void OnHit(string effectHitObjPath, int survivalTimems, LogicObject source)
     {
-        GameObject hitEffect = GameObject.Instantiate(effectHitObj);
-        hitEffect.transform.position = transform.position;
-        hitEffect.transform.localScale = source.LogicXAxis >0 ?Vector3.one :new Vector3(-1,1,1);
-        GameObject.Destroy(hitEffect,surcicalTimems/1000f);
+        if (!string.IsNullOrEmpty(effectHitObjPath))
+        {
+            //GameObject hitEffctObj= GameObject.Instantiate(effectHitObj);
+            GameObject hitEffctObj = ZMAssetsFrame.Instantiate(effectHitObjPath, null);
+            hitEffctObj.transform.position = source.RenderObj.transform.position; //´¿±íÏÖÂß¼­£¬ÎªÁË±íÏÖÍ³Ò»¿ÉÒÔÖ±½ÓÊ¹ÓÃäÖÈ¾Î»ÖÃ
+            hitEffctObj.transform.localScale = source.LogicXAxis > 0 ? Vector3.one : new Vector3(-1,1,1);
+            //GameObject.Destroy(hitEffctObj, survivalTimems*1.0f/1000);
+            LogicTimerManager.Instance.DelayCall(survivalTimems * 1.0f / 1000, () => {
+                ZMAssetsFrame.Release(hitEffctObj);
+            });
+        }
     }
+    public virtual Transform GetTransParent(TransParentType parentType) { return null; }
 
-
-    public virtual Transform GetTransParent(TransParentType parentType)
+    /// <summary>
+    /// ÏÔÊ¾¼¼ÄÜÁ¢»æ
+    /// </summary>
+    /// <param name="portraitObj"></param>
+    public virtual void ShowSkillPortrait(GameObject portraitObj)
     {
-        return null;
+        GameObject nPortraitObj = GameObject.Instantiate(portraitObj);
+        GameObject.Destroy(nPortraitObj, 3);
     }
-
-
 }

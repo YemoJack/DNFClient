@@ -13,10 +13,12 @@ public class DamageTextItem : MonoBehaviour
   
     public void ShowDamageText(int damageValue,RenderObject target)
     {
+        text.color = Color.white;
+        //text.color = new Color(1,1,1,1);
         BattleWindow window = UIModule.Instance.GetWindow<BattleWindow>();
         transform.SetParent(window.transform);
         transform.localScale = Vector3.one;
-        transform.position = PosConvertUtility.World3DPosToCanvasWorldPos(target.transform.position, window.transform as RectTransform, UIModule.Instance.Camera);
+        transform.position = PosConvertUtility.World3DPosToCanvasWorldPos(target.transform.position, window.transform as RectTransform, UIModule.Instance.mUICamera);
 
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y+20,0);
         transform.localScale = Vector3.one * 2f;
@@ -27,7 +29,8 @@ public class DamageTextItem : MonoBehaviour
         text.DOFade(0,0.3f). SetDelay(0.2f);
         transform.DOMoveY(transform.position.y + 1, 0.2f).OnComplete(() =>
         {
-            GameObject.Destroy(gameObject);
+            //GameObject.Destroy(gameObject);
+            ZM.AssetFrameWork.ZMAssetsFrame.Release(gameObject);
         }).SetDelay(0.2f);
         text.text = damageValue.ToString();
     }

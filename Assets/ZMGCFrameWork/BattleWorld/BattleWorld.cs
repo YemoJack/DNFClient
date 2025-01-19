@@ -8,101 +8,99 @@ namespace ZMGC.Battle
     public class BattleWorld : World
     {
         /// <summary>
-        /// é€»è¾‘å¸§ç´¯è®¡è¿è¡Œæ—¶é—´
+        /// Âß¼­Ö¡ÀÛ¼ÆÔËĞĞÊ±¼ä
         /// </summary>
         private float mAccLogicRuntime;
         /// <summary>
-        /// ä¸‹ä¸€ä¸ªé€»è¾‘å¸§å¼€å§‹çš„æ—¶é—´
+        /// ÏÂÒ»¸öÂß¼­Ö¡¿ªÊ¼µÄÊ±¼ä
         /// </summary>
         private float mNextLogicFrameTime;
         /// <summary>
-        /// é€»è¾‘å¸§åŠ¨ç”»ç¼“åŠ¨æ—¶é—´
+        /// Âß¼­Ö¡ÔöÁ¿Ê±¼ä
         /// </summary>
-        private float logicDeltaTime;
-
-
+        public float logicDeltaTime;
         /// <summary>
-        /// è‹±é›„æ§åˆ¶å™¨
+        /// Ó¢ĞÛ¿ØÖÆÆ÷
         /// </summary>
         public HeroLogicCtrl HeroLogicCtrl { get; private set; }
         /// <summary>
-        /// æ€ªç‰©æ§åˆ¶å™¨
+        /// ¹ÖÎï¿ØÖÆÆ÷
         /// </summary>
         public MonsterLogicCtrl MonsterLogicCtrl { get; private set; }
-
-
+        /// <summary>
+        /// ÊÀ½ç¹¹½¨Íê³ÉºóÖ´ĞĞ
+        /// </summary>
         public override void OnCretae()
         {
             base.OnCretae();
-
+            ConfigCenter.Instance.InitGameCfg();
             HeroLogicCtrl = BattleWorld.GetExitsLogicCtrl<HeroLogicCtrl>();
             MonsterLogicCtrl = BattleWorld.GetExitsLogicCtrl<MonsterLogicCtrl>();
-
             HeroLogicCtrl.InitHero();
             MonsterLogicCtrl.InitMonster();
 
             UIModule.PopUpWindow<BattleWindow>();
-            Debug.Log("BattleWorld  OnCretae>>>");
-
+            Debug.Log("BattleWorld OnCretae");
             BuffSystem.Instance.OnCreate();
+            AudioController.GetInstance().PlayMusicFade(AssetPathConfig.GAME_AUIDO_PATH + "BG/jizhou.mp3", 2);
         }
-
-
+        /// <summary>
+        /// UnityäÖÈ¾Ö¡¸üĞÂ Ä£ÄâÂß¼­Ö¡¸üĞÂ
+        /// </summary>
         public override void OnUpdate()
         {
             base.OnUpdate();
 
-            //é€»è¾‘å¸§ç´¯è®¡è¿è¡Œæ—¶é—´ç´¯åŠ 
+            //Âß¼­Ö¡ÀÛ¼ÆÔËĞĞÊ±¼äÀÛ¼Ó
             mAccLogicRuntime += Time.deltaTime;
 
-            //å½“å‰é€»è¾‘å¸§æ—¶é—´å¦‚æœå¤§äºä¸‹ä¸€ä¸ªé€»è¾‘å¸§æ—¶é—´ï¼Œå°±éœ€è¦æ›´æ–°é€»è¾‘å¸§
-            //è¿½å¸§æ“ä½œ
-            //æ§åˆ¶å¸§æ•°ï¼Œä¿è¯æ‰€æœ‰è®¾å¤‡é€»è¾‘å¸§å¸§æ•°çš„ä¸€è‡´æ€§ï¼Œå¹¶è¿›è¡Œè¿½å¸§æ“ä½œ
-            while(mAccLogicRuntime > mNextLogicFrameTime)
+            //µ±Ç°Âß¼­Ö¡Ê±¼äÈç¹û´óÓÚÏÂÒ»¸öÂß¼­Ö¡Ê±¼ä£¬¾ÍĞèÒª¸üĞÂÂß¼­Ö¡
+            //×·Ö¡²Ù×÷¡£
+            //¿ØÖÆÖ¡Êı£¬±£Ö¤ËùÓĞÉè±¸Âß¼­Ö¡Ö¡ÊıµÄÒ»ÖÂĞÔ£¬²¢½øĞĞ×·Ö¡²Ù×÷¡£
+            while (mAccLogicRuntime>mNextLogicFrameTime)
             {
-                //æ›´æ–°é€»è¾‘å¸§
+                //¸üĞÂÂß¼­Ö¡
                 OnLogicFrameUpdate();
-                //è®¡ç®—ä¸‹ä¸€ä¸ªé€»è¾‘å¸§çš„è¿è¡Œæ—¶é—´
+                //¼ÆËãÏÂÒ»¸öÂß¼­Ö¡µÄÔËĞĞÊ±¼ä
                 mNextLogicFrameTime += LogicFrameConfig.LogicFrameInterval;
-                //é€»è¾‘å¸§idè¿›è¡Œè‡ªå¢
+                //Âß¼­Ö¡id½øĞĞ×ÔÔö
                 LogicFrameConfig.LogicFrameid++;
             }
-           
+            //Âß¼­Ö¡ 1Ãë15Ö¡ äÖÈ¾Ö¡1Ãë60Ö¡
+            //0-1 ---- L
+            //mAccLogicRuntime 0.01 LogicFrameInterval 0.066 mNextLogicFrameTime 0.066 /0.066
+            // 0.01+0.066-0.066 /0.066 =0.01 /0.066= µ±Ç°Öµ/×î´óÖµ=0-1 ÓëÑªÌõµÄ¼ÆËã±ÈÀıÊÇÒ»ÑùµÄ¡£
+            // 0.05 +0.066-0.066 /0.066= 
             logicDeltaTime = (mAccLogicRuntime + LogicFrameConfig.LogicFrameInterval - mNextLogicFrameTime) / LogicFrameConfig.LogicFrameInterval;
-
-
         }
-
         /// <summary>
-        /// é€»è¾‘å¸§æ›´æ–°ï¼ˆåæœŸé€šè¿‡æœåŠ¡ç«¯è°ƒç”¨ï¼‰
+        /// Âß¼­Ö¡¸üĞÂ£¨ºóÆÚÍ¨¹ı·şÎñ¶Ë½øĞĞµ÷ÓÃ£©
         /// </summary>
-        private void OnLogicFrameUpdate()
+        public void OnLogicFrameUpdate()
         {
             HeroLogicCtrl.OnLogicFrameUpdate();
             MonsterLogicCtrl.OnLogicFrameUpdate();
             LogicActionController.Instance.OnLogicFrameUpdate();
             BuffSystem.Instance.OnLogicFrameUpdate();
+            LogicTimerManager.Instance.OnLogicFrameUpdate();
         }
-
-
-
-
-
-
-
+        /// <summary>
+        /// ÊÀ½çÏú»ÙÊ±Ö´ĞĞ
+        /// </summary>
         public override void OnDestroy()
         {
             base.OnDestroy();
-            LogicActionController.Instance.OnDestory();
-            BuffSystem.Instance.OnDestroy();
+            LogicActionController.Instance.OnDestroy();
+            BuffSystem.Instance.OnDestory();
         }
-
+        /// <summary>
+        /// ÊÀ½çÍêÈ«Ïú»ÙºóÖ´ĞĞ
+        /// </summary>
+        /// <param name="args"></param>
         public override void OnDestroyPostProcess(object args)
         {
             base.OnDestroyPostProcess(args);
 
         }
-
     }
-
 }

@@ -7,7 +7,7 @@ using DG.Tweening;
 using System;
 
 /// <summary>
-/// 屏幕和世界坐标转换
+/// 屏幕和3D坐标及UGUI坐标的转换
 /// </summary>
 public class PosConvertUtility
 {
@@ -43,8 +43,6 @@ public class PosConvertUtility
         Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPos);
         RectTransformUtility.ScreenPointToWorldPointInRectangle(canvasRect, screenPos, uiCamera, out pos);
         return pos;
-
-      
     }
 
     /// <summary>

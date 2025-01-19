@@ -3,108 +3,98 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 /// <summary>
-/// ç§»åŠ¨ç±»å‹
+/// ÒÆ¶¯ÀàĞÍ
 /// </summary>
 public enum MoveType
 {
-    Target,
+    target,
     X,
     Y,
     Z,
 }
 
-
-
-
-public class MoveToAction : ActionBehavior
+public class MoveToAction : ActionBehaviour
 {
     private LogicObject mActionObj;
     private FixIntVector3 mStartPos;
     private FixInt mMoveTime;
     private MoveType mMoveType;
-
     /// <summary>
-    /// ç§»åŠ¨å‘é‡
+    /// ÒÆ¶¯µÄÏòÁ¿
     /// </summary>
     private FixIntVector3 mMoveDistance;
-
     /// <summary>
-    /// å½“å‰ç´¯è®¡è¿è¡Œçš„æ—¶é—´
+    /// µ±Ç°ÀÛ¼ÆÔËĞĞµÄÊ±¼ä
     /// </summary>
-    private FixInt mAccRunTime;
-
+    private FixInt mAccRumTime;
     /// <summary>
-    /// å½“å‰æ—¶é—´ç¼©æ”¾
+    /// µ±Ç°ÒÆ¶¯µÄÊ±¼äËõ·Å
     /// </summary>
     private FixInt mTimeScale;
-
-
-    public MoveToAction(LogicObject actionObj, FixIntVector3 startPos,FixIntVector3 targetPos, FixInt time,Action moveFinishCallBack,Action updateCallBack,MoveType moveType)
+    public MoveToAction(LogicObject actionObj,FixIntVector3 startPos,FixIntVector3 targerPos,
+        FixInt time,Action moveFinsihCallBack,Action updateCallBack,MoveType moveType)
     {
-        //æ¥æ”¶å‚æ•°
+        //½ÓÊÕ²ÎÊı
         mActionObj = actionObj;
         mStartPos = startPos;
-        mMoveTime = time;
+        mMoveTime = time==FixInt.Zero? 0.1f:time;
         mMoveType = moveType;
-        mActionFinishCallBack = moveFinishCallBack;
+        mActionFinishCalllBack = moveFinsihCallBack;
         mUpdateActionCallBack = updateCallBack;
-        mMoveDistance = targetPos - startPos;
+        //Ä¿±êÎ»ÖÃ-ÆğÊ¼Î»ÖÃ=ÒÆ¶¯ÒÆ¶¯ÏòÁ¿
+        mMoveDistance = targerPos - startPos;
     }
-
-
-
-
     /// <summary>
-    /// é€»è¾‘å¸§æ›´æ–°
+    /// ĞĞ¶¯Íê³É
+    /// </summary>
+    public override void OnActionFinish()
+    {
+        if (actionFinsih)
+        {
+            mActionFinishCalllBack?.Invoke();
+        }
+    }
+    /// <summary>
+    /// Âß¼­Ö¡¸üĞÂ
     /// </summary>
     public override void OnLogicFrameUpdate()
     {
-        //è®¡ç®—å½“å‰ç´¯è®¡æ—¶é—´
-        mAccRunTime += LogicFrameConfig.LogicFrameIntervalMS;
-        //è·å–æ—¶é—´ç¼©æ”¾æ¯”ä¾‹
-        mTimeScale = mAccRunTime / mMoveTime;
+        //¼ÆËãµ±Ç°ÀÛ¼ÆÔËĞĞÊ±¼ä
+        mAccRumTime += LogicFrameConfig.LogicFrameIntervalms;
+        //»ñÈ¡Ê±¼äËõ·Å±ÈÀı
+        mTimeScale = mAccRumTime / mMoveTime;
 
-        if(mTimeScale >= 1)
+        if (mTimeScale>=1)
         {
             mTimeScale = 1;
-            actionFinish = true;
+            actionFinsih = true;
         }
-
         mUpdateActionCallBack?.Invoke();
-
-
-        //è®¡ç®—å¯¹è±¡éœ€è¦ç§»åŠ¨çš„ä½ç½®
-        FixIntVector3 addDistance = FixIntVector3.zero; //æ·»åŠ çš„ä¸€ä¸ªå‘é‡è·ç¦»
-        if(mMoveType == MoveType.Target)
+        //¼ÆËã¶ÔÏóĞèÒªÒÆ¶¯µÄÎ»ÖÃ
+        FixIntVector3 addDistance=FixIntVector3.zero;//Ìí¼ÓµÄÒ»¸öÏòÁ¿¾àÀë
+        if (mMoveType== MoveType.target)
         {
             addDistance = mMoveDistance * mTimeScale;
+            mActionObj.LogicPos = mStartPos + addDistance;
         }
-        else if(mMoveType == MoveType.X)
+        else if (mMoveType== MoveType.X)
         {
             addDistance.x = mMoveDistance.x * mTimeScale;
+            mActionObj.LogicPos = new FixIntVector3(mStartPos.x + addDistance.x,mActionObj.LogicPos.y,mActionObj.LogicPos.z);
         }
-        else if( mMoveType == MoveType.Y)
+        else if (mMoveType == MoveType.Y)
         {
-            addDistance.y = mMoveDistance.y * mTimeScale;
+            addDistance.y =  mMoveDistance.y * mTimeScale;
+            mActionObj.LogicPos = new FixIntVector3(mActionObj.LogicPos.x, mStartPos.y + addDistance.y, mActionObj.LogicPos.z);
         }
-        else if(mMoveType == MoveType.Z)
+        else if (mMoveType == MoveType.Z)
         {
             addDistance.z = mMoveDistance.z * mTimeScale;
+            mActionObj.LogicPos = new FixIntVector3(mActionObj.LogicPos.x,mActionObj.LogicPos.y, mStartPos.z + addDistance.z);
         }
-
-        mActionObj.LogicPos = mStartPos + addDistance;
-
+       
     }
-
-    public override void OnActionFinish()
-    {
-        if(actionFinish)
-        {
-            mActionFinishCallBack?.Invoke();
-        }
-    }
-
+     
 
 }

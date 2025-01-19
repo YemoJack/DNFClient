@@ -4,148 +4,140 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class SkillEffectConfig
+public class SkillEffectConfig 
 {
-    [AssetList]
-    [LabelText("æŠ€èƒ½ç‰¹æ•ˆå¯¹è±¡")]
-    [PreviewField(70,ObjectFieldAlignment.Left)]
-    public GameObject skillEffect; //æŠ€èƒ½ç‰¹æ•ˆå¯¹è±¡
-    [LabelText("è§¦å‘å¸§")]
-    public int triggerFrame;        //è§¦å‘å¸§
-    [LabelText("ç»“æŸå¸§")]
-    public int endFrame;            //ç»“æŸå¸§
-    [LabelText("ç‰¹æ•ˆä½ç½®åç§»")]
-    public Vector3 effectOffsetPos; //ç‰¹æ•ˆä½ç½®åç§»
-    [LabelText("ç‰¹æ•ˆä½ç½®ç±»å‹")]
-    public EffectPosType effectPosType;//ç‰¹æ•ˆä½ç½®ç±»å‹
-    [ToggleGroup("isSetTransParent", "æ˜¯å¦è®¾ç½®ç‰¹æ•ˆçˆ¶èŠ‚ç‚¹")]
-    public bool isSetTransParent = false;//æ˜¯å¦è®¾ç½®ç‰¹æ•ˆçˆ¶èŠ‚ç‚¹
-    [ToggleGroup("isSetTransParent", "çˆ¶èŠ‚ç‚¹ç±»å‹")]
-    public TransParentType transParent;//çˆ¶èŠ‚ç‚¹ç±»å‹
-
-    [ToggleGroup("isAttachDamage","æ˜¯å¦é™„åŠ ä¼¤å®³")]
-    public bool isAttachDamage = false;
-    [ToggleGroup("isAttachDamage", "æ˜¯å¦é™„åŠ ä¼¤å®³")]
+    [AssetList][LabelText("¼¼ÄÜÌØĞ§¶ÔÏó")][PreviewField(70, ObjectFieldAlignment.Left),OnValueChanged("GetObjectPath")]
+    public GameObject skillEffect;//¼¼ÄÜÌØĞ§
+    [ReadOnly]
+    public string skillEffectPath;
+    [LabelText("´¥·¢Ö¡")]
+    public int triggerFrame;//´¥·¢Ö¡
+    [LabelText("½áÊøÖ¡")]
+    public int endFrame;//½áÊøÖ¡
+    [LabelText("ÌØĞ§Æ«ÒÆÎ»ÖÃ")]
+    public Vector3 effectOffsetPos;//ÌØĞ§Æ«ÒÆÎ»ÖÃ
+    [LabelText("ÌØĞ§Î»ÖÃÀàĞÍ")]
+    public EffectPosType effectPosType;//ÌØĞ§Î»ÖÃÀàĞÍ
+    [ToggleGroup("isSetTransParent","ÊÇ·ñÉèÖÃÌØĞ§¸¸½Úµã")]
+    public bool isSetTransParent = false;//ÊÇ·ñÉèÖÃÌØĞ§¸¸½Úµã
+    [ToggleGroup("isSetTransParent", "½ÚµãÀàĞÍ")]
+    public TransParentType transParent;//¸¸½ÚµãÀàĞÍ
+    [ToggleGroup("isAttachDamage", "ÊÇ·ñ¸½¼ÓÉËº¦")]
+    public bool isAttachDamage=false;
+    [ToggleGroup("isAttachDamage", "ÊÇ·ñ¸½¼ÓÉËº¦")]
     public SkillDamageConfig damageConfig;
-    [ToggleGroup("isAttachAction", "æ˜¯å¦é™„åŠ è¡ŒåŠ¨")]
-    public bool isAttachAction = false;
-    [ToggleGroup("isAttachAction", "æ˜¯å¦é™„åŠ è¡ŒåŠ¨")]
+
+    [ToggleGroup("isAttachAction", "ÊÇ·ñ¸½¼ÓĞĞ¶¯")]
+    public bool isAttachAction=false;
+    [ToggleGroup("isAttachAction", "ÊÇ·ñ¸½¼ÓĞĞ¶¯")]
     public SkillActionConfig actionConfig;
 
     [HideInInspector]
-    public GameObject GameEffectobj; //æ¸¸æˆç‰¹æ•ˆç¼“å­˜å¯¹è±¡
-
+    public GameObject GameEffectObj;//ÓÎÏ·ÌØĞ§»º´æ¶ÔÏó
 #if UNITY_EDITOR
 
-    //Editoræ¨¡å¼ä¸‹å…‹éš†çš„ç‰¹æ•ˆå¯¹è±¡
+    public void GetObjectPath(GameObject obj)
+    {
+        skillEffectPath= UnityEditor.AssetDatabase.GetAssetPath(obj);
+        Debug.Log("skillEffectPath:"+ skillEffectPath);
+    }
+
+    //EditorÄ£Ê½ÏÂ¿ËÂ¡µÄÌØĞ§¶ÔÏó
     private GameObject mCloneEffect;
-    //å½“å‰é€»è¾‘å¸§
+    private AnimationAgnet mAnimAgent;
+    private ParticlesAgent mParticleAgent;
+    //µ±Ç°Âß¼­Ö¡
     private int mCurLogicFrame = 0;
-    private AnimationAgent mAnimAgent;
-    private ParticlesAgent mParticlesAgent;
-
-
     /// <summary>
-    /// å¼€å§‹æ’­æ”¾æŠ€èƒ½
+    /// ¿ªÊ¼²¥·Å¼¼ÄÜ
     /// </summary>
     public void StartPlaySkill()
     {
-        DestroyEffect();
+        DestroyEffect(); 
         mCurLogicFrame = 0;
     }
-    /// <summary>
-    /// æŠ€èƒ½æš‚åœ
-    /// </summary>
     public void SkillPause()
     {
         DestroyEffect();
     }
-
-
     /// <summary>
-    /// æ’­æ”¾æŠ€èƒ½ç»“æŸ
+    /// ²¥·Å¼¼ÄÜ½áÊø
     /// </summary>
     public void PlaySkillEnd()
     {
         DestroyEffect();
     }
     /// <summary>
-    /// é€»è¾‘å¸§æ›´æ–°
+    /// Âß¼­Ö¡¸üĞÂ
     /// </summary>
     public void OnLogicFrameUpdate()
     {
-        if(mCurLogicFrame == triggerFrame)
+        if (mCurLogicFrame==triggerFrame)
         {
             CreateEffect();
         }
-        else if(mCurLogicFrame > triggerFrame)
+        else if (mCurLogicFrame == endFrame)
         {
             DestroyEffect();
         }
         mCurLogicFrame++;
     }
     /// <summary>
-    /// åˆ›å»ºç‰¹æ•ˆ
+    /// ´´½¨ÌØĞ§
     /// </summary>
     public void CreateEffect()
     {
-        if(skillEffect!=null)
+        if (skillEffect!=null)
         {
-            mCloneEffect = GameObject.Instantiate(skillEffect);
-            mCloneEffect.transform.position = SkillComplierWindow.GetCharacterPos();
-            //TODO...
-            mAnimAgent = new AnimationAgent();
+            mCloneEffect= GameObject.Instantiate(skillEffect);
+            mCloneEffect.transform.position = SkillComplierWindow.GetCharaterPos();
+            //TODO ÔÚEditorÄ£Ê½¶¯»­ÎÄ¼şºÍÁ£×ÓÌØĞ§¶¼²»»á×Ô¶¯²¥·Å£¬ĞèÒªÎÒÃÇÍ¨¹ı´úÂë½øĞĞ²¥·Å
+            mAnimAgent = new AnimationAgnet();
             mAnimAgent.InitPlayAnim(mCloneEffect.transform);
 
-            mParticlesAgent = new ParticlesAgent();
-            mParticlesAgent.InitPlayAnim(mCloneEffect.transform);
+            mParticleAgent = new ParticlesAgent();
+            mParticleAgent.InitPlayAnim(mCloneEffect.transform);
         }
     }
     /// <summary>
-    /// é”€æ¯ç‰¹æ•ˆ
+    /// Ïú»ÙÌØĞ§
     /// </summary>
     public void DestroyEffect()
     {
-        if(mCloneEffect!=null)
+        if (mCloneEffect!=null)
         {
             GameObject.DestroyImmediate(mCloneEffect);
         }
-        if(mAnimAgent!=null)
+        if (mAnimAgent!=null)
         {
             mAnimAgent.OnDestroy();
             mAnimAgent = null;
         }
-
-        if (mParticlesAgent != null)
+        if (mParticleAgent != null)
         {
-            mParticlesAgent.OnDestroy();
-            mParticlesAgent = null;
+            mParticleAgent.OnDestroy();
+            mParticleAgent = null;
         }
     }
 
 
 #endif
 
-
 }
-
-
 
 public enum TransParentType
 {
-    [LabelText("æ— é…ç½®")]None,
-    [LabelText("å·¦æ‰‹")] LeftHand,
-    [LabelText("å³æ‰‹")] RightHand,
+    [LabelText("ÎŞÅäÖÃ")] None,
+    [LabelText("×óÊÖ")] LeftHand,//×óÊÖ
+    [LabelText("ÓÒÊÖ")] RightHand,//ÓÒÊÖ
 }
-
 
 public enum EffectPosType
 {
-    [LabelText("è·Ÿéšè§’è‰²ä½ç½®å’Œæ–¹å‘")]FollowPosDir,//è·Ÿéšè§’è‰²ä½ç½®å’Œæ–¹å‘
-    [LabelText("åªè·Ÿéšè§’è‰²æ–¹å‘")] FollowDir,//åªè·Ÿéšè§’è‰²æ–¹å‘
-    [LabelText("å±å¹•ä¸­å¿ƒä½ç½®")] ConterPos,//å±å¹•ä¸­å¿ƒä½ç½®
-    [LabelText("å¼•å¯¼ä½ç½®")] GuidePos,//å¼•å¯¼ä½ç½®
-    [LabelText("è·Ÿéšç‰¹æ•ˆç§»åŠ¨ä½ç½®")] FollowEffectMovePos,//è·Ÿéšç‰¹æ•ˆç§»åŠ¨ä½ç½®
-    [LabelText("ä½ç½®å½’é›¶")] Zero,//ä½ç½®å½’é›¶
+   [LabelText("¸úËæ½ÇÉ«Î»ÖÃºÍ·½Ïò")] FollowPosDir,//¸úËæ½ÇÉ«Î»ÖÃºÍ·½Ïò
+    [LabelText("¸úËæ½ÇÉ«·½Ïò")] FollowDir,//Ö»¸úËæ½ÇÉ«·½Ïò
+    [LabelText("ÆÁÄ»ÖĞĞÄÎ»ÖÃ")] ConterPos,//ÆÁÄ»ÖĞĞÄÎ»ÖÃ
+    [LabelText("Òıµ¼Î»ÖÃ")] GuidePos,//Òıµ¼Î»ÖÃ
+    [LabelText("¸úËæÌØĞ§ÒÆ¶¯Î»ÖÃ")] FollwEffectMovePos,//¸úËæÌØĞ§ÒÆ¶¯Î»ÖÃ
+    [LabelText("Î»ÖÃ¹éÁã")] Zero,//Î»ÖÃ¹éÁã
 }
-

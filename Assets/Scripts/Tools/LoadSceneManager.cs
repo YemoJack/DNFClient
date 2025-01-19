@@ -1,56 +1,48 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using ZM.AssetFrameWork;
-using ZMGC.Battle;
-using ZMGC.Hall;
-
 public class LoadSceneManager : MonoSingleton<LoadSceneManager>
 {
-    public void LoadSceneAsync(string sceneName,Action FinishLoadScene)
+    public void LoadSceneAsync(string sceneName,Action LoadSceneFinish)
     {
         UIModule.Instance.PopUpWindow<LoadingWindow>();
-        StartCoroutine(AsyncLoadScene(sceneName,FinishLoadScene));
+        StartCoroutine(AsyncLoadScene(sceneName, LoadSceneFinish));
     }
-
-    IEnumerator AsyncLoadScene(string sceneName, Action FinishLoadScene)
+    IEnumerator AsyncLoadScene(string sceneName, Action LoadSceneFinish)
     {
-        //å¼‚æ­¥åŠ è½½åœºæ™¯
+        //Òì²½¼ÓÔØ³¡¾°
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
-        //é»˜è®¤ä¸æ¿€æ´»
+        //Ä¬ÈÏ²»ÔÊĞí³¡¾°¼¤»î
         operation.allowSceneActivation = false;
 
+        //µ±Ç°¼ÓÔØ½ø¶È
         float curProgress = 0;
+        //×î´ó¼ÓÔØ½ø¶È
         float maxProgress = 100;
-
-        //Unityåœºæ™¯åŠ è½½è¿›åº¦ä¸º0â€”â€”0.9
+        //Unity³¡¾°¼ÓÔØ½ø¶ÈÖ»»á´Ó0-0.9  £¬Ê£Óà0.1ĞèÒªÎÒÃÇÊ¹ÓÃ´úÂë×öÒ»¸ö¹ı¶È
         while (curProgress < 90)
         {
-            curProgress = operation.progress * 100f;
-            //é€šè¿‡äº‹ä»¶æŠŠå½“å‰è¿›åº¦æŠ›å‡º
-            UIEventControl.DispensEvent(UIEventEnum.ScencProgressUpdate, curProgress);
+            curProgress = operation.progress * 100.0f;
+            //Í¨¹ıÒ»¸öÊÂ¼ş°Ñµ±Ç°½ø¶ÈÅ×³ö£¬
+            UIEventControl.DispensEvent(UIEventEnum.SceneProgressUpdate, curProgress);
             yield return null;
         }
 
         while (curProgress < maxProgress)
         {
             curProgress++;
-            //ç­‰ç©ºå¸§ä¸ºäº†è®©UIæ¸²æŸ“æœ‰æ›´æ–°
-            UIEventControl.DispensEvent(UIEventEnum.ScencProgressUpdate, curProgress);
+            UIEventControl.DispensEvent(UIEventEnum.SceneProgressUpdate, curProgress);
+            //µÈÒ»¸ö¿ÕÖ¡ÊÇÎªÁËÈÃUIÓĞäÖÈ¾µÄ¹ı³Ì
             yield return null;
         }
-        //æ¿€æ´»åœºæ™¯
+        //¼¤»îÒÑ¼ÓÔØÍê³ÉµÄ³¡¾°
         operation.allowSceneActivation = true;
         yield return null;
-
-        FinishLoadScene?.Invoke();
-
+        LoadSceneFinish?.Invoke();
+     
         
     }
-
-
-
 }

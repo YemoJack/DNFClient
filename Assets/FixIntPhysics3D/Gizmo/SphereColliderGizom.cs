@@ -11,7 +11,8 @@ public class SphereColliderGizom : MonoBehaviour
 #if UNITY_EDITOR
     void Start()
     {
-      
+        //gameObject.SetActive(false);
+        //return;
         mRender = GetComponent<Renderer>();
         mRender.material = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>("Assets/FixIntPhysics3D/Gizmo/FixPhysicMaterial.mat");
     }
@@ -26,7 +27,7 @@ public class SphereColliderGizom : MonoBehaviour
 
     void OnRenderObject()
     {
-       
+        //return;
         if (mRender == null)
             mRender = GetComponent<Renderer>();
         mRender.sharedMaterial.color = color;

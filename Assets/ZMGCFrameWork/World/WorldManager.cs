@@ -42,6 +42,12 @@ public class WorldManager
     /// <typeparam name="T"></typeparam>
     public static void CreateWorld<T>() where T: World,new ()
     {
+        //不允许重复构建世界
+        if (DefaultGameWorld!=null&& DefaultGameWorld.GetType().Name==typeof(T).Name)
+        {
+            Debug.LogError("重复构建："+ typeof(T).Name +" 世界");
+            return;
+        }
         T world = new T();
         DefaultGameWorld = world;
         //初始化当前游戏世界的程序集脚本
@@ -56,6 +62,8 @@ public class WorldManager
     /// <returns></returns>
     public static  IBehaviourExecution GetBehaviourExecution(World world)
     {
+        //1.数据、逻辑、消息层 通过程序集进行创建的，程序集中获取脚本的顺序，是由脚本创建时间决定的
+        //所以说，需要通过程序使用技术手段来维护脚本创建顺序
         if (world.GetType().Name=="HallWorld")
         {
             CurWorld = WorldEnum.HallWorld;
@@ -73,21 +81,14 @@ public class WorldManager
         }
         return null;
     }
-
-    /// <summary>
-    /// 更新世界
-    /// </summary>
+  
     public static void OnUpdate()
     {
-        foreach (var world in mWorldList)
+        foreach (var item in mWorldList)
         {
-            world.OnUpdate();
+            item.OnUpdate();
         }
     }
-
-
-
-
     /// <summary>
     /// 销毁指定游戏世界
     /// </summary>

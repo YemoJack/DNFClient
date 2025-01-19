@@ -1,133 +1,166 @@
-using FixMath;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using FixMath;
 public class HeroRender : RenderObject
 {
     private HeroLogic mHeroLogic;
-
     /// <summary>
-    /// å½“å‰æ‘‡æ†è¾“å…¥æ–¹å‘
+    /// ½ÇÉ«¶¯»­¹ÜÀíÆ÷
     /// </summary>
-    private Vector3 mInputDir;
-
+    private Animation mAnim;
     /// <summary>
-    /// è§’è‰²åŠ¨ç”»
+    /// µ±Ç°Ò¡¸ËÊäÈë·½Ïò
     /// </summary>
-    private Animation mAnima;
-
+    public Vector3 mInputDir;
     /// <summary>
-    /// å·¦æ‰‹èŠ‚ç‚¹
+    /// ×óÊÖ½Úµã
     /// </summary>
     public Transform Left_Hand_RootTrans;
     /// <summary>
-    /// å³æ‰‹èŠ‚ç‚¹
+    /// ÓÒÊÖ½Úµã
     /// </summary>
     public Transform Right_Hand_RootTrans;
-
-
+    /// <summary>
+    /// ¼¼ÄÜÒıµ¼ÌØĞ§¶ÔÏó
+    /// </summary>
+    private GameObject mSkillGuideEffectObj;
 
     public override void OnCreate()
     {
         base.OnCreate();
         mHeroLogic = logicObject as HeroLogic;
         JoystickUGUI.OnMoveCallBack += OnJoyStickMove;
-        mAnima = transform.GetComponent<Animation>();
+        mAnim = transform.GetComponent<Animation>();
     }
-
 
     public override void OnRelease()
     {
         base.OnRelease();
         JoystickUGUI.OnMoveCallBack -= OnJoyStickMove;
     }
-
-
     /// <summary>
-    /// é¥æ„Ÿç§»åŠ¨è¾“å…¥
+    /// Ò¡¸ËÒÆ¶¯ÊäÈë
     /// </summary>
-    /// <param name="inputDir"></param>
-    private void OnJoyStickMove(Vector3 inputDir) 
+    public void OnJoyStickMove(Vector3 inputDir)
     {
-        this.mInputDir = inputDir;
+        mInputDir = inputDir;
+        //Âß¼­·½Ïò
         FixIntVector3 logicDir = FixIntVector3.zero;
 
-        if(inputDir != Vector3.zero)
+        if (inputDir != Vector3.zero)
         {
             logicDir.x = inputDir.x;
             logicDir.y = inputDir.y;
             logicDir.z = inputDir.z;
         }
-        //å‘è‹±é›„é€»è¾‘å±‚ç›´æ¥è¾“å…¥æ“ä½œå¸§äº‹ä»¶  æ²¡æœ‰æœåŠ¡ç«¯çš„æµ‹è¯•ä»£ç   åº”è¯¥æ˜¯å°†æ“ä½œå‘ç»™æœåŠ¡ç«¯ï¼ŒæœåŠ¡ç«¯å†æŠŠå¸§åˆ†å‘ç»™æ‰€æœ‰å®¢æˆ·ç«¯
-        mHeroLogic.InputLogicFrameEvent(logicDir);
+        //ÏòÓ¢ĞÛÂß¼­²ãÖ±½ÓÊäÈë²Ù×÷Ö¡ÊÂ¼ş Ã»ÓĞ·şÎñ¶ËÇé¿öÏÂµÄ²âÊÔ´úÂë
+        mHeroLogic.InputLoigcFrameEvent(logicDir);
     }
 
-    protected override void Update()
+    public override void Update()
     {
         base.Update();
-
-        if(mHeroLogic.releaseSkillList.Count == 0)
+        //ÅĞ¶ÏÓĞÃ»ÓĞ¼¼ÄÜÔÚÊÍ·ÅÖĞ£¬Èç¹ûÓĞ¼¼ÄÜÔÚÊÍ·ÅÖĞ£¬ÊÇ²»ÔÊĞí²¥·ÅÒÆ¶¯ºÍ´ı»ú¶¯»­µÄ
+        if (mHeroLogic.releaseingSkillList.Count == 0)
         {
-            //åˆ¤æ–­è¾“å…¥å€¼ æœ‰å€¼å°±æ’­æ”¾å¥”è·‘åŠ¨ç”» æ²¡æœ‰å€¼å°±æ’­æ”¾ Idle åŠ¨ç”»
-            if (mInputDir == Vector3.zero)
+            //ÅĞ¶ÏÒ¡¸ËÊäÈëÊÇ·ñÓĞÖµÊäÈë£¬Èç¹ûÃ»ÓĞÓĞ£¬²¥·Å´ı»ú¶¯»­£¬Èç¹ûÓĞÖµ£¬²¥·ÅÒÆ¶¯¶¯»­
+            if (mInputDir.x == 0 && mInputDir.z == 0)
             {
-                PlayAnima("Anim_Idle02");
+                PlayAnim("Anim_Idle02");
             }
             else
             {
-                PlayAnima("Anim_Run");
+                PlayAnim("Anim_Run");
             }
         }
-        else
-        {
 
-        }
-
-      
     }
-
-
-
-    public void PlayAnima(string animaName)
-    {
-        mAnima.CrossFade(animaName,0.2f);
-    }
-
     /// <summary>
-    /// é€šè¿‡åŠ¨ç”»æ–‡ä»¶æ’­æ”¾åŠ¨ç”»
+    /// ²¥·Å½ÇÉ«¶¯»­
+    /// </summary>
+    /// <param name="animName"></param>
+    public void PlayAnim(string animName)
+    {
+        mAnim.CrossFade(animName, 0.2f);
+    }
+    /// <summary>
+    /// Í¨¹ı¶¯»­ÎÄ¼ş²¥·Å¶¯»­
     /// </summary>
     /// <param name="clip"></param>
     public override void PlayAnim(AnimationClip clip)
     {
         base.PlayAnim(clip);
 
-        if(mAnima.GetClip(clip.name) == null)
+        if (mAnim.GetClip(clip.name) == null)
         {
-            mAnima.AddClip(clip, clip.name);
+            mAnim.AddClip(clip, clip.name);
         }
-        mAnima.clip = clip;
-        mAnima.Play(clip.name);
+        mAnim.clip = clip;
+        PlayAnim(clip.name);
     }
-
     /// <summary>
-    /// è·å–çˆ¶èŠ‚ç‚¹
+    /// »ñÈ¡¸¸½Úµã
     /// </summary>
     /// <param name="parentType"></param>
     /// <returns></returns>
     public override Transform GetTransParent(TransParentType parentType)
     {
-        if(parentType == TransParentType.LeftHand)
+        if (parentType == TransParentType.LeftHand)
         {
             return Left_Hand_RootTrans;
         }
-        else if(parentType == TransParentType.RightHand)
+        else if (parentType == TransParentType.RightHand)
         {
             return Right_Hand_RootTrans;
         }
-
         return null;
     }
 
 
+    public void InitSkillGuide(int skillid)
+    {
+        if (mSkillGuideEffectObj == null)
+        {
+            Skill skill = mHeroLogic.GetSKill(skillid);
+            mSkillGuideEffectObj = GameObject.Instantiate(skill.SKillCfg.skillGuideObj);
+            mSkillGuideEffectObj.transform.localScale = Vector3.one;
+        }
+    }
+    /// <summary>
+    /// ¸üĞÂ¼¼ÄÜÒıµ¼
+    /// </summary>
+    /// <param name="sKillGuideType">¼¼ÄÜÒıµ¼ÀàĞÍ</param>
+    /// <param name="skillid">¼¼ÄÜid</param>
+    /// <param name="isPreass">ÊÖÖ¸ÊÇ·ñ°´ÏÂ</param>
+    /// <param name="pos">Ò¡¸ËµÄÎ»ÖÃ</param>
+    /// <param name="skillRange">¼¼ÄÜÒıµ¼·¶Î§</param>
+    public void UpdateSkillGuide(SKillGuideType sKillGuideType, int skillid, bool isPreass, Vector3 pos, float skillRange)
+    {
+        //³õÊ¼»¯Òıµ¼ÌØĞ§
+        InitSkillGuide(skillid);
+        //¸üĞÂÒıµ¼ÌØĞ§Î»ÖÃ
+        switch (sKillGuideType)
+        {
+            case SKillGuideType.Click:
+                break;
+            case SKillGuideType.LongPress:
+                break;
+            case SKillGuideType.Position:
+                Vector3 skillGuidePos= transform.position + pos;
+                //ÏŞÖÆµ±Ç°Î»ÖÃµÄzÖá ²»ÄÜ³¬¹ıµØÍ¼
+                skillGuidePos = new Vector3(skillGuidePos.x,0,Mathf.Clamp(skillGuidePos.z,-1,8.6f));
+                mSkillGuideEffectObj.transform.localPosition = skillGuidePos;
+                break;
+            case SKillGuideType.Dirction:
+                break;
+        }
+    }
+    public void OnGuideRelease()
+    {
+        if (mSkillGuideEffectObj!=null)
+        {
+            GameObject.Destroy(mSkillGuideEffectObj);
+        }
+    }
 }

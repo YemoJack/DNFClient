@@ -9,62 +9,66 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9be7f3014777391498d31d44449bea27, type: 3}
+  m_Script: {fileID: 11500000, guid: 20a191d3015a06a4ba70b05048ace4d1, type: 3}
   m_Name: 1001
   m_EditorClassIdentifier: 
   character:
-    skillCharacter: {fileID: 0}
-    SkillAnim: {fileID: 7400000, guid: 4a3916918c4bfd942af61149ea64ab91, type: 2}
+    skillChararcter: {fileID: 4024320815063798503, guid: 4005dfec93eb85d42971360df129ce6d, type: 3}
+    skillAnim: {fileID: 7400000, guid: 4a3916918c4bfd942af61149ea64ab91, type: 2}
     animProgress: 100
     isLoopAnim: 0
     animLoopCount: 0
     logicFrame: 8
+    isSetCustomLogicFrame: 0
+    customLogicFame: 0
     animLength: 0.53333336
-    skillDurationMS: 533.3334
+    skillDurationMS: 533
   skillCfg:
     showStockPileData: 0
     showSkillGuide: 0
-    skillIcon: {fileID: 21300000, guid: d9f3862f7759d7343ab3a56d9b2279c9, type: 3}
+    skillIcon: {fileID: 0}
     skillid: 1001
-    skillName: "\u91CC\u9B3C\u6280\u80FD1"
-    needMgicValue: 0
-    skillShakeBeforeTimeMs: 98
-    skillAttackDurationMs: 533
-    skillShakeAfterMs: 260
-    skillCDTimeMs: 0
+    skillName: "\u91CC\u9B3C\u5251\u672F\u4E00"
+    needMgicValue: 100
+    skillShakeBeforeTimeMs: 300
+    skillAttackDurationMs: 0
+    skillShakeArfterMs: 200
+    skillCDTimeMs: 4
     skillType: 0
     stockPileStageData: []
     skillGuideObj: {fileID: 0}
     skillGuideRange: 0
     ComobinationSkillid: 0
     skillHitEffect: {fileID: 5023627635078921320, guid: eebb9919fe1d53f4690a67203d880219, type: 3}
-    hitEffectSurivalTimeMs: 100
+    skillHitEffectPath: Assets/GameData/Game/Effects/Eff_Jianhun_Hit/Eff_jianhun_Hit.prefab
+    hitEffectSurvivalTimeMs: 100
     skillHitAudio: {fileID: 8300000, guid: 17ee30fc61d38614b9d605976ec2c129, type: 3}
     showSkillPortrait: 0
-    skillPortrait: {fileID: 0}
+    skillProtraitObj: {fileID: 0}
     skillDes: 
   damageCfgList:
-  - triggerFrame: 1
-    endFrame: 2
+  - triggerFrame: 2
+    endFrame: 3
     triggerIntervalMs: 0
     isFollowEffect: 0
     damageType: 0
-    damageRate: 0
+    damageRate: 110
     detectionMode: 1
-    boxSize: {x: 1.73, y: 1.58, z: 1}
-    boxOffset: {x: 1.02, y: 1.01, z: 0}
+    boxSize: {x: 2, y: 2.5, z: 1}
+    boxOffset: {x: 1, y: 1.51, z: 0}
     sphereOffset: {x: 0, y: 0.9, z: 0}
-    radius: 1
-    raduisHeight: 0
+    raduis: 6
+    raduisHeight: 0.32
     colliderPosType: 0
     targetType: 0
     addBuffs: 1a270000
     triggerSkillid: 0
   effectCfgList:
   - skillEffect: {fileID: 1845321840847504, guid: 44a74021eecfb9146a56c08aaf437597, type: 3}
+    skillEffectPath: Assets/GameData/Game/Effects/Hero_Jianhun/Eff_Jianhun_Ligui/Prefab/Eff_Jianhun_Ligui_guangjian_01.prefab
     triggerFrame: 1
     endFrame: 8
-    effectOffsetPos: {x: 0, y: 0, z: 0}
+    effectOffsetPos: {x: 0, y: 0.2, z: 0}
     effectPosType: 0
     isSetTransParent: 0
     transParent: 0
@@ -80,7 +84,7 @@ MonoBehaviour:
       boxSize: {x: 1, y: 1, z: 1}
       boxOffset: {x: 0, y: 0, z: 0}
       sphereOffset: {x: 0, y: 0.9, z: 0}
-      radius: 1
+      raduis: 1
       raduisHeight: 0
       colliderPosType: 0
       targetType: 0
@@ -95,10 +99,11 @@ MonoBehaviour:
       durationMs: 0
       actionFinishOpation: 0
       actionFinishidList: 
-    GameEffectobj: {fileID: 0}
+    GameEffectObj: {fileID: 0}
   - skillEffect: {fileID: 1351735087442694, guid: f33f2e97566a7144794e63ee9b2fa4e2, type: 3}
+    skillEffectPath: Assets/GameData/Game/Arts/Actor/Weapon/Weapon_Sword/Weapon_Sword_Beamswd_19/Prefabs/P_Hero_Swordman_weapon_beamswd_19.prefab
     triggerFrame: 1
-    endFrame: 8
+    endFrame: 7
     effectOffsetPos: {x: 0, y: 0, z: 0}
     effectPosType: 5
     isSetTransParent: 1
@@ -115,7 +120,7 @@ MonoBehaviour:
       boxSize: {x: 1, y: 1, z: 1}
       boxOffset: {x: 0, y: 0, z: 0}
       sphereOffset: {x: 0, y: 0.9, z: 0}
-      radius: 1
+      raduis: 1
       raduisHeight: 0
       colliderPosType: 0
       targetType: 0
@@ -130,11 +135,13 @@ MonoBehaviour:
       durationMs: 0
       actionFinishOpation: 0
       actionFinishidList: 
-    GameEffectobj: {fileID: 0}
+    GameEffectObj: {fileID: 0}
   audioCfgList:
   - skillAudio: {fileID: 8300000, guid: 6492f783cc0f0984f9736a22e7fec1e0, type: 3}
     audioName: Swordsman_liguidj_huidao01
-    triggerFrame: 1
+    triggerFrame: 2
     isLoop: 0
     endFrame: 0
+  bulletCfgList: []
   actionCfgList: []
+  buffCfgList: []

@@ -1,44 +1,60 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using ZMGC.Battle;
 using ZMGC.Hall;
 using ZM.AssetFrameWork;
-
 public class Main : MonoBehaviour
 {
-
-    public static Main Instance;
 
     // Start is called before the first frame update
     void Start()
     {
-        Instance = this;
-        //åˆå§‹åŒ–èµ„æºç®¡ç†æ¡†æ¶
+        //³õÊ¼»¯×ÊÔ´¹ÜÀí¿ò¼Ü
         ZMAssetsFrame.Instance.InitFrameWork();
-        //åˆå§‹åŒ–UIæ¨¡å—
+        //³õÊ¼»¯UI¿ò¼Ü
         UIModule.Instance.Initialize();
-
-        //åˆ›å»ºå¤§å…ä¸–ç•Œ
         WorldManager.CreateWorld<HallWorld>();
-
-       
+        //²»ÔÊĞíÏú»Ùµ±Ç°½Úµã
         DontDestroyOnLoad(gameObject);
-    }
+        //Ëæ»úĞòÁĞ1
+        //LogicRandom random1 = new LogicRandom(10);
+        //string randomResult = "logicRamdom:";
+        //for (int i = 0; i < 11; i++)
+        //{
+        //    randomResult += random1.Range(1,360)+",";
+        //}
+        //Debug.Log(randomResult);
 
+        ////Ëæ»úĞòÁĞ2
+        //LogicRandom random2 = new LogicRandom(10);
+        //string randomResult2 = "logicRamdom:";
+        //for (int i = 0; i < 11; i++)
+        //{
+        //    randomResult2 += random2.Range(1, 360) + ",";
+        //}
+        //Debug.Log(randomResult2);
+        //1.randomResult randomResult2 Ëæ»ú½á¹û²»Ò»ÖÂ£¬
+        //2.randomResult randomResult2 Ëæ»ú½á¹ûÍêÈ«Ò»ÖÂ£¬
+    }
     /// <summary>
-    /// èµ„æºè§£å‹å®Œæˆåè°ƒç”¨
+    /// ×ÊÔ´½âÑ¹Íê³ÉÖ®ºó»áµ÷ÓÃ£¬
     /// </summary>
     public void StartGame()
     {
-
+        
     }
+ 
 
-    private void Update()
+    // Update is called once per frame
+    void Update()
     {
         WorldManager.OnUpdate();
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            BattleWorld.GetExitsLogicCtrl<HeroLogicCtrl>().HeroLogic.velocity = new FixMath.FixIntVector3(0, 6, 0);
+            BattleWorld.GetExitsLogicCtrl<HeroLogicCtrl>().HeroLogic.isAddForce=true;
+        }
     }
-
 }

@@ -1,63 +1,57 @@
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using ZM.AssetFrameWork;
-
-public class LogicActionController : Singleton<LogicActionController>
+public class LogicActionController:Singleton<LogicActionController>
 {
     /// <summary>
-    /// è¡ŒåŠ¨åˆ—è¡¨
+    /// ĞĞ¶¯ÁĞ±í
     /// </summary>
-    private List<ActionBehavior> mActionList = new List<ActionBehavior>();
+    private List<ActionBehaviour> mActionList = new List<ActionBehaviour>();
 
     /// <summary>
-    /// å¼€å§‹è¿›è¡Œè¡ŒåŠ¨
+    /// ¿ªÊ¼½øĞĞĞĞ¶¯
     /// </summary>
     /// <param name="action"></param>
-    public void RunAction(ActionBehavior action)
+    public void RunAciton(ActionBehaviour action)
     {
-        action.actionFinish = false;
+        action.actionFinsih = false;
         mActionList.Add(action);
     }
-
     /// <summary>
-    /// é€»è¾‘å¸§æ›´æ–°å¸§
+    /// Âß¼­Ö¡¸üĞÂÖ¡
     /// </summary>
     public void OnLogicFrameUpdate()
     {
-        //ç§»é™¤å·²ç»å®Œæˆçš„è¡ŒåŠ¨
-        for(int i = mActionList.Count - 1; i >= 0; i--)
+        //ÒÆ³ıÒÑ¾­Íê³ÉµÄĞĞ¶¯
+        for (int i = mActionList.Count-1; i >=0 ; i--)
         {
-            ActionBehavior action = mActionList[i];
-            if(action.actionFinish)
+           ActionBehaviour action=  mActionList[i];
+            if (action.actionFinsih)
             {
                 action.OnActionFinish();
                 RemoveAction(action);
             }
         }
-
-        //æ›´æ–°é€»è¾‘å¸§
-        foreach(ActionBehavior action in mActionList)
+        //¸üĞÂÂß¼­Ö¡
+        foreach (var item in mActionList)
         {
-            action.OnLogicFrameUpdate();
+            item.OnLogicFrameUpdate();
         }
-
     }
-
     /// <summary>
-    /// ç§»é™¤å¯¹åº”çš„è¡ŒåŠ¨
+    /// ÒÆ³ı¶ÔÓ¦µÄĞĞ¶¯
     /// </summary>
     /// <param name="action"></param>
-    public void RemoveAction(ActionBehavior action)
+    public void RemoveAction(ActionBehaviour action)
     {
         mActionList.Remove(action);
     }
-
-
     /// <summary>
-    /// èµ„æºè„šæœ¬é‡Šæ”¾
+    /// ½Å±¾×ÊÔ´ÊÍ·Å
     /// </summary>
-    public void OnDestory()
+    public void OnDestroy()
     {
         mActionList.Clear();
     }
-
 }

@@ -1,62 +1,60 @@
-using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
-
-public enum MoveActionFinishOpation
+using Sirenix.OdinInspector;
+/// <summary>
+/// ĞĞ¶¯ÀàĞÍ
+/// </summary>
+public enum MoveActionType
 {
+    [LabelText("Ö¸¶¨Ä¿±êÎ»ÖÃ")]TargetPos,
+    [LabelText("Òıµ¼Î»ÖÃ")] GuidePos,
+    [LabelText("±´Èû¶ûÒÆ¶¯")] BezierPos,
+}
+/// <summary>
+/// ĞĞ¶¯Íê³ÉºóµÄ²Ù×÷
+/// </summary>
+public enum MoveActionFinishOpation
+{ 
     None,
     Skill,
     Buff,
-    
 }
-
-public enum MoveActionType
-{
-    [LabelText("æŒ‡å®šç›®æ ‡ä½ç½®")] TargetPos,
-    [LabelText("å¼•å¯¼ä½ç½®")] GuidPos,
-    [LabelText("è´å¡å°”ç§»åŠ¨")] BeziePos,
-}
-
 
 [System.Serializable]
 public class SkillActionConfig
 {
-    //æ˜¯å¦æ˜¾ç¤ºç§»åŠ¨ä½ç½®
+    //ÊÇ·ñÏÔÊ¾ÒÆ¶¯Î»ÖÃ
     private bool mIsShowMovePos;
-    //æ˜¯å¦æ˜¾ç¤ºç§»åŠ¨å®Œæˆå‚æ•°
+    //ÊÇ·ñÏÔÊ¾ÒÆ¶¯Íê³É²ÎÊı
     private bool mIsShowFinishParam;
-    //æ˜¯å¦æ˜¾ç¤ºè´å¡å°”æ•°æ®
-    private bool mIsShowBeziePos;
-    [LabelText("è§¦å‘å¸§")]
+    //ÊÇ·ñÏÔÊ¾±´Èû¶ûÊı¾İ
+    private bool mIsShowBezierPos;
+
+    [LabelText("´¥·¢Ö¡")]
     public int triggerFrame;
-    [LabelText("ç§»åŠ¨æ–¹å¼"),OnValueChanged("OnMoveActionTypeChange")]
+    [LabelText("ÒÆ¶¯·½Ê½"),OnValueChanged("OnMoveActionTypeChange")]
     public MoveActionType moveActionType;
-    [LabelText("æœ€é«˜ç‚¹ä½ç½®"),ShowIf("mIsShowBeziePos")]
+    [LabelText("×î¸ßµãÎ»ÖÃ"),ShowIf("mIsShowBezierPos")]
     public Vector3 heightPos;
-    [LabelText("ç§»åŠ¨ä½ç½®"), ShowIf("mIsShowMovePos")]
+    [LabelText("ÒÆ¶¯Î»ÖÃ"), ShowIf("mIsShowMovePos")]
     public Vector3 movePos;
-    [LabelText("ç§»åŠ¨æ‰€éœ€æ—¶é—´MS")]
+    [LabelText("ÒÆ¶¯ËùĞèÊ±¼ä(ºÁÃ×°Â)")]
     public int durationMs;
-    [LabelText("ç§»åŠ¨å®Œæˆæ“ä½œ"), OnValueChanged("OnMoveActionFinishOpationChange")]
+
+    [LabelText("ÒÆ¶¯Íê³É²Ù×÷"), OnValueChanged("OnMoveActionFinishOpationChange")]
     public MoveActionFinishOpation actionFinishOpation;
-    [LabelText("è§¦å‘å‚æ•°"),ShowIf("mIsShowFinishParam")]
+
+    [LabelText("´¥·¢²ÎÊı"), ShowIf("mIsShowFinishParam")]
     public List<int> actionFinishidList;
 
     public void OnMoveActionTypeChange(MoveActionType value)
     {
-        mIsShowMovePos = value == MoveActionType.TargetPos || value == MoveActionType.BeziePos;
-        mIsShowBeziePos = value == MoveActionType.BeziePos;
+        mIsShowMovePos = value == MoveActionType.TargetPos || value == MoveActionType.BezierPos;
+        mIsShowBezierPos = value == MoveActionType.BezierPos;
     }
-
-
     public void OnMoveActionFinishOpationChange(MoveActionFinishOpation value)
     {
         mIsShowFinishParam = value != MoveActionFinishOpation.None;
     }
-
-
-
 }

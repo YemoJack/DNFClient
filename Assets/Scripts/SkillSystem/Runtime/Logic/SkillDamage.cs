@@ -1,66 +1,77 @@
-using FixIntPhysics;
-using FixMath;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FixIntPhysics;
+using FixMath;
 using ZMGC.Battle;
 
+/// <summary>
+/// ÉËº¦À´Ô´
+/// </summary>
 public enum DamageSource
 {
     None,
-    Skill,//æŠ€èƒ½ä¼¤å®³
-    Buff,//Buffä¼¤å®³
-    Bullet,//å­å¼¹ä¼¤å®³
+    SKill,//¼¼ÄÜÉËº¦
+    Buff,//BuffÉËº¦
+    Bullet,//×Óµ¯ÉËº¦
 }
-
-
-// SkillDamage
 public partial class Skill
 {
-    
     /// <summary>
-    /// ç¢°æ’ä½“å­—å…¸
+    /// ÌØĞ§¶ÔÏó×Öµä keyÎªÌØĞ§ÅäÖÃµÄHashCode£¬ValueÎªÉú³ÉµÄ¶ÔÓ¦µÄÌØĞ§
     /// </summary>
-    private Dictionary<int,ColliderBehaviour> mColliderDic = new Dictionary<int,ColliderBehaviour>();
-    /// <summary>
-    /// å½“å‰å·²ç´¯è®¡çš„ä¼¤å®³æ—¶é—´
-    /// </summary>
-    private int mCurDamageAccTime;
 
+    private Dictionary<int, ColliderBehaviour> mColliderDic = new Dictionary<int, ColliderBehaviour>();
+    ///// <summary>
+    ///// µ±Ç°ÉËº¦ÀÛ¼ÓÊ±¼ä
+    ///// </summary>
+    //private int mCurDamageAccTime;
+
+    //µ±Ç°ËùÓĞ×Óµ¯ÀÛ¼ÓÊ±¼äÁĞ±í
+    private List<int> mCurDamageAccTimeList = new List<int>();
+
+    private void OnInitDamage()
+    {
+        if (mSkillData.damageCfgList != null && mSkillData.damageCfgList.Count > 0)
+        {
+            for (int i = 0; i < mSkillData.damageCfgList.Count; i++)
+            {
+                mCurDamageAccTimeList.Add(0);
+            }
+        }
+    }
     /// <summary>
-    /// é€»è¾‘å¸§æ›´æ–°ä¼¤å®³
+    /// Âß¼­Ö¡¸üĞÂÉËº¦
     /// </summary>
     public void OnLogicFrameUpdateDamage()
     {
-        //åˆ¤æ–­å½“å‰ä¼¤å®³é…ç½®åˆ—è¡¨æ˜¯å¦ä¸ºç©ºï¼Œä»¥åŠé•¿åº¦æ˜¯å¦å¤§äº0
-        if(mSkillData.damageCfgList != null && mSkillData.damageCfgList.Count > 0)
+        //ÅĞ¶Ïµ±Ç°ÉËº¦ÅäÖÃÁĞ±íÊÇ·ñÎª¿Õ£¬ÒÔ¼°³¤¶ÈÊÇ·ñ´óÓÚ0
+        if (mSkillData.damageCfgList != null && mSkillData.damageCfgList.Count > 0)
         {
-            foreach(var item in mSkillData.damageCfgList)
+            for (int i = 0; i < mSkillData.damageCfgList.Count; i++)
             {
-
+                SkillDamageConfig item = mSkillData.damageCfgList[i];
                 int hashCode = item.GetHashCode();
-
                 if (item.colliderPosType == ColliderPosType.FollowPos)
                 {
                     ColliderBehaviour damageCollider = null;
-                    //æ›´æ–°ç¢°æ’ä½“ä½ç½®
-                    if (mColliderDic.TryGetValue(hashCode, out damageCollider))
+                    //¸üĞÂÅö×²ÌåÎ»ÖÃ
+                    if (mColliderDic.TryGetValue(item.GetHashCode(), out damageCollider) && damageCollider != null)
                     {
                         CreateOrUpdateCollider(item, damageCollider);
                     }
                 }
-                //åˆ›å»ºç¢°æ’ä½“
-                if(mCurLogicFrame == item.triggerFrame)
+
+                //´´½¨Åö×²Ìå
+                if (mCurLogicFrame == item.triggerFrame)
                 {
                     DestroyCollider(item);
-                    ColliderBehaviour collider = CreateOrUpdateCollider(item,null);
-                    //åˆ›å»ºå­—å…¸ç¼“å­˜å½“å‰ç¢°æ’ä½“
+                    ColliderBehaviour collider = CreateOrUpdateCollider(item, null);
+                    //´´½¨×Öµä»º´æµ±Ç°Åö×²Ìå
                     mColliderDic.Add(hashCode, collider);
-
-                    //å¤„ç†ç¢°æ’ä½“ä¼¤å®³æ£€æµ‹
                     if (item.triggerIntervalMs == 0)
                     {
-                        //è§¦å‘ä¸€æ¬¡ä¼¤å®³ //TODO
+                        //´¥·¢Ò»´ÎÉËº¦//TOOD
                         if (mColliderDic.ContainsKey(hashCode))
                         {
                             TriggerColliderDamage(mColliderDic[hashCode], item);
@@ -68,16 +79,16 @@ public partial class Skill
                     }
                 }
 
-
+                //´¦ÀíÅö×²ÌåÉËº¦¼ì²â
                 if (item.triggerIntervalMs != 0)
                 {
-                    //è§¦å‘å¤šæ¬¡ä¼¤å®³
-                    mCurDamageAccTime += item.triggerIntervalMs;
-                    //å¦‚æœå½“å‰ç´¯è®¡æ—¶é—´å¤§äºè§¦å‘ä¼¤å®³é—´éš” åˆ™è¿›è¡Œä¼¤å®³æ£€æµ‹
-                    if(mCurDamageAccTime>= item.triggerIntervalMs)
+                    //int mCurDamageAccTime = mCurDamageAccTimeList[i]; Öµ¿½±´£¬·ÇmCurDamageAccTimeList[i]¶ÔÓ¦µÄÒ»¸öÖµ
+                    mCurDamageAccTimeList[i] += LogicFrameConfig.LogicFrameIntervalms;
+                    //Èç¹ûµ±Ç°ÀÛ¼ÓÊ±¼ä´óÓÚ´¥·¢ÉËº¦¼ä¸ô£¬ÄÇ¾ÍÔì³ÉÉËº¦¼ì²â
+                    if (mCurDamageAccTimeList[i] >= item.triggerIntervalMs)
                     {
-                        //è§¦å‘ä¸€æ¬¡ä¼¤å®³//TODO
-                        mCurDamageAccTime = 0;
+                        //´¥·¢Ò»´ÎÉËº¦//TOOD
+                        mCurDamageAccTimeList[i] = 0;
                         if (mColliderDic.ContainsKey(hashCode))
                         {
                             TriggerColliderDamage(mColliderDic[hashCode], item);
@@ -85,131 +96,138 @@ public partial class Skill
                     }
                 }
 
-
-                //é”€æ¯ç¢°æ’ä½“
-                if(item.endFrame == mCurLogicFrame)
+                //Ïú»ÙÅö×²Ìå
+                if (item.endFrame == mCurLogicFrame)
                 {
                     DestroyCollider(item);
                 }
             }
         }
-
-
     }
-
-
     /// <summary>
-    /// è§¦å‘ç¢°æ’ä½“ä¼¤å®³
+    /// ´¥·¢Åö×²ÌåÉËº¦
     /// </summary>
-    public void TriggerColliderDamage(ColliderBehaviour collider,SkillDamageConfig damageConfig)
+    public void TriggerColliderDamage(ColliderBehaviour collider, SkillDamageConfig config)
     {
-        //1. è·å–æ•Œäººç›®æ ‡åˆ—è¡¨ æ•Œäºº è‹±é›„
+        //1.»ñÈ¡µĞÈËÄ¿±êÁĞ±í µĞÈË Ó¢ĞÛ
         List<LogicActor> enemyList = BattleWorld.GetExitsLogicCtrl<BattleLogicCtrl>().GetEnemyList(mSkillCreater.ObjectType);
-        //2. é€šè¿‡ç¢°æ’æ£€æµ‹é€»è¾‘ï¼Œå»æ£€æµ‹ç¢°æ’åˆ°çš„æ•Œäºº
+
+        //2.Í¨¹ıÅö×²¼ì²âÂß¼­£¬È¥¼ì²âÅö×²µ½µÄµĞÈË
         List<LogicActor> damageTargetList = new List<LogicActor>();
-        foreach(var enemy in enemyList)
+        foreach (var target in enemyList)
         {
-            if(collider.ColliderType == ColliderType.Box)
+            if (collider.ColliderType == ColliderType.Box)
             {
-                //å¦‚æœè¿”å›å€¼ä¸ºtrueï¼Œåˆ™è¡¨ç¤ºæœ‰ç¢°æ’åˆ°æ•Œäººï¼Œå¦åˆ™æ²¡æœ‰ç¢°æ’åˆ°æ•Œäºº
-                if(PhysicsManager.IsCollision(collider as FixIntBoxCollider, enemy.Collider))
+                //Èç¹û·µ»ØÖµÎªTrue£¬ËµÃ÷Á½¸öÅö×²Ìå·¢ÉúÁËÅö×²
+                if (PhysicsManager.IsCollision(collider as FixIntBoxCollider, target.Collider))
                 {
-                    damageTargetList.Add(enemy);
+                    damageTargetList.Add(target);
                 }
             }
-            else if(collider.ColliderType == ColliderType.Shpere)
+            else if (collider.ColliderType == ColliderType.Shpere)
             {
-                if(PhysicsManager.IsCollision( enemy.Collider, collider as FixIntSphereCollider))
+                //Èç¹û·µ»ØÖµÎªTrue£¬ËµÃ÷Á½¸öÅö×²Ìå·¢ÉúÁËÅö×²
+                if (PhysicsManager.IsCollision(target.Collider, collider as FixIntSphereCollider))
                 {
-                    damageTargetList.Add(enemy);
+                    damageTargetList.Add(target);
                 }
             }
         }
-        //é‡Šæ”¾åˆ—è¡¨
+        //ÊÍ·ÅÁĞ±í
         enemyList.Clear();
-
-        //3. è·å–åˆ°æ”»å‡»ç›®æ ‡åï¼Œå¯¹è¿™äº›æ•Œäººé€ æˆä¼¤å®³
-        foreach(var target in damageTargetList)
+        //3.»ñÈ¡µ½¹¥»÷Ä¿±êºó£¬¶ÔÕâĞ©µĞÈËÔì³ÉÉËº¦
+        foreach (var target in damageTargetList)
         {
-            //å¯¹æ•Œäººé€ æˆä¼¤å®³
-            target.SkillDamage(9999, damageConfig);
+            //Ôì³ÉÉËº¦
+            target.SkillDamage(DamageCalcuCenter.CaclulateDamage(config,mSkillCreater,target), config);
 
-            //æ·»åŠ Buff 
-            if( damageConfig.addBuffs!=null && damageConfig.addBuffs.Length > 0)
+            //Ìí¼ÓBuff 
+            if (config.addBuffs != null && config.addBuffs.Length > 0)
             {
-                foreach(var buffid in damageConfig.addBuffs)
+                foreach (var buffid in config.addBuffs)
                 {
-                    BuffSystem.Instance.AttachBuff(buffid,mSkillCreater,target,this,null);
+                    BuffSystem.Instance.AttachBuff(buffid, mSkillCreater, target, this, null);
                 }
             }
-
-
-            //æ·»åŠ å‡»ä¸­ç‰¹æ•ˆ
-            AddHitEffect(target);
-            //æ·»åŠ å‡»ä¸­éŸ³æ•ˆ
+            //´¥·¢¶ÔÓ¦µÄºóĞø¼¼ÄÜ 
+            if (config.triggerSkillid != 0)
+            {
+                //Ô¤ÊÍ·Å¼¼ÄÜ Õâ¸ö¼¼ÄÜ»áÔÚµ±Ç°¼¼ÄÜÊÍ·ÅÍê³Éºó Á¢¼´½øĞĞÊÍ·Å
+                mCombinationSkillid = config.triggerSkillid;
+            }
+            //Ìí¼Ó»÷ÖĞÌØĞ§
+            AddHitEffect(target, config.targetType == TargetType.Self ? mSkillCreater : target);
+            //²¥·Å»÷ÖĞÒôĞ§
             PlayHitAudio();
+
         }
     }
-
     /// <summary>
-    /// æ·»åŠ å‡»ä¸­ç‰¹æ•ˆ
+    /// Ìí¼Ó»÷ÖĞÌØĞ§
     /// </summary>
-    /// <param name="targetObj"></param>
-    public void AddHitEffect(LogicActor targetObj)
+    public void AddHitEffect(LogicActor targetObj, LogicActor source)
     {
-        if(mSkillData.skillCfg.skillHitEffect != null)
+        if (mSkillData.skillCfg.skillHitEffect != null)
         {
-            targetObj.OnHit(mSkillData.skillCfg.skillHitEffect,mSkillData.skillCfg.hitEffectSurivalTimeMs,mSkillCreater);
+            targetObj.OnHit(mSkillData.skillCfg.skillHitEffectPath, mSkillData.skillCfg.hitEffectSurvivalTimeMs, source, mSkillCreater.LogicXAxis);
         }
     }
-
-
-
     /// <summary>
-    /// åˆ›å»ºç¢°æ’ä½“
+    /// ´´½¨Åö×²Ìå
     /// </summary>
-    public ColliderBehaviour CreateOrUpdateCollider(SkillDamageConfig item , ColliderBehaviour damageCollider,LogicObject followobj = null)
+    public ColliderBehaviour CreateOrUpdateCollider(SkillDamageConfig item, ColliderBehaviour damageCollider, LogicObject followObj = null)
     {
         ColliderBehaviour collider = damageCollider;
-        LogicObject followTargetObj = followobj == null ? mSkillCreater : followobj;
-        //åˆ›å»ºå¯¹åº”çš„å®šç‚¹æ•°ç¢°æ’ä½“
-        if(item.detectionMode == DamageDetectionMode.BOX3D)
+        LogicObject followTragetObj = followObj == null ? mSkillCreater : followObj;
+        //´´½¨¶ÔÓ¦µÄ¶¨µãÊıÅö×²Ìå
+        if (item.detectionMode == DamageDetectionMode.BOX3D)
         {
             FixIntVector3 boxSize = new FixIntVector3(item.boxSize);
-            FixIntVector3 offset = new FixIntVector3(item.boxOffset) * followTargetObj.LogicXAxis;
-            //é™åˆ¶yè½´çš„åç§»åªèƒ½å¾€ä¸Šè¿›è¡Œåç§»
+            FixIntVector3 offset = new FixIntVector3(item.boxOffset) * followTragetObj.LogicXAxis;
+
+            //ÏŞÖÆyÖáµÄÆ«ÒÆÖ»ÄÜÍùÉÏ½øĞĞÆ«ÒÆ
             offset.y = FixIntMath.Abs(offset.y);
-            if(collider == null)
-                collider = new FixIntBoxCollider(boxSize,offset);
+            if (damageCollider == null)
+                collider = new FixIntBoxCollider(boxSize, offset);
+
             collider.SetBoxData(offset, boxSize);
-
-            collider.UpdateColliderInfo(followTargetObj.LogicPos, boxSize);
+            collider.UpdateColliderInfo(followTragetObj.LogicPos, boxSize);
         }
-        else if(item.detectionMode == DamageDetectionMode.Sphere3D)
+        else if (item.detectionMode == DamageDetectionMode.Sphere3D)
         {
-            FixIntVector3 offset = new FixIntVector3(item.sphereOffset) * followTargetObj.LogicXAxis;
-            //é™åˆ¶yè½´çš„åç§»åªèƒ½å¾€ä¸Šè¿›è¡Œåç§»
+            FixIntVector3 offset = new FixIntVector3(item.sphereOffset) * followTragetObj.LogicXAxis;
+            //ÏŞÖÆyÖáµÄÆ«ÒÆÖ»ÄÜÍùÉÏ½øĞĞÆ«ÒÆ
             offset.y = FixIntMath.Abs(offset.y);
-            if (collider == null)
-                collider = new FixIntSphereCollider(item.radius, offset);
-            collider.SetBoxData(item.radius, offset);
-            collider.UpdateColliderInfo(followTargetObj.LogicPos, FixIntVector3.zero,item.radius);
-        }
 
+            if (damageCollider == null)
+                collider = new FixIntSphereCollider(item.raduis, offset);
+
+            collider.SetBoxData(item.raduis, offset);
+            collider.UpdateColliderInfo(followTragetObj.LogicPos, FixIntVector3.zero, item.raduis);
+        }
         return collider;
     }
 
 
+
+    /// <summary>
+    /// Ïú»Ù¶ÔÓ¦ÅäÖÃÉú³ÉµÄÅö×²Ìå
+    /// </summary>
+    /// <param name="item"></param>
     public void DestroyCollider(SkillDamageConfig item)
     {
         ColliderBehaviour collider = null;
-        int HashCode = item.GetHashCode();
-        mColliderDic.TryGetValue(HashCode, out collider);
+        int hashCode = item.GetHashCode();
+        mColliderDic.TryGetValue(hashCode, out collider);
         if (collider != null)
         {
-            mColliderDic.Remove(HashCode);
+            mColliderDic.Remove(hashCode);
             collider.OnRelease();
         }
     }
 
+    public void OnDamageRelease()
+    {
+        mCurDamageAccTimeList.Clear();
+    }
 }

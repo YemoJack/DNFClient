@@ -3,20 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ZMGC.Battle;
-public class BattleWorldScriptExecutionOrder : IBehaviourExecution
+public class BattleWorldScriptExecutionOrder  :IBehaviourExecution
 {
     private static Type[] LogicBehaviorExecutions = new Type[] {
-
-        typeof(HeroLogicCtrl), 
-        typeof(MonsterLogicCtrl)
+       typeof(HeroLogicCtrl),
+       typeof(MonsterLogicCtrl),
      };
 
     private static Type[] DataBehaviorExecutions = new Type[] {
-
+         //typeof(RankDataMgr),
+       //typeof(UserDataMgr)
      };
 
     private static Type[] MsgBehaviorExecutions = new Type[] {
-
+       //typeof(TaskMsgMgr)
      };
 
     public Type[] GetDataBehaviourExecution()

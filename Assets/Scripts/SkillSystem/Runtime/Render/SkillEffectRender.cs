@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class SkillEffectRender : RenderObject
 {
-    protected override void Update()
+
+    public override void Update()
     {
         base.Update();
 
-
     }
-
 
     public override void OnRelease()
     {
         base.OnRelease();
-        GameObject.Destroy(gameObject);
+        //GameObject.Destroy(gameObject);
+        ZM.AssetFrameWork.ZMAssetsFrame.Release(gameObject);
     }
 }

@@ -5,31 +5,27 @@ using UnityEngine;
 public abstract class BuffComposite 
 {
 
-
     protected Buff mBuff;
 
     public BuffComposite(Buff buff)
     {
-        mBuff = buff;
+        this.mBuff = buff;
     }
-    
+
     /// <summary>
-    /// buffå»¶è¿Ÿè§¦å‘
+    /// buffÑÓ³Ù´¥·¢½Ó¿Ú
     /// </summary>
     public abstract void BuffDelay();
     /// <summary>
-    /// buffå¼€å§‹
+    /// Buff¿ªÊ¼Á÷³Ì
     /// </summary>
     public abstract void BuffStart();
     /// <summary>
-    /// Buffè§¦å‘ æ•ˆæœ
+    /// buffÂß¼­´¥·¢£¬¿ÉÒÔÖ´ĞĞÔÎÑ£Âß¼­»òÊôĞÔĞŞ¸ÄÂß¼­
     /// </summary>
     public abstract void BuffTrigger();
-
     /// <summary>
-    /// buffç»“æŸ
+    /// buffÖ´ĞĞÍê³É
     /// </summary>
     public abstract void BuffEnd();
-
-
 }

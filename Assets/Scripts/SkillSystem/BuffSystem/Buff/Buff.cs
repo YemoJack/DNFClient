@@ -2,68 +2,63 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ZM.AssetFrameWork;
-
 public enum BuffState
 {
     None,
-    Delay,//å»¶è¿Ÿä¸­
-    Start,//å¼€å§‹
-    Update,//Buffæ›´æ–°ä¸­
-    End, //ç»“æŸ
+    Delay,//ÑÓ³ÙÖĞ
+    Start,//¿ªÊ¼´¥·¢
+    Update,//Buff¸üĞÂÖĞ
+    End,//buff½áÊø
 }
 
-
-public class Buff 
+public class Buff
 {
     /// <summary>
-    /// buffé…ç½®
+    /// buffÅäÖÃ
     /// </summary>
-    public BuffConfig BuffCfg {  get; private set; }
+    public BuffConfig BuffCfg { get; private set; }
     /// <summary>
-    /// buffå½“å‰çŠ¶æ€
+    /// buffµ±Ç°×´Ì¬
     /// </summary>
     public BuffState buffState;
-
-
     /// <summary>
-    /// buffID
+    /// BuffÎ¨Ò»id
     /// </summary>
     public readonly int Buffid;
     /// <summary>
-    /// é‡Šæ”¾è€…
+    /// buffÊÍ·ÅÕß
     /// </summary>
     public LogicActor releaser;
     /// <summary>
-    /// Bufffé™„åŠ ç›®æ ‡
+    /// buff¸½¼Ó/¹¥»÷Ä¿±ê
     /// </summary>
     public LogicActor attachTarget;
     /// <summary>
-    /// éš¶å±æŠ€èƒ½
+    /// Á¥Êô¼¼ÄÜ
     /// </summary>
     public Skill skill;
     /// <summary>
-    /// Buffæ‰€éœ€è¦çš„å‚æ•°
+    /// BuffËùĞèÒªµÄÒ»Ğ©²ÎÊı
     /// </summary>
     public object[] paramsObjs;
-
     /// <summary>
-    /// å½“å‰å»¶è¿Ÿæ—¶é—´
+    /// µ±Ç°ÑÓ³ÙÊ±¼ä
     /// </summary>
     private int mCurDelayTime;
     /// <summary>
-    /// Buffé€»è¾‘ç»„åˆå¯¹è±¡
+    /// BuffÂß¼­×éºÏ¶ÔÏó
     /// </summary>
     private BuffComposite mBuffLogic;
     /// <summary>
-    /// buffæ¸²æŸ“å¯¹è±¡
+    /// buffäÖÈ¾¶ÔÏó
     /// </summary>
-    //private BuffRender mBuffRender;
+    private BuffRender mBuffRender;
     /// <summary>
-    /// å½“å‰çœŸå®è¿è¡Œæ—¶é—´
+    /// µ±Ç°ÕæÊµÔËĞĞÊ±¼ä
     /// </summary>
     private int mCurRealRuntime;
     /// <summary>
-    /// å½“å‰ç´¯è®¡è¿è¡Œæ—¶é—´
+    /// µ±Ç°ÀÛ¼ÆÔËĞĞÊ±¼ä
     /// </summary>
     private int mAccRumTime;
 
@@ -78,20 +73,43 @@ public class Buff
 
     public void OnCreate()
     {
-        // åŠ è½½é…ç½®
+        //¼ÓÔØbuffÅäÖÃÎÄ¼ş
         BuffCfg = ZMAssetsFrame.LoadScriptableObject<BuffConfig>(AssetPathConfig.BUFF_DATA_PATH + Buffid + ".asset");
-
-        if(BuffCfg.buffType == BuffType.Repel)
+        if (BuffCfg.buffType == BuffType.Repel)
         {
             mBuffLogic = new RepelBuff(this);
         }
-        else if(BuffCfg.buffType == BuffType.Floating)
+        else if (BuffCfg.buffType == BuffType.Floating)
         {
             mBuffLogic = new FloatingBuff(this);
         }
-
+        else if (BuffCfg.buffType == BuffType.Stiff)
+        {
+            mBuffLogic = new StiffBuff(this);
+        }
+        else if (BuffCfg.buffType == BuffType.HP_Modify_Group)
+        {
+            mBuffLogic = new AttributeModify_Buff_Group(this);
+        }
+        else if (BuffCfg.buffType == BuffType.Grab)
+        {
+            mBuffLogic = new GrabBuff(this);
+        }
+        else if (BuffCfg.buffType == BuffType.IgnoreGravity)
+        {
+            mBuffLogic = new IgnoreGravityBuff(this);
+        }
+        else if (BuffCfg.buffType == BuffType.MoveSpeed_Modify_Single)
+        {
+            mBuffLogic = new AttributeModify_Buff_Single(this);
+        }
+        else if (BuffCfg.buffType == BuffType.AllowMove|| BuffCfg.buffType == BuffType.NotAllowDir)
+        {
+            mBuffLogic = new StatusModify_Buff_Single(this);
+        }
         buffState = BuffCfg.buffDelay == 0 ? BuffState.Start : BuffState.Delay;
         mCurDelayTime = BuffCfg.buffDelay;
+    
     }
 
     public void OnLogicFrameUpdate()
@@ -101,70 +119,105 @@ public class Buff
             case BuffState.Delay:
                 if (mCurDelayTime == BuffCfg.buffDelay)
                 {
-                    //å¤„ç†å»¶æ—¶é€»è¾‘
+                    //´¦ÀíBUffÑÓ³ÙÂß¼­
+                    mBuffLogic.BuffDelay();
                 }
-                mCurDelayTime -= LogicFrameConfig.LogicFrameIntervalMS;
-                if(mCurDelayTime <= 0)
+                mCurDelayTime -= LogicFrameConfig.LogicFrameIntervalms;
+                if (mCurDelayTime <= 0)
                 {
                     buffState = BuffState.Start;
                 }
                 break;
             case BuffState.Start:
-                //1.è°ƒç”¨BuffStartçš„æ¥å£
-                mBuffLogic.BuffStart();
-                //2.è°ƒç”¨Buffçš„è§¦å‘æ¥å£
-                mBuffLogic.BuffTrigger();
-                //åˆ¤æ–­Buffæ˜¯å¦éœ€è¦åˆ‡æ¢ä¸ºæ›´æ–°çŠ¶æ€ï¼Œå¦‚æœå½“å‰BuffæŒç»­æ—¶é—´ä¸ºæœ‰é™æˆ–æ— é™ï¼Œæ‰èƒ½è¿›å…¥æ›´æ–°çŠ¶æ€
+                BuffStart();
+                BuffTrigger();
+                //ÅĞ¶ÏbuffÊÇ·ñĞèÒªÇĞ»»Îª¸üĞÂ×´Ì¬£¬Èç¹ûµ±Ç°buff³ÖĞøÊ±¼äÎªÓĞÏŞ»òÎŞÏŞ£¬²Å½øÈë¸üĞÂ×´Ì¬
                 buffState = (BuffCfg.buffDurationms == -1 || BuffCfg.buffDurationms > 0) ? BuffState.Update : BuffState.End;
                 break;
             case BuffState.Update:
                 UpdateBuffLogic();
                 break;
             case BuffState.End:
-                
+
                 OnDestroy();
                 break;
         }
     }
-
+    public void BuffStart()
+    {
+        CreateBuffEffect();
+        mBuffRender?.InitBuffRender(releaser, attachTarget, BuffCfg, skill.sKillGuidePos);
+        //1.µ÷ÓÃbuffStart½Ó¿Ú
+        mBuffLogic.BuffStart();
+        attachTarget.AddBuff(this);
+    }
+    public void BuffTrigger()
+    {
+        mBuffLogic.BuffTrigger();
+        switch (BuffCfg.buffTriggerAnim)
+        {
+            case ObjectAnimationState.BeHit:
+                attachTarget.PlayAnim(AnimationName.Anim_Beiji_01);
+                break;
+            case ObjectAnimationState.Stiff:
+                attachTarget.PlayAnim(AnimationName.Anim_Beiji_02);
+                break;
+        }
+        //´¦Àíµ±Ç°BUffĞèÒª²¥·ÅµÄÒôĞ§
+        //if (BuffCfg.buffAudio != null)
+        //{
+        //    AudioController.GetInstance().PlaySoundByAudioClip(BuffCfg.buffAudio, false, 2);
+        //}
+    }
     public void UpdateBuffLogic()
     {
-
-        int logicFrameIntervalMS = LogicFrameConfig.LogicFrameIntervalMS;
-        //1.å¤„ç†Buffé—´éš”é€»è¾‘
-        if(BuffCfg.buffIntervalms> 0)
+        int logicFrameintervalMs = LogicFrameConfig.LogicFrameIntervalms;
+        //1.´¦Àíbuff¼ä¸ôÂß¼­
+        if (BuffCfg.buffIntervalms > 0)
         {
-            //å½“å‰ç´¯è®¡è¿è¡Œæ—¶é—´æ˜¯å¦å¤§äºBuffé—´éš”æ—¶é—´
-            if(mCurRealRuntime >= BuffCfg.buffIntervalms)
+            //µ±Ç°ÀÛ¼ÆÔËĞĞÊ±¼äÊÇ·ñ´óÓÚbuff´¥·¢¼ä¸ô£¬Èç¹û´óÓÚ¾Í´¥·¢buffĞ§¹û
+            mCurRealRuntime += logicFrameintervalMs;
+            if (mCurRealRuntime >= BuffCfg.buffIntervalms)
             {
-                //å¤„ç†Buffé€»è¾‘
-                mBuffLogic.BuffTrigger();
-               mCurRealRuntime -= BuffCfg.buffIntervalms;
+                BuffTrigger();
+                mCurRealRuntime -= BuffCfg.buffIntervalms;
             }
-            
         }
-
-        //å¤„ç† å½“å‰Buffçš„æŒç»­æ—¶é—´
+        //´¦Àíµ±Ç°BuffµÄ³ÖĞøÊ±¼ä
         UpdateBuffDurationTime();
     }
-
     public void UpdateBuffDurationTime()
     {
-        mAccRumTime += LogicFrameConfig.LogicFrameIntervalMS;
-        if(mAccRumTime >= BuffCfg.buffDurationms)
+        mAccRumTime += LogicFrameConfig.LogicFrameIntervalms;
+        if (mAccRumTime >= BuffCfg.buffDurationms)
         {
             buffState = BuffState.End;
         }
     }
-
-
-
+    /// <summary>
+    /// ´´½¨buffÌØĞ§
+    /// </summary>
+    public BuffRender CreateBuffEffect()
+    {
+        //¶ÁÈ¡BuffEffectÅäÖÃ£¬È¥Éú³É¶ÔÓ¦µÄÌØĞ§
+        if (BuffCfg.effectConfig != null && BuffCfg.effectConfig.effect!=null)
+        {
+            //GameObject buffEffect = GameObject.Instantiate(BuffCfg.effectConfig.effect);
+            GameObject buffEffect =ZM.AssetFrameWork.ZMAssetsFrame.Instantiate(BuffCfg.effectConfig.effectPath,null);
+            mBuffRender = buffEffect.GetComponent<BuffRender>();
+            if (mBuffRender == null)
+            {
+                mBuffRender = buffEffect.AddComponent<BuffRender>();
+            }
+            return mBuffRender;
+        }
+        return null;
+    }
     public void OnDestroy()
     {
+        mBuffRender?.OnRelease();
         mBuffLogic.BuffEnd();
         BuffSystem.Instance.RemoveBuff(this);
+        attachTarget.RemoveBuff(this);
     }
-
-
-
 }

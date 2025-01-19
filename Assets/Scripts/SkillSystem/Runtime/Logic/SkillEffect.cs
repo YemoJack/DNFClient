@@ -1,79 +1,64 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-//SkillEffect
+using ZM.AssetFrameWork;
 public partial class Skill
 {
-
-
     /// <summary>
-    /// ç‰¹æ•ˆå­—å…¸ keyä¸ºç‰¹æ•ˆé…ç½®çš„HashCode Valueä¸ºç‰¹æ•ˆå¯¹è±¡
+    /// ÌØĞ§¶ÔÏó×Öµä keyÎªÌØĞ§ÅäÖÃµÄHashCode£¬ValueÎªÉú³ÉµÄ¶ÔÓ¦µÄÌØĞ§
     /// </summary>
-    private Dictionary<int,SkillEffectLogic> mEffectDic = new Dictionary<int, SkillEffectLogic>();
 
-
-
+    private Dictionary<int, SkillEffectLogic> mEffectDic = new Dictionary<int, SkillEffectLogic>();
     public void OnLogicFrameUpdateEffect()
     {
-   
-
-
-        if(mSkillData.effectCfgList != null && mSkillData.effectCfgList.Count > 0)
+        if (mSkillData.effectCfgList != null && mSkillData.effectCfgList.Count > 0)
         {
-            foreach(var item in mSkillData.effectCfgList)
+            foreach (var item in mSkillData.effectCfgList)
             {
-                if(item.skillEffect != null && mCurLogicFrame == item.triggerFrame)
+
+                if (item.skillEffect != null && mCurLogicFrame == item.triggerFrame)
                 {
                     DestroyEffect(item);
                     Transform parent = null;
-                    if(item.isSetTransParent)
+                    if (item.isSetTransParent)
                     {
-                        //è·å–å·¦æ‰‹æˆ–å³æ‰‹èŠ‚ç‚¹
+                        //»ñÈ¡×óÊÖ»òÓÒÊÖ½Úµã
                         parent = mSkillCreater.RenderObj.GetTransParent(item.transParent);
                     }
-
-                    //æŠ€èƒ½ç‰¹æ•ˆç”Ÿæˆ
-                    GameObject effectObj = GameObject.Instantiate(item.skillEffect,parent);//TODO...1.é€šè¿‡Editorè·å–å½“å‰å¯¹è±¡çš„ä¸€ä¸ªè·¯å¾„ï¼Œ2.æŠŠç‰¹æ•ˆåå­—æ”¹æˆå­—ç¬¦ä¸²
-                    effectObj.transform.position = Vector3.zero;
-                    effectObj.transform.rotation = Quaternion.identity;
+                    //¼¼ÄÜÌØĞ§Éú³É´¥·¢ 
+                    GameObject effectObj = ZMAssetsFrame.Instantiate(item.skillEffectPath, parent, Vector3.zero, Vector3.one, Quaternion.identity);
+                    effectObj.transform.localPosition = Vector3.zero;
                     effectObj.transform.localScale = Vector3.one;
-                    //åˆ›å»ºæŠ€èƒ½ç‰¹æ•ˆæ¸²æŸ“å±‚
+                    effectObj.transform.rotation = Quaternion.identity;
+                    effectObj.transform.localEulerAngles = Vector3.zero;
+                    //´´½¨¼¼ÄÜÌØĞ§äÖÈ¾²ã
                     SkillEffectRender effectRender = effectObj.GetComponent<SkillEffectRender>();
                     if (effectRender == null)
-                    {
                         effectRender = effectObj.AddComponent<SkillEffectRender>();
-                    }
-                    //åˆ›å»ºæŠ€èƒ½ç‰¹æ•ˆé€»è¾‘å±‚
-                    SkillEffectLogic effectLogic = new SkillEffectLogic(LogicObjectType.Effect,item, effectRender, mSkillCreater);
-                    effectRender.SetLogicObject(effectLogic,item.effectPosType != EffectPosType.Zero);
-                    mEffectDic.Add(item.GetHashCode(),effectLogic);
+                    //´´½¨¼¼ÄÜÌØĞ§Âß¼­²ã
+                    SkillEffectLogic effectLogic = new SkillEffectLogic(LogicObjectType.Effect, item, effectRender, mSkillCreater,this);
+                    effectRender.SetLoigcObject(effectLogic,item.effectPosType!= EffectPosType.Zero);
+                    mEffectDic.Add(item.GetHashCode(), effectLogic);
                 }
 
-                if(mCurLogicFrame == item.endFrame && !item.isAttachAction)
+                if (mCurLogicFrame == item.endFrame&&!item.isAttachAction)
                 {
-                    //æŠ€èƒ½ç‰¹æ•ˆç»“æŸï¼Œå¼€å§‹é”€æ¯
+                    //¼¼ÄÜÌØĞ§½áÊø£¬¿ªÊ¼Ïú»Ù
                     DestroyEffect(item);
                     continue;
                 }
-
                 SkillEffectLogic effectLogicObj = null;
-                //æ›´æ–°ç‰¹æ•ˆé€»è¾‘å±‚é€»è¾‘å¸§
-                if(mEffectDic.TryGetValue(item.GetHashCode(), out effectLogicObj))
+                //¸üĞÂÌØĞ§Âß¼­²ãÂß¼­Ö¡
+                if (mEffectDic.TryGetValue(item.GetHashCode(),out effectLogicObj)&& effectLogicObj!=null)
                 {
                     effectLogicObj.OnLogicFrameEffectUpdate(this,mCurLogicFrame);
                 }
-
-
             }
         }
-
-
     }
 
-
     /// <summary>
-    /// é”€æ¯å¯¹åº”é…ç½®ç”Ÿæˆçš„ç‰¹æ•ˆ
+    /// Ïú»Ù¶ÔÓ¦ÅäÖÃÉú³ÉµÄÌØĞ§
     /// </summary>
     /// <param name="item"></param>
     public void DestroyEffect(SkillEffectConfig item)
@@ -81,29 +66,24 @@ public partial class Skill
         SkillEffectLogic effect = null;
         int hashCode = item.GetHashCode();
         mEffectDic.TryGetValue(hashCode, out effect);
-        if(effect != null)
+        if (effect != null)
         {
-            
             mEffectDic.Remove(hashCode);
             effect.OnDestroy();
         }
     }
-
-
     /// <summary>
-    ///  é”€æ¯æ‰€æœ‰çš„ç‰¹æ•ˆ
+    /// ÊÍ·ÅËùÓĞÌØĞ§×ÊÔ´
     /// </summary>
     public void ReleaseAllEffect()
     {
-        foreach(var item in mSkillData.effectCfgList)
+        foreach (var item in mSkillData.effectCfgList)
         {
-            if(!item.isAttachAction)
+            if (!item.isAttachAction)
+            {
                 DestroyEffect(item);
+            }
         }
-
     }
-
-
-
-
 }
+ 

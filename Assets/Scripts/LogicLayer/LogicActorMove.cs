@@ -3,45 +3,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-//LogicActorMove
+/// <summary>
+/// ´¦ÀíÑİÔ±¶ÔÏóÒÆ¶¯Âß¼­½Å±¾
+/// </summary>
 public partial class LogicActor
 {
-
     private FixIntVector3 mInputMoveDir;
-
     /// <summary>
-    /// é€»è¾‘å¸§æ›´æ–°ç§»åŠ¨æ¥å£
+    /// Âß¼­Ö¡Î»ÖÃ¸üĞÂ
     /// </summary>
     public void OnLogicFrameUpdateMove()
     {
-        Collider?.UpdateColliderInfo(LogicPos,Collider.Size);
-
-        if(ActionState != LogicObjectActionState.Idle && ActionState != LogicObjectActionState.Move)
+        Collider?.UpdateColliderInfo(LogicPos, Collider.Size);
+        if (ActionSate != LogicObjectActionState.Idle && ActionSate != LogicObjectActionState.Move && IsForceAllowMove==false)
         {
             return;
         }
-        //è®¡ç®—é€»è¾‘ä½ç½®
-        LogicPos += mInputMoveDir * LogicMoveSpeed * (FixInt)LogicFrameConfig.LogicFrameInterval;
+        //¼ÆËãÂß¼­Î»ÖÃ
+        LogicPos += mInputMoveDir* LogicMoveSpeed * (FixInt)LogicFrameConfig.LogicFrameInterval;
 
-        //è®¡ç®—é€»è¾‘å¯¹è±¡çš„æœå‘
-        if(LogicDir != mInputMoveDir )
+        //¼ÆËãÂß¼­¶ÔÏóµÄ³¯Ïò
+        if (LogicDir!=mInputMoveDir)
         {
             LogicDir = mInputMoveDir;
         }
-        //è®¡ç®—é€»è¾‘è½´å‘
-        if(LogicDir.x != FixInt.Zero)
+        //¼ÆËãÂß¼­ÖáÏò
+        if (LogicDir.x!=FixInt.Zero&& IsForceNotAlllowModifyDir == false)
         {
             LogicXAxis = LogicDir.x > 0 ? 1 : -1;
         }
-    }
+        //Debug.Log("LogicPos:"+LogicPos);
+     }
 
-
-    public void InputLogicFrameEvent(FixIntVector3 logicDir)
+    public void InputLoigcFrameEvent(FixIntVector3 inputDir)
     {
-        mInputMoveDir = logicDir;
+        mInputMoveDir = inputDir;
     }
-
-
-
 }

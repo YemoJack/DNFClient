@@ -6,15 +6,16 @@ using ZMGC.Hall;
 public class HallWorldScriptExecutionOrder  :IBehaviourExecution
 {
     private static Type[] LogicBehaviorExecutions = new Type[] {
-       
+       //typeof(TaskLogicCtrl)
      };
 
     private static Type[] DataBehaviorExecutions = new Type[] {
-        
+         //typeof(RankDataMgr),
+       //typeof(UserDataMgr)
      };
 
     private static Type[] MsgBehaviorExecutions = new Type[] {
-       
+       //typeof(TaskMsgMgr)
      };
 
     public Type[] GetDataBehaviourExecution()

@@ -1,93 +1,84 @@
-using FixIntPhysics;
-using FixMath;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
-
+using FixMath;
+using FixIntPhysics;
+//LogicObject Í¬Ê±´ú±í ¹ÖÎïºÍÓ¢ĞÛÍ¬Ê±¾ßÓĞµÄ»ù´¡ÊôĞÔ
 /// <summary>
-/// é€»è¾‘å¯¹è±¡åŸºç±»
-/// LogicObject åŒæ—¶è¡¨ç¤º æ€ªç‰©å’Œè‹±é›„åŒæ—¶å…·æœ‰çš„åŸºç¡€å±æ€§
-/// åªè´Ÿè´£æœ€åŸºç¡€çš„å±æ€§å’Œæ¥å£çš„æä¾›ï¼Œä¸è´Ÿè´£å…·ä½“æ–¹æ³•çš„å®ç°
+/// Ö»¸ºÔğ×î»ù´¡µÄÊôĞÔºÍ½Ó¿ÚµÄÌá¹©£¬²»¸ºÔğ¾ßÌå·½·¨µÄÊµÏÖ
 /// </summary>
-public abstract class LogicObject 
+public abstract class LogicObject
 {
-    private FixIntVector3 logicPos;     //é€»è¾‘å¯¹è±¡é€»è¾‘ä½ç½®
-    private FixIntVector3 logicDir;     //é€»è¾‘å¯¹è±¡æœå‘
-    private FixIntVector3 logicAngle;   //é€»è¾‘å¯¹è±¡æ—‹è½¬è§’åº¦
-    private FixInt logicMoveSpeed = 3;      //é€»è¾‘å¯¹è±¡ç§»åŠ¨é€Ÿåº¦
-    private FixInt logicXAxis = 1;       //é€»è¾‘è½´å‘
-    private bool isActive;              //å½“å‰é€»è¾‘å¯¹è±¡æ˜¯å¦æ¿€æ´»
+    private FixIntVector3 logicPos;//Âß¼­¶ÔÏóÂß¼­Î»ÖÃ
+    private FixIntVector3 logicDir;//Âß¼­¶ÔÏó³¯Ïò
+    private FixIntVector3 logicAngle;//Âß¼­¶ÔÏóĞı×ª½Ç¶È
+    private FixInt logicMoveSpeed=3;//Âß¼­¶ÔÏóÒÆ¶¯ËÙ¶È
+    private FixInt logicXAxis = 1;//Âß¼­ÖáÏò
+    private FixIntVector3 isActive;//µ±Ç°Âß¼­¶ÔÏóÊÇ·ñ¼¤»î
+    private bool isForceAllowMove = false;//ÊÇ·ñÇ¿ÖÆÔÊĞíÒÆ¶¯
+    private bool isForceNotAlllowModifyDir = false;//ÊÇ·ñÔÊĞíĞŞ¸Ä³¯Ïò
 
-
-    //å…¬å¼€å±æ€§
-    public FixIntVector3 LogicPos { get { return logicPos; } set { logicPos = value; } }     //é€»è¾‘å¯¹è±¡é€»è¾‘ä½ç½®
-    public FixIntVector3 LogicDir{ get { return logicDir; } set { logicDir = value; } }       //é€»è¾‘å¯¹è±¡æœå‘
-    public FixIntVector3 LogicAngle { get { return logicAngle; } set { logicAngle = value; } }     //é€»è¾‘å¯¹è±¡æ—‹è½¬è§’åº¦
-    public FixInt LogicMoveSpeed { get { return logicMoveSpeed; } set { logicMoveSpeed = value; } }        //é€»è¾‘å¯¹è±¡ç§»åŠ¨é€Ÿåº¦
-    public FixInt LogicXAxis { get { return logicXAxis; }set { logicXAxis = value; } }         //é€»è¾‘è½´å‘
-    public bool IsActive { get { return isActive; } set { isActive = value; } }                //å½“å‰é€»è¾‘å¯¹è±¡æ˜¯å¦æ¿€æ´»
+    //¹«¿ªÊôĞÔ
+    public FixIntVector3 LogicPos { get { return logicPos; } set { logicPos = value; } }//Âß¼­¶ÔÏóÂß¼­Î»ÖÃ
+    public FixIntVector3 LogicDir { get { return logicDir; } set { logicDir = value; } }//Âß¼­¶ÔÏó³¯Ïò
+    public FixIntVector3 LogicAngle { get { return logicAngle; } set { logicAngle = value; } }//Âß¼­¶ÔÏóĞı×ª½Ç¶È
+    public FixInt LogicMoveSpeed { get { return logicMoveSpeed; } set { logicMoveSpeed = value; } }//Âß¼­¶ÔÏóÒÆ¶¯ËÙ¶È
+    public FixInt LogicXAxis { get { return logicXAxis; } set { logicXAxis = value; } }//Âß¼­ÖáÏò
+    public FixIntVector3 IsActive { get { return isActive; } set { isActive = value; } }//µ±Ç°Âß¼­¶ÔÏóÊÇ·ñ¼¤»î
+    public bool IsForceAllowMove { get { return isForceAllowMove; } set { Debug.Log("isForceAllowMove:"+ isForceAllowMove); isForceAllowMove = value; } }//ÊÇ·ñÇ¿ÖÆÔÊĞíÒÆ¶¯
+    public bool IsForceNotAlllowModifyDir { get { return isForceNotAlllowModifyDir; } set { Debug.Log("isForceAlllowModifyDir:" + isForceAllowMove); isForceNotAlllowModifyDir = value; } }//ÊÇ·ñÔÊĞíĞŞ¸Ä³¯Ïò
 
     /// <summary>
-    /// æ¸²æŸ“å¯¹è±¡
+    /// äÖÈ¾¶ÔÏó
     /// </summary>
-    public RenderObject RenderObj { get;protected set; }
+    public RenderObject RenderObj { get; protected set; }
     /// <summary>
-    /// å®šç‚¹æ•°ç¢°æ’åº“
+    /// ¶¨µãÊıÅö×²Ìå
     /// </summary>
     public FixIntBoxCollider Collider { get; protected set; }
-
     /// <summary>
-    /// é€»è¾‘å¯¹è±¡
+    /// Âß¼­¶ÔÏó×´Ì¬
     /// </summary>
     public LogicObjectState ObjectState { get; set; }
     /// <summary>
-    /// é€»è¾‘å¯¹è±¡ç±»å‹
+    /// Âß¼­¶ÔÏóÀàĞÍ
     /// </summary>
     public LogicObjectType ObjectType { get; set; }
-
     /// <summary>
-    /// é€»è¾‘å¯¹è±¡è¡Œä¸ºçŠ¶æ€
+    /// Âß¼­¶ÔÏóĞĞ¶¯×´Ì¬
     /// </summary>
-    public LogicObjectActionState ActionState { get; set; }
-
+    public LogicObjectActionState ActionSate { get; set; }
 
     /// <summary>
-    /// åˆå§‹åŒ–æ¥å£
+    /// ³õÊ¼»¯½Ó¿Ú
     /// </summary>
     public virtual void OnCreate()
     {
 
     }
-
     /// <summary>
-    /// é€»è¾‘å¸§æ›´æ–°æ¥å£
+    /// Âß¼­Ö¡¸üĞÂ½Ó¿Ú
     /// </summary>
     public virtual void OnLogicFrameUpdate()
     {
 
     }
-
     /// <summary>
-    /// é€»è¾‘å¯¹è±¡é‡Šæ”¾æ¥å£
+    /// Âß¼­¶ÔÏóÊÍ·Å½Ó¿Ú
     /// </summary>
     public virtual void OnDestroy()
     {
 
     }
-
-
 }
-
 public enum LogicObjectActionState
 {
-    Idle,//å¾…æœº
-    Move,//ç§»åŠ¨ä¸­
-    ReleaseSkill,//é‡Šæ”¾æŠ€èƒ½ä¸­
-    Floating,//æµ®ç©ºä¸­
-    Hiting,//å—å‡»ä¸­
-    StockPileing,//è“„åŠ›ä¸­
+    Idle,//´ı»ú
+    Move,//ÒÆ¶¯ÖĞ
+    ReleasingSkill,//ÊÍ·Å¼¼ÄÜÖĞ
+    Floating,//¸¡¿ÕÖĞ
+    Hiting,//ÊÜ»÷ÖĞ
+    StockPileing,//ĞîÁ¦ÖĞ
 }
 
 public enum LogicObjectType
@@ -99,8 +90,6 @@ public enum LogicObjectType
 
 public enum LogicObjectState
 {
-    Survival,//å­˜æ´»ä¸­
-    Death,//æ­»äº¡
+    Survival,//´æ»îÖĞ
+    Death,//ËÀÍö
 }
-
-

@@ -3,67 +3,95 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// é€»è¾‘å¯¹è±¡ç±»
-/// </summary>
 public partial class LogicActor : LogicObject
 {
-
     public override void OnCreate()
     {
         base.OnCreate();
-        InitActorSkill();
     }
-
-
-
-
+ 
     public override void OnLogicFrameUpdate()
     {
         base.OnLogicFrameUpdate();
-        //æ›´æ–°ç§»åŠ¨
+        //¸üĞÂÒÆ¶¯Ö¡
         OnLogicFrameUpdateMove();
-        //æ›´æ–°æŠ€èƒ½
+        //¸üĞÂ¼¼ÄÜÖ¡
         OnLogicFrameUpdateSkill();
-        //æ›´æ–°é‡åŠ›
+        //¸üĞÂÖØÁ¦Ö¡
         OnLogicFrameUpdateGravity();
-
+        //¸üĞÂ×Óµ¯Ö¡
+        OnLogicFramUpdateBullet();
     }
 
     public void PlayAnim(AnimationClip clip)
     {
         RenderObj.PlayAnim(clip);
     }
-
-
     public void PlayAnim(string name)
     {
         RenderObj.PlayAnim(name);
     }
+    public virtual void OnHit(string effectHitObjPath,int survivalTimems, LogicObject source,FixInt logicXAxis)
+    {
+        RenderObj.OnHit(effectHitObjPath, survivalTimems, source);
+    }
+    public virtual void SkillDamage(FixInt hp,SkillDamageConfig damageConfig)
+    {
+        Debug.Log("SkillDamage hp:"+hp);
+        CacluDamage(hp, DamageSource.SKill);
+    }
+
+    public virtual void BuffDamage(FixInt hp, SkillDamageConfig damageConfig)
+    {
+        Debug.Log("BuffDamage hp:" + hp);
+        CacluDamage(hp, DamageSource.SKill);
+    }
+    /// <summary>
+    /// Ä³¸ö¼¼ÄÜ»òbuff»á¼õÉÙ»ò×èµ²×Óµ¯ÉËº¦
+    /// </summary>
+    public virtual void BulletDamage(FixInt hp,SkillDamageConfig damageConfig)
+    {
+        Debug.Log("BulletDamage hp:" + hp);
+        CacluDamage(hp, DamageSource.Bullet);
+    }
 
 
     /// <summary>
-    /// æµ®ç©ºå›è°ƒ
+    /// ¼ÆËãÉËº¦
     /// </summary>
-    /// <param name="upFloating">æ˜¯å¦å¤„äºä¸Šæµ®</param>
-    public virtual void Floating(bool upFloating)
+    /// <param name="hp"></param>
+    /// <param name="source"></param>
+    public void CacluDamage(FixInt hp,DamageSource source)
     {
-
+        if (ObjectState== LogicObjectState.Survival)
+        {
+            //1.¶ÔÏóÂß¼­²ãÑªÁ¿¼õÉÙ
+            ReduceHP(hp);
+            //2.ÅĞ¶Ï¶ÔÏóÊÇ·ñËÀÍö Èç¹ûËÀÍö¾Í´¦ÀíËÀÍöÂß¼­
+            if (this.HP<=0)
+            {
+                Collider.Active = false;
+                ObjectState = LogicObjectState.Death;
+                RenderObj.OnDeath();
+            }
+            //3.½øĞĞÉËº¦Æ®×ÖäÖÈ¾
+            RenderObj.Damage(hp.RawInt, source);
+        }
     }
 
     /// <summary>
-    /// è§¦åœ°å›è°ƒ
+    /// ¸¡¿Õ»Øµ÷£¬
     /// </summary>
-    public virtual void TriggerGround()
-    {
-
-    }
-
-
-
+    /// <param name="uploating">ÊÇ·ñ´¦ÓÚÉÏ¸¡</param>
+    public virtual void Floating(bool upfoating) {}
+    /// <summary>
+    /// ¶ÔÏó´¥µØ
+    /// </summary>
+    /// <param name="upfoating"></param>
+    public virtual void TriggerGround() { }
     public override void OnDestroy()
     {
         base.OnDestroy();
-    }
 
+    }
 }
